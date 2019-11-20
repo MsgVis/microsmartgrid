@@ -6,10 +6,10 @@ jdk: openjdk8
 
 script: "mvn cobertura:cobertura"
 branches:
-	only:
-		- master
+    only:
+        - master
 
 before_script: cd database
 
 after_success:
-	- bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
+    - bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
