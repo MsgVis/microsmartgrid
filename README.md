@@ -2,5 +2,5 @@
 [![codecov](https://codecov.io/gh/jblossey/msg/branch/master/graph/badge.svg?token=Xgpc4DxbYR)](https://codecov.io/gh/jblossey/msg)
 
 
-# Micro Smart Grid Viewer Showcase
+# Micro Smart Grid Visualisation Tool
 

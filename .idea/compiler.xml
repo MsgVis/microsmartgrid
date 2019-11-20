@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="database" target="1.5" />
+      <module name="database" target="8" />
       <module name="hello" target="1.5" />
       <module name="rootart" target="1.5" />
       <module name="view" target="1.5" />
