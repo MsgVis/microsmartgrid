@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.dai-lab.msg</groupId>
+    <artifactId>database</artifactId>
+    <version>0.0-INIT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.dailab.jiactng</groupId>
+            <artifactId>agentCore</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>dai-open</id>
+            <name>DAI Open</name>
+            <url>http://repositories.dai-labor.de/extern/content/repositories/dai-open</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>
