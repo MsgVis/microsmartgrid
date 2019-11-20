@@ -1,4 +1,4 @@
-package com.msg.database.dbDataStructures;
+package com.microsmartgrid.database.dbDataStructures;
 
 public interface AbstractDevice {
     int timestamp = 0;
