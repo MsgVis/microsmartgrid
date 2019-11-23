@@ -16,6 +16,6 @@ before_deploy:
   -in gcs_travis_key_file.json.enc -out gcs_travis_key_file.json -d
 deploy:
   provider: gcs
-  key_file: gcs_travis_key_file.json
+  key_file: ../gcs_travis_key_file.json
   bucket: microsmartgrid-gate.appspot.com
   edge: true
