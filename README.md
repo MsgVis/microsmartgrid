@@ -2,4 +2,3 @@
 [![codecov](https://codecov.io/gh/jblossey/microsmartgrid/branch/master/graph/badge.svg?token=Xgpc4DxbYR)](https://codecov.io/gh/jblossey/microsmartgrid)
 
 # Micro Smart Grid Visualisation Tool
-
