@@ -2,8 +2,8 @@ os: linux
 language: java
 jdk: openjdk11
 branches:
-  only:
-  - master
+  #only:
+  #- master
 before_script: cd database
 after_success:
 - bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
