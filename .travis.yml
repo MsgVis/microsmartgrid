@@ -13,7 +13,7 @@ notifications:
       secure: dT3VeimUSADXnv9VtgPjbjjKqs0JRDWueBIsuM46dPZyVSNtjjt//ImMsCp0/pwezNZ6dZZwIok7T8fXKq0EkTbSD3h6dorfXSLumBhc9skRvUCSFQFcuoJDMU9xy8kKP61kO1thrZOflPkGdB9mINE5ywHmHZmpD1LpZ/1dLbNTblf+fsKdM30sAnTDpITmEGliSds+Vk1X2Jm4XN4E9Mu31qHNvNvivEliuWjTUUgYIRDAWKAjBCC/zREgBFAIRXfRzaXjSVFUD4P88YbMj+rctS0aSBqmigKDt8pMqNS57fICFWJLMwqm3ZuSTtdcWVSaIdInpKilzZ96wwLm5TNtH9ywmh5ImPvhklSpRot+/4jpMSd65ZhpkV0S/EXuiGf29VIAAPy3EvJcy2fUtcUPwMBaezA05GLmfzwANKufyQZPdYdHj4C6FH3eijnjLFjGPFPV9SQ7K5eVkvhkscbluyRfRzoLeFFKF8FdbWtyIKUN45pcHbMRb9ie4TY7qa3uU2ThS9pYQoFQ4af2kskUdDPCN3ke+HuZgEWbQxyS1NQOB9y3tB9hi/KSdhjcxSWKGgLEN8ptg2QH7TohqhwIn+3g2x7y/ifp8PWxWu0crxKHL83wiCCdlIABunlWGyN+9uTHF0E+N+X3FH2rtawQwCR4+Wk17uCHUnTTSfg=
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_77aee78414ce_key -iv $encrypted_77aee78414ce_iv
-  -in gcs_travis_key_file.json.enc -out gcs_travis_key_file.json -d
+  -in ../gcs_travis_key_file.json.enc -out gcs_travis_key_file.json -d
 deploy:
   provider: gcs
   key_file: ../gcs_travis_key_file.json
