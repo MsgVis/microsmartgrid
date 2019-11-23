@@ -1,7 +1,6 @@
 os: linux
 language: java
 jdk: openjdk11
-script: mvn cobertura:cobertura
 branches:
   only:
   - master
@@ -18,6 +17,5 @@ before_deploy:
 deploy:
   provider: gcs
   key_file: gcs_travis_key_file.json
-  bucket:
-    secure: ZueFw0VWEA/3qVAit1o+qCQm19jOa8Bs4r0fMcMcfSKvTwhTz/mSBvvqBas+hi69O0bIA2ZW+yrOnhQwOncOXZdy8CYh9UQSaL6xt3kQPUCDa/CIyYCKuyg7eO/eG0EJbSen0Mr/XZ3LKLNL2wU/wvjszzg02RHsDGQxKp0yirmuwKc4WnulzcXAufDIndDXNbZHqKT6h1+NJa9CcAXOENmrWkCqiLoB53wfF7RL68VKzwcQD+G/3iCBpkbRgTP3vhckL9H9ZOiENnt+AfiUefbqWJqM+uh1RB0aFrMMO8/ASIds0KRmTphOJToPKu/kmFDF5N+ULvvWaC/1kFScaeIWtQmbBKAIdCYMNPo0GKGUCRxzOb0n1sYqZWJXjIKYgC+tLs3kBWRvsyaNYWdT1SXHDp+BiK1eKN6PUdPoeifc0/d4wa63LbtY1S1TBpZ/M0LL3GEKtikpUqMnG1Q/bAIA+ll8aez+05Z4n3ig+qk3dTNJJH2dz9Zjp9gWt4lkg/zTVxANaXN8WTpNNFqMesj9/lbBHcGRgK2RGB9ITyXGSh5KizoGozPZVrbkeDziklv/Ygpe6eEfyF0Sg7vccFTw3d/jp8GaNOZt22P55SNZu5PUT2iTRPQF7RVA4y6GERTq1HSZErApqmnfGXy8prLwrKbwowrQgmf13FF76mM=
+  bucket: microsmartgrid-gate.appspot.com
   edge: true
