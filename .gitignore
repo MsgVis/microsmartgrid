@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+*.iml
 
 # BlueJ files
 *.ctxt
@@ -27,3 +28,7 @@ hs_err_pid*
 
 #binaries
 **/target
+
+# config files not intended for shared usage
+*.lst
+*.properties
