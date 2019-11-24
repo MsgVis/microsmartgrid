@@ -1,4 +1,4 @@
-package com.microsmartgrid.database.dbDataStructures;
+package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 public class Battery extends DaiSmartGrid {
 
