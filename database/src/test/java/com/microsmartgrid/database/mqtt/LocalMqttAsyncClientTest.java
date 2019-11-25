@@ -1,21 +1,36 @@
 package com.microsmartgrid.database.mqtt;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class LocalMqttAsyncClientTest {
-
-	@Test
-	void init() {
-
+	@BeforeEach
+	void setUp() {
 	}
 
 	@Test
-	void connect() {
+	void testInit() {
 	}
 
 	@Test
-	void standardSubscribe() {
+	void testConnect() {
+	}
+
+	@Test
+	void testStandardSubscribe() {
+	}
+
+	@Test
+	void connectionLost() {
+	}
+
+	@Test
+	void messageArrived() {
+	}
+
+	@Test
+	void deliveryComplete() {
 	}
 }
