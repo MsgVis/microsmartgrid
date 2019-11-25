@@ -24,8 +24,7 @@ public class Database {
 		LocalMqttAsyncClient mqtt_client = new LocalMqttAsyncClient();
 		mqtt_client.init(msg_serverURI);
 		mqtt_client.connect();
-		//TODO uncomment
-		//mqtt_client.standardSubscribe();
+		mqtt_client.standardSubscribe(mqtt_topic);
 
 	}
 }
