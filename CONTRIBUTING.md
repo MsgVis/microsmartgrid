@@ -110,6 +110,8 @@ The footer is optional and is used to reference issue tracker IDs.
 
 + Generally "Clean Code" by Robert C. Martin Style
 + https://google.github.io/styleguide/javaguide.html
++ Java ist auch eine Insel
++ http://openbook.rheinwerk-verlag.de/javainsel/
 + ... other java guide? ...
 
 ### Computing Unit (Microservice Architecture)
