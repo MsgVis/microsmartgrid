@@ -1,6 +1,6 @@
 package com.microsmartgrid.database.dbDataStructures;
 
-public class Topology {
+public class AdditionalDeviceInformation {
 
 	private String icon;
 	/*
@@ -19,11 +19,11 @@ public class Topology {
 	private Enum subtype;
 	private int depth;
 
-	protected Topology() {
+	protected AdditionalDeviceInformation() {
 	}
 
 	// minimal constructor
-	public Topology(String name, AbstractDevice device) {
+	public AdditionalDeviceInformation(String name, AbstractDevice device) {
 		this.name = name;
 		this.device = device;
 	}
