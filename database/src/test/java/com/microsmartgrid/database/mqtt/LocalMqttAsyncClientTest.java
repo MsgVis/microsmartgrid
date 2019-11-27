@@ -38,8 +38,9 @@ class LocalMqttAsyncClientTest {
 
 	@Test
 	void setupSuccessful() {
-		client.init("tcp://mqtt.eclipse.org:1883");
-		client.connect();
-		client.standardSubscribe("#");
+		this.client.init("tcp://mqtt.eclipse.org:1883");
+		//this.client.init("tcp://192.168.121.172:1883"); if connected to msg-VPN...
+		this.client.connect();
+		this.client.standardSubscribe("#");
 	}
 }
