@@ -1,6 +1,5 @@
 package com.microsmartgrid.database.dbDataStructures.shellies;
 
-import com.google.gson.Gson;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
 import java.time.LocalDateTime;

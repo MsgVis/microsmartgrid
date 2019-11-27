@@ -1,9 +1,6 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.google.gson.Gson;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-
-import java.time.LocalDateTime;
 
 public abstract class DaiSmartGrid extends AbstractDevice {
 
@@ -36,7 +33,6 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 
 	protected DaiSmartGrid() {
 		super();
-		//TODO: take JSON and parse into values
 	}
 
 	/**

@@ -1,19 +1,22 @@
 package com.microsmartgrid.database.dbDataStructures;
 
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractDevice {
 
 	private int id;
 	private LocalDateTime timestamp;
-	private JsonObject metaInformation;
+	private Map<String, Object> metaInformation = new HashMap<>();
 
 	protected AbstractDevice() {
 	}
 
-	public AbstractDevice(LocalDateTime timestamp, JsonObject metaInformation) {
+	public AbstractDevice(LocalDateTime timestamp, Map<String, Object> metaInformation) {
 		this.timestamp = timestamp;
 		this.metaInformation = metaInformation;
 	}
@@ -34,11 +37,13 @@ public abstract class AbstractDevice {
 		this.timestamp = timestamp;
 	}
 
-	public JsonObject getMetaInformation() {
+	@JsonAnyGetter
+	public Map<String, Object> getMetaInformation() {
 		return metaInformation;
 	}
 
-	public void setMetaInformation(JsonObject metaInformation) {
+	@JsonAnySetter
+	public void setMetaInformation(Map<String, Object> metaInformation) {
 		this.metaInformation = metaInformation;
 	}
 }
