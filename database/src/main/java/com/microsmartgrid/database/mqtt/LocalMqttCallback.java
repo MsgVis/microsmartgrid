@@ -19,6 +19,7 @@ public class LocalMqttCallback implements MqttCallback {
 	 * @param json - Json to be deserialized
 	 * @param class_name - Snippet of topic for which class names are defined
 	 */
+	// TODO: MOVE THIS @dustin
 	public <T extends AbstractDevice> T createObjectFromJson(String json, String class_name) throws JsonParseException {
 		// TODO: configure gson
 		Gson gson = new Gson();
