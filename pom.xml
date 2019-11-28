@@ -26,11 +26,13 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- Jiac V - framework for distributed services -->
 			<dependency>
 				<groupId>de.dailab.jiactng</groupId>
 				<artifactId>agentCore</artifactId>
 				<version>${dailab.jiac.agentcore.version}</version>
 			</dependency>
+			<!-- Jupitor/junit - testing framework -->
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-engine</artifactId>
@@ -49,11 +51,13 @@
 				<version>${junit.jupiter.version}</version>
 				<scope>test</scope>
 			</dependency>
+			<!-- Paho - mqtt client -->
 			<dependency>
 				<groupId>org.eclipse.paho</groupId>
 				<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
 				<version>${paho.mqtt.client.version}</version>
 			</dependency>
+			<!-- log4j - external logging library -->
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>
@@ -65,11 +69,22 @@
 				<version>2.12.1</version>
 			</dependency>
 
+
+			<!-- postgresql - JDBC driver for postgresql database -->
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>42.2.8</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<!-- Spring MVC - REST based annotation framework -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
 				<version>5.1.9.RELEASE</version>
 			</dependency>
+			<!-- Spring google cloud - feel free to remove if you can't find a use (just thought i might bring attention to this)-->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-gcp-starter</artifactId>
@@ -81,11 +96,6 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-gcp-starter-storage</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<scope>runtime</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
