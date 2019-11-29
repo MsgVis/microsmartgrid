@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 CREATE TABLE devices (
 	id	SERIAL	PRIMARY KEY,
-	name		TEXT	NOT NULL,
+	name		TEXT	NOT NULL UNIQUE,
 	description	TEXT,
 	type		TEXT,
 	subtype		TEXT,
