@@ -40,7 +40,7 @@ public class LocalMqttCallback implements MqttCallback {
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws Exception {
 		Class clazz = getClassFromTopic(topic_name);
 		try {
-			DbWriter.deserializeJson(mqttMessage.toString(), clazz);
+			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, clazz);
 		} catch (JsonProcessingException e) {
 			//TODO logging
 		}
