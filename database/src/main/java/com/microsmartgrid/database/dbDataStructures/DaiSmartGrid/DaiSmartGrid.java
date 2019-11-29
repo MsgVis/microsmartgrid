@@ -36,7 +36,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	/**
-	 * Translates input into DaiSmartGrid-values
+	 * Translates input into DaiSmartGrid-values may be unnecessary if we can implement it in mixin
 	 */
 	abstract void normalize();
 

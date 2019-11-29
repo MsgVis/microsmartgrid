@@ -9,4 +9,8 @@ public class Main extends DaiSmartGrid {
 	@Override
 	void normalize() {
 	}
+
+	public class MainMixIn{
+
+	}
 }

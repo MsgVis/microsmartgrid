@@ -1,6 +1,5 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.google.gson.Gson;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
 import java.time.LocalDateTime;
@@ -13,4 +12,8 @@ public class Weather extends AbstractDevice {
 	private float temperature;
 
 	protected Weather () {}
+
+	public class WeatherMixIn {
+
+	}
 }

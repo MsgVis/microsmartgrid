@@ -9,4 +9,8 @@ public class Ladestation extends DaiSmartGrid {
 	@Override
 	void normalize() {
 	}
+
+	public class LadestationMixIn{
+
+	}
 }

@@ -9,4 +9,8 @@ public class Battery extends DaiSmartGrid {
 	@Override
 	void normalize() {
 	}
+
+	public class BatteryMixIn {
+
+	}
 }

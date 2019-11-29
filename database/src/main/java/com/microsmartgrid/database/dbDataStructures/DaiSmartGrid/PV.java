@@ -9,4 +9,8 @@ public class PV extends DaiSmartGrid {
 	@Override
 	void normalize() {
 	}
+
+	public class PVMixIn {
+
+	}
 }

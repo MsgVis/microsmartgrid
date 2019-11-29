@@ -3,11 +3,12 @@ package com.microsmartgrid.database.dbDataStructures;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractDevice {
+public abstract class AbstractDevice implements Serializable {
 
 	private int id;
 	private LocalDateTime timestamp;
