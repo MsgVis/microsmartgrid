@@ -1,7 +1,6 @@
 package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.*;
 
@@ -19,7 +18,7 @@ public final class ObjectMapperManager {
 
 		// MixIns
 			.addMixIn(Battery.class, Battery.BatteryMixIn.class)
-			.addMixIn(Ladestation.class, Ladestation.LadestationMixIn.class)
+			.addMixIn(ladestation.class, ladestation.LadestationMixIn.class)
 			.addMixIn(Main.class, Main.MainMixIn.class)
 			.addMixIn(PV.class, PV.PVMixIn.class)
 			.addMixIn(Weather.class, Weather.WeatherMixIn.class);
