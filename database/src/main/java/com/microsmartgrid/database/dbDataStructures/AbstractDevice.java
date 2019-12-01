@@ -1,23 +1,23 @@
 package com.microsmartgrid.database.dbDataStructures;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractDevice implements Serializable {
+public class AbstractDevice implements Serializable {
 
 	private int id;
-	private LocalDateTime timestamp;
+	private Instant timestamp;
+	@JsonAnySetter
 	private Map<String, Object> metaInformation = new HashMap<>();
 
 	protected AbstractDevice() {
 	}
 
-	public AbstractDevice(LocalDateTime timestamp, Map<String, Object> metaInformation) {
+	public AbstractDevice(Instant timestamp, Map<String, Object> metaInformation) {
 		this.timestamp = timestamp;
 		this.metaInformation = metaInformation;
 	}
@@ -30,20 +30,18 @@ public abstract class AbstractDevice implements Serializable {
 		this.id = id;
 	}
 
-	public LocalDateTime getTimestamp() {
+	public Instant getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(LocalDateTime timestamp) {
+	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
 
-	@JsonAnyGetter
 	public Map<String, Object> getMetaInformation() {
 		return metaInformation;
 	}
 
-	@JsonAnySetter
 	public void setMetaInformation(Map<String, Object> metaInformation) {
 		this.metaInformation = metaInformation;
 	}
