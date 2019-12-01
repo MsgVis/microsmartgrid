@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+paho*/
 
 # BlueJ files
 *.ctxt
@@ -58,4 +59,3 @@ hs_err_pid*
 build/
 ### VS Code ###
 .vscode/
-
