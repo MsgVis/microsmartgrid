@@ -2,6 +2,7 @@ package com.microsmartgrid.database.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbcom.DbWriter;
 import org.apache.logging.log4j.LogManager;
@@ -19,16 +20,18 @@ public class LocalMqttCallback implements MqttCallback {
 	 * @param class_name - Snippet of topic for which class names are defined
 	 */
 	public Class getClassFromTopic(String class_name) {
-		Class clazz;
-		// TODO: split topic_name to into parts so we can determine the appropriate class to deserialize to
+		Class cls;
+		final String package_start = "com.microsmartgrid.database.dbDataStructures.";
+		String[] cls_parts = class_name.split("/");
+		class_name = package_start + cls_parts[0] + "." + (cls_parts[1].split("_").length > 1 ? cls_parts[1].split("_")[0] : cls_parts[1].split("-")[0]);
 		try {
-			clazz = Class.forName(class_name);
+			cls = Class.forName(class_name);
 		} catch(ClassNotFoundException ex) {
 			// log error
 			// use default class to save fields in 'meta_information' and create an 'id', 'timestamp', and a corresponding 'DeviceInformation'
-			clazz = AbstractDevice.class;
+			cls = AbstractDevice.class;
 		}
-		return clazz;
+		return cls;
 	}
 
 	@Override
@@ -38,11 +41,12 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws Exception {
-		Class clazz = getClassFromTopic(topic_name);
+		Class cls = getClassFromTopic(topic_name);
 		try {
-			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, clazz);
+			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, cls);
 		} catch (JsonProcessingException e) {
-			//TODO logging
+			logger.error("Couldn't construct instance from topic " + topic_name);
+			logger.error(e);
 		}
 	}
 
