@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 
-import java.util.concurrent.TimeUnit;
-
 
 public class LocalMqttAsyncClient {
 	private static final Logger logger = LogManager.getLogger(LocalMqttAsyncClient.class.getName());
@@ -30,11 +28,11 @@ public class LocalMqttAsyncClient {
 	}
 
 	public void connect() throws NullPointerException {
-		if (this.mqtt_client == null) {
+		if (mqtt_client == null) {
 			throw new NullPointerException("mqtt client must be initialised before it can be connected.");
 		}
-		if (this.mqtt_client.isConnected()) {
-			logger.info("Client already connected to " + this.mqtt_client.getCurrentServerURI());
+		if (mqtt_client.isConnected()) {
+			logger.info("Client already connected to " + mqtt_client.getCurrentServerURI());
 			return;
 		}
 		MqttConnectOptions options = new MqttConnectOptions();
@@ -42,7 +40,7 @@ public class LocalMqttAsyncClient {
 		options.setCleanSession(true);
 		try {
 			logger.info("Connecting to server. Waiting for completion...");
-			IMqttToken con_token = this.mqtt_client.connect(options);
+			IMqttToken con_token = mqtt_client.connect(options);
 			con_token.waitForCompletion();
 			logger.info("Connection successful.");
 		} catch (MqttSecurityException e) {
@@ -55,14 +53,14 @@ public class LocalMqttAsyncClient {
 	}
 
 	public void standardSubscribe(String topic) {
-		if (this.mqtt_client == null || !this.mqtt_client.isConnected()) {
+		if (mqtt_client == null || !mqtt_client.isConnected()) {
 			throw new RuntimeException("mqtt client must be initialised" +
 				" and connected before a subscription" +
 				" can be performed.");
 		}
 		try {
 			logger.info("Subscribing to \"" + topic + "\" at QoS 2. Waiting for subscription to finish.");
-			IMqttToken sub_Token = this.mqtt_client.subscribe(topic, 2, null, null);
+			IMqttToken sub_Token = mqtt_client.subscribe(topic, 2, null, null);
 			sub_Token.waitForCompletion();
 			logger.info("Subscription successful.");
 		} catch (MqttException e) {
@@ -73,15 +71,15 @@ public class LocalMqttAsyncClient {
 	}
 
 	public boolean isConnected() {
-		return this.mqtt_client.isConnected();
+		return mqtt_client.isConnected();
 	}
 
 	public void disconnect() {
-		if (!this.mqtt_client.isConnected()) {
+		if (!mqtt_client.isConnected()) {
 			logger.info("Client was not connected.");
 		}
 		try {
-			this.mqtt_client.disconnect();
+			mqtt_client.disconnect();
 		} catch (MqttException e) {
 			logger.error("Disconnection failed.");
 			logger.error(e.getCause());

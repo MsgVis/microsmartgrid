@@ -4,7 +4,7 @@ public class DbReader {
 	public static Object getDeviceInfo(String topic) {
 		try {
 			connect();
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// log and exit
 		}
 		// TODO: get additional device info object from topic name

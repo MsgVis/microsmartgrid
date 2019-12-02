@@ -2,7 +2,6 @@ package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.*;
 
 public final class ObjectMapperManager {
 
@@ -12,7 +11,7 @@ public final class ObjectMapperManager {
 		return objMapper;
 	}
 
-	private static ObjectMapper configureMapper(ObjectMapper objMapper){
+	private static ObjectMapper configureMapper(ObjectMapper objMapper) {
 		objMapper
 			.registerModule(new JavaTimeModule())
 

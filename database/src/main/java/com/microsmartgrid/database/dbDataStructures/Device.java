@@ -7,17 +7,17 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractDevice implements Serializable {
+public class Device implements Serializable {
 
 	private int id;
 	private Instant timestamp;
 	@JsonAnySetter
 	private Map<String, Object> metaInformation = new HashMap<>();
 
-	protected AbstractDevice() {
+	protected Device() {
 	}
 
-	public AbstractDevice(Instant timestamp, Map<String, Object> metaInformation) {
+	public Device(Instant timestamp, Map<String, Object> metaInformation) {
 		this.timestamp = timestamp;
 		this.metaInformation = metaInformation;
 	}

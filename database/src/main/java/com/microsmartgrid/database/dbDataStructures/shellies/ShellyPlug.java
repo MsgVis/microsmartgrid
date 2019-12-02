@@ -1,10 +1,8 @@
 package com.microsmartgrid.database.dbDataStructures.shellies;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.dbDataStructures.Device;
 
-import java.time.LocalDateTime;
-
-public class ShellyPlug extends AbstractDevice {
+public class ShellyPlug extends Device {
 
 	//inherent vars
 	private float power;
@@ -13,5 +11,6 @@ public class ShellyPlug extends AbstractDevice {
 	private boolean over_temperature;
 	private boolean off;
 
-	protected ShellyPlug(){}
+	protected ShellyPlug() {
+	}
 }

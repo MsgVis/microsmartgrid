@@ -1,17 +1,13 @@
 package com.microsmartgrid.database.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.dbDataStructures.Device;
 import com.microsmartgrid.database.dbcom.DbWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.lang.reflect.Type;
 
 public class LocalMqttCallback implements MqttCallback {
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class.getName());
@@ -26,10 +22,10 @@ public class LocalMqttCallback implements MqttCallback {
 		class_name = package_start + cls_parts[0] + "." + (cls_parts[1].split("_").length > 1 ? cls_parts[1].split("_")[0] : cls_parts[1].split("-")[0]);
 		try {
 			cls = Class.forName(class_name);
-		} catch(ClassNotFoundException ex) {
+		} catch (ClassNotFoundException ex) {
 			// log error
 			// use default class to save fields in 'meta_information' and create an 'id', 'timestamp', and a corresponding 'DeviceInformation'
-			cls = AbstractDevice.class;
+			cls = Device.class;
 		}
 		return cls;
 	}
@@ -40,7 +36,7 @@ public class LocalMqttCallback implements MqttCallback {
 	}
 
 	@Override
-	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws Exception {
+	public void messageArrived(String topic_name, MqttMessage mqttMessage) {
 		Class cls = getClassFromTopic(topic_name);
 		try {
 			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, cls);
