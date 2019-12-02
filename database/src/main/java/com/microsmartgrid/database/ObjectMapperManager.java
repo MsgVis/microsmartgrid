@@ -13,14 +13,7 @@ public final class ObjectMapperManager {
 
 	private static ObjectMapper configureMapper(ObjectMapper objMapper) {
 		objMapper
-			.registerModule(new JavaTimeModule())
-
-		// MixIns
-			.addMixIn(Battery.class, Battery.BatteryMixIn.class)
-			.addMixIn(ladestation.class, ladestation.LadestationMixIn.class)
-			.addMixIn(Main.class, Main.MainMixIn.class)
-			.addMixIn(PV.class, PV.PVMixIn.class)
-			.addMixIn(Weather.class, Weather.WeatherMixIn.class);
+			.registerModule(new JavaTimeModule());
 
 		return objMapper;
 	}

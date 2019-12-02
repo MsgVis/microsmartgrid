@@ -9,9 +9,30 @@ public class Weather extends Device {
 	private String summary;
 	private float temperature;
 
-	protected Weather () {}
+	protected Weather() {
+	}
 
-	public class WeatherMixIn {
+	public String getIcon() {
+		return this.icon;
+	}
 
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getSummary() {
+		return this.summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public float getTemperature() {
+		return this.temperature;
+	}
+
+	public void setTemperature(float temperature) {
+		this.temperature = temperature;
 	}
 }

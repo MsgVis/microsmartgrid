@@ -1,16 +1,15 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Battery extends DaiSmartGrid {
 
 	public Battery() {
 		super();
 	}
 
-	@Override
-	void normalize() {
-	}
-
-	public class BatteryMixIn {
-
+	public Battery(@JsonProperty("frequency_Grid") float frequency) {
+		this();
+		super.setFrequency_grid(frequency);
 	}
 }

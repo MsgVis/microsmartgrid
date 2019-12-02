@@ -16,6 +16,7 @@ public abstract class DaiSmartGrid extends Device {
 		voltage_U3,
 		active_energy_A_plus,
 		active_energy_A_minus,
+		active_power_P_total,
 		active_power_P1,
 		active_power_P2,
 		active_power_P3,
@@ -34,11 +35,6 @@ public abstract class DaiSmartGrid extends Device {
 	protected DaiSmartGrid() {
 		super();
 	}
-
-	/**
-	 * Translates input into DaiSmartGrid-values may be unnecessary if we can implement it in mixin
-	 */
-	abstract void normalize();
 
 	public float getCurrent_I_avg() {
 		return this.current_I_avg;
@@ -118,6 +114,14 @@ public abstract class DaiSmartGrid extends Device {
 
 	public void setActive_energy_A_minus(float active_energy_A_minus) {
 		this.active_energy_A_minus = active_energy_A_minus;
+	}
+
+	public float getActive_power_P_total() {
+		return this.active_power_P_total;
+	}
+
+	public void setActive_power_P_total(float active_power_P_total) {
+		this.active_power_P_total = active_power_P_total;
 	}
 
 	public float getActive_power_P1() {
