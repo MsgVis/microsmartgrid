@@ -16,8 +16,9 @@ public class LocalMqttCallback implements MqttCallback {
 	/**
 	 * @param class_name - Snippet of topic for which class names are defined
 	 */
-	public <T extends AbstractDevice> Class<T> getClassFromTopic(String class_name) {
-		Class<T> cls;
+	public Class<? extends AbstractDevice> getClassFromTopic(String class_name) {
+		Class<? extends AbstractDevice> cls;
+		// TODO: Replace with configuration file to map classes
 		final String package_start = "com.microsmartgrid.database.dbDataStructures.";
 		String[] cls_parts = class_name.split("/");
 		class_name = package_start + cls_parts[0] + "." +
@@ -25,11 +26,11 @@ public class LocalMqttCallback implements MqttCallback {
 				? cls_parts[1].split("_")[0]
 				: cls_parts[1].split("-")[0]);
 		try {
-			cls = (Class<T>) Class.forName(class_name);
+			cls = Class.forName(class_name).asSubclass(AbstractDevice.class);
 		} catch (ClassNotFoundException ex) {
-			logger.warn(class_name + " is not yet implemented. The information to a default class.");
+			logger.warn(class_name + " is not yet implemented. The information will be saved to a json.");
 			// use default class to save fields in 'meta_information'
-			cls = (Class<T>) Device.class;
+			cls = Device.class;
 		}
 		return cls;
 	}
