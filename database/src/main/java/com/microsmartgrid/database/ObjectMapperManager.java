@@ -7,7 +7,7 @@ public final class ObjectMapperManager {
 
 	private static ObjectMapper objMapper = configureMapper(new ObjectMapper());
 
-	public static ObjectMapper getObjectMapper() {
+	public static ObjectMapper getMapper() {
 		return objMapper;
 	}
 

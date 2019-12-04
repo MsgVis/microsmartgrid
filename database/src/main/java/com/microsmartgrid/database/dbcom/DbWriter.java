@@ -9,7 +9,7 @@ import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 public class DbWriter {
 
 	public static <T extends AbstractDevice> void deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException {
-		ObjectMapper objMapper = ObjectMapperManager.getObjectMapper();
+		ObjectMapper objMapper = ObjectMapperManager.getMapper();
 
 		T device;
 		AdditionalDeviceInformation deviceInfo;
