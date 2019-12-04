@@ -4,6 +4,7 @@
 # Log file
 *.log
 paho*/
+com-microsmartgrid-database-*/
 
 # BlueJ files
 *.ctxt

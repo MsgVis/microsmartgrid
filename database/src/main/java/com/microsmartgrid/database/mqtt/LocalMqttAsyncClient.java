@@ -15,8 +15,8 @@ public class LocalMqttAsyncClient {
 	public void init(String serverURI) {
 		try {
 			logger.info("Setting up Client...");
-			this.mqtt_client = new MqttAsyncClient(serverURI, MqttAsyncClient.generateClientId());
-			this.mqtt_client.setCallback(new LocalMqttCallback());
+			mqtt_client = new MqttAsyncClient(serverURI, "com-microsmartgrid-database");
+			mqtt_client.setCallback(new LocalMqttCallback());
 			logger.info("Setup successful.");
 		} catch (MqttException e) {
 			logger.fatal("Mqtt Client could not be started.\n"
