@@ -1,8 +1,8 @@
 package com.microsmartgrid.database.dbDataStructures.shellies;
 
-import com.microsmartgrid.database.dbDataStructures.Device;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
-public class ShellyPlug extends Device {
+public class ShellyPlug extends AbstractDevice {
 
 	//inherent vars
 	private float power;

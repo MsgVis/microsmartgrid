@@ -13,8 +13,8 @@ public class AdditionalDeviceInformation {
 	we might need to switch to simple ids instead of objects
 	@Id
 	 */
-	private Device device;
-	private Device[] children;
+	private AbstractDevice abstractDevice;
+	private AbstractDevice[] children;
 	private Enum type;
 	private Enum subtype;
 	private int depth;
@@ -23,9 +23,9 @@ public class AdditionalDeviceInformation {
 	}
 
 	// minimal constructor
-	public AdditionalDeviceInformation(String name, Device device) {
+	public AdditionalDeviceInformation(String name, AbstractDevice abstractDevice) {
 		this.name = name;
-		this.device = device;
+		this.abstractDevice = abstractDevice;
 	}
 
 	public String getIcon() {
@@ -52,19 +52,19 @@ public class AdditionalDeviceInformation {
 		this.description = description;
 	}
 
-	public Device getDevice() {
-		return device;
+	public AbstractDevice getAbstractDevice() {
+		return abstractDevice;
 	}
 
-	public void setDevice(Device device) {
-		this.device = device;
+	public void setAbstractDevice(AbstractDevice abstractDevice) {
+		this.abstractDevice = abstractDevice;
 	}
 
-	public Device[] getChildren() {
+	public AbstractDevice[] getChildren() {
 		return children;
 	}
 
-	public void setChildren(Device[] children) {
+	public void setChildren(AbstractDevice[] children) {
 		this.children = children;
 	}
 

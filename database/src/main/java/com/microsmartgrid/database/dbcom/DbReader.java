@@ -1,7 +1,9 @@
 package com.microsmartgrid.database.dbcom;
 
+import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
+
 public class DbReader {
-	public static Object getDeviceInfo(String topic) {
+	public static AdditionalDeviceInformation getDeviceInfo(String topic) {
 		try {
 			connect();
 		} catch (Exception ex) {

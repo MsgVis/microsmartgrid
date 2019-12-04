@@ -1,7 +1,8 @@
 package com.microsmartgrid.database.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.microsmartgrid.database.dbDataStructures.Device;
+import com.microsmartgrid.database.Device;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbcom.DbWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,17 +16,20 @@ public class LocalMqttCallback implements MqttCallback {
 	/**
 	 * @param class_name - Snippet of topic for which class names are defined
 	 */
-	public Class getClassFromTopic(String class_name) {
-		Class cls;
+	public <T extends AbstractDevice> Class<T> getClassFromTopic(String class_name) {
+		Class<T> cls;
 		final String package_start = "com.microsmartgrid.database.dbDataStructures.";
 		String[] cls_parts = class_name.split("/");
-		class_name = package_start + cls_parts[0] + "." + (cls_parts[1].split("_").length > 1 ? cls_parts[1].split("_")[0] : cls_parts[1].split("-")[0]);
+		class_name = package_start + cls_parts[0] + "." +
+			(cls_parts[1].split("_").length > 1
+				? cls_parts[1].split("_")[0]
+				: cls_parts[1].split("-")[0]);
 		try {
-			cls = Class.forName(class_name);
+			cls = (Class<T>) Class.forName(class_name);
 		} catch (ClassNotFoundException ex) {
-			// log error
-			// use default class to save fields in 'meta_information' and create an 'id', 'timestamp', and a corresponding 'DeviceInformation'
-			cls = Device.class;
+			logger.warn(class_name + " is not yet implemented. The information to a default class.");
+			// use default class to save fields in 'meta_information'
+			cls = (Class<T>) Device.class;
 		}
 		return cls;
 	}
@@ -37,7 +41,7 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) {
-		Class cls = getClassFromTopic(topic_name);
+		Class<? extends AbstractDevice> cls = getClassFromTopic(topic_name);
 		try {
 			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, cls);
 		} catch (JsonProcessingException e) {

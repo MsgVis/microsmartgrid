@@ -1,8 +1,8 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.microsmartgrid.database.dbDataStructures.Device;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
-public abstract class DaiSmartGrid extends Device {
+public abstract class DaiSmartGrid extends AbstractDevice {
 
 	//inherent values
 	private float

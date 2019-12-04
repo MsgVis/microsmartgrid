@@ -1,8 +1,8 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.microsmartgrid.database.dbDataStructures.Device;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
-public class Weather extends Device {
+public class Weather extends AbstractDevice {
 
 	//inherent vars
 	private String icon;
