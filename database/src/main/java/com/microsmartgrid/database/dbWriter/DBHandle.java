@@ -19,7 +19,8 @@ public class DBHandle {
 	 */
 	public void connect(String database, String username, String password){
 		try{
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+database,username,password);
+			// jdbc:postgresql://localhost/
+			conn = DriverManager.getConnection(database,username,password);
 		}catch(SQLException se){
 			se.printStackTrace();
 		}catch(Exception e){

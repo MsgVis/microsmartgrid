@@ -6,7 +6,7 @@ public class DBHandleTest {
 	@Test
 	void testConnectTwice(){
 		DBHandle handle = new DBHandle();
-		handle.connect("msg","msg","msg");
-		handle.connect("msg","msg","msg");
+		handle.connect("jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE","msg","msg");
+		handle.connect("jdbc:h2:mem:testdb","msg","msg");
 	}
 }
