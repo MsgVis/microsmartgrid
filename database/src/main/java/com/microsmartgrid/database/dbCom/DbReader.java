@@ -1,4 +1,4 @@
-package com.microsmartgrid.database.dbcom;
+package com.microsmartgrid.database.dbCom;
 
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 
