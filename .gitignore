@@ -29,6 +29,7 @@ hs_err_pid*
 
 #binaries
 **/target
+test.mv.db
 
 # config files not intended for shared usage
 **.lst
