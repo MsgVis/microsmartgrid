@@ -11,9 +11,9 @@ import java.sql.*;
 /**
  * Connection to PostgreSQL database
  */
-public class DBHandle {
+public class DbHandle {
 
-	private static final Logger logger = LogManager.getLogger(DBHandle.class.getName());
+	private static final Logger logger = LogManager.getLogger(DbHandle.class.getName());
 	private static final String INSERT_READINGS_SQL = "INSERT INTO " +
 		"readings " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";

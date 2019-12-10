@@ -1,7 +1,5 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -16,9 +14,9 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DBHandleTest {
+public class DbHandleTest {
 
-	private static DBHandle db;
+	private static DbHandle db;
 
 	private void printResultSet(ResultSet rs) throws SQLException {
 		ResultSetMetaData rsmd = rs.getMetaData();
@@ -35,7 +33,7 @@ public class DBHandleTest {
 
 	@BeforeEach
 	void setup() throws SQLException {
-		db = new DBHandle();
+		db = new DbHandle();
 		db.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
 	}
 
@@ -48,7 +46,7 @@ public class DBHandleTest {
 	@Test
 	@Order(1)
 	void testConnectTwice() throws SQLException {
-		DBHandle handle = new DBHandle();
+		DbHandle handle = new DbHandle();
 		handle.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
 		assertThrows(IllegalStateException.class, () -> handle.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", ""));
 		handle.cleanUp();
@@ -57,7 +55,7 @@ public class DBHandleTest {
 	@Test
 	@Order(2)
 	void testExecuteWithoutConnection() throws SQLException {
-		DBHandle handle = new DBHandle();
+		DbHandle handle = new DbHandle();
 		assertThrows(NullPointerException.class, () -> handle.execute("CREATE TABLE names (name text);"));
 		handle.cleanUp();
 	}
@@ -77,36 +75,36 @@ public class DBHandleTest {
 	void testInsertObject() throws SQLException {
 		db.execute(
 			"CREATE TABLE readings (\n" +
-			"    time\t\tTIMESTAMP,\n" +
-			"    device_id\tINTEGER\tREFERENCES devices (id),\n" +
-			"\ta_minus\t\tREAL,\n" +
-			"\ta_plus\t\tREAL,\n" +
-			"\tr_minus \tREAL,\n" +
-			"\tr_plus \t\tREAL,\n" +
-			"\tp_total \tREAL,\n" +
-			"\tp_r\t\t    REAL,\n" +
-			"\tp_s\t\t    REAL,\n" +
-			"\tp_t\t\t    REAL,\n" +
-			"\tq_total\t\tREAL,\n" +
-			"\tq_r\t\t    REAL,\n" +
-			"\tq_s\t\t    REAL,\n" +
-			"\tq_t\t\t    REAL,\n" +
-			"\ts_total\t\tREAL,\n" +
-			"    s_r\t\t    REAL,\n" +
-			"    s_s\t\t    REAL,\n" +
-			"    s_t\t\t    REAL,\n" +
-			"\ti_avg\t\tREAL,\n" +
-			"\ti_r\t\t    REAL,\n" +
-			"\ti_s\t\t    REAL,\n" +
-			"\ti_t\t\t    REAL,\n" +
-			"\tu_avg\t\tREAL,\n" +
-			"\tu_r\t\t    REAL,\n" +
-			"\tu_s\t\t    REAL,\n" +
-			"\tu_t\t\t    REAL,\n" +
-			"\tf\t\t    REAL,\n" +
-			"\tmeta\t\tJSON,\n" +
-			"\tPRIMARY KEY (time,device_id)\n" +
-			");");
+				"    time\t\tTIMESTAMP,\n" +
+				"    device_id\tINTEGER\tREFERENCES devices (id),\n" +
+				"\ta_minus\t\tREAL,\n" +
+				"\ta_plus\t\tREAL,\n" +
+				"\tr_minus \tREAL,\n" +
+				"\tr_plus \t\tREAL,\n" +
+				"\tp_total \tREAL,\n" +
+				"\tp_r\t\t    REAL,\n" +
+				"\tp_s\t\t    REAL,\n" +
+				"\tp_t\t\t    REAL,\n" +
+				"\tq_total\t\tREAL,\n" +
+				"\tq_r\t\t    REAL,\n" +
+				"\tq_s\t\t    REAL,\n" +
+				"\tq_t\t\t    REAL,\n" +
+				"\ts_total\t\tREAL,\n" +
+				"    s_r\t\t    REAL,\n" +
+				"    s_s\t\t    REAL,\n" +
+				"    s_t\t\t    REAL,\n" +
+				"\ti_avg\t\tREAL,\n" +
+				"\ti_r\t\t    REAL,\n" +
+				"\ti_s\t\t    REAL,\n" +
+				"\ti_t\t\t    REAL,\n" +
+				"\tu_avg\t\tREAL,\n" +
+				"\tu_r\t\t    REAL,\n" +
+				"\tu_s\t\t    REAL,\n" +
+				"\tu_t\t\t    REAL,\n" +
+				"\tf\t\t    REAL,\n" +
+				"\tmeta\t\tJSON,\n" +
+				"\tPRIMARY KEY (time,device_id)\n" +
+				");");
 
 		// db.insertObject(new Battery(), "readings");
 	}
