@@ -60,7 +60,7 @@ public class LocalMqttAsyncClient {
 				" can be performed.");
 		}
 		try {
-			logger.info("Subscribing to \"" + topic + "\" at QoS 2. Waiting for subscription to finish.");
+			logger.info("Subscribing to \"" + topic + "\" at QoS 0. Waiting for subscription to finish.");
 			IMqttToken sub_Token = mqtt_client.subscribe(topic, 0, null, null);
 			sub_Token.waitForCompletion();
 			logger.info("Subscription successful.");

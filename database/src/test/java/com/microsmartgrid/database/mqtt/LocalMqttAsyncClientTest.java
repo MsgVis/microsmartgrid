@@ -27,6 +27,7 @@ class LocalMqttAsyncClientTest {
 		assertThrows(RuntimeException.class, () -> client.init(null));
 	}
 
+	/*
 	@Test
 	void testAlreadyConnected() {
 		client.init("tcp://mqtt.eclipse.org:1883");
@@ -39,6 +40,7 @@ class LocalMqttAsyncClientTest {
 		}
 		client.connect();
 	}
+	*/
 
 
 	@Test
