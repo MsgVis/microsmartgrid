@@ -22,7 +22,7 @@ public class Database {
 
 		LocalMqttAsyncClient mqtt_client = new LocalMqttAsyncClient();
 		mqtt_client.init(msg_serverURI);
-		if (mqtt_timeout.length > 0) mqtt_client.connect(mqtt_timeout[0];
+		if (mqtt_timeout.length > 0) mqtt_client.connect(mqtt_timeout[0]);
 		else {
 			logger.info("No connection timeout was specified. Connecting with timeout 30.");
 			mqtt_client.connect(30);
