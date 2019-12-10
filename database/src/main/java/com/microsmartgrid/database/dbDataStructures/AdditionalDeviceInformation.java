@@ -1,5 +1,7 @@
 package com.microsmartgrid.database.dbDataStructures;
 
+import java.util.ArrayList;
+
 public class AdditionalDeviceInformation {
 
 	private String icon;
@@ -14,7 +16,7 @@ public class AdditionalDeviceInformation {
 	@Id
 	 */
 	private AbstractDevice abstractDevice;
-	private AbstractDevice[] children;
+	private ArrayList<AbstractDevice> children;
 	private Enum type;
 	private Enum subtype;
 	private int depth;
@@ -60,11 +62,11 @@ public class AdditionalDeviceInformation {
 		this.abstractDevice = abstractDevice;
 	}
 
-	public AbstractDevice[] getChildren() {
+	public ArrayList<AbstractDevice> getChildren() {
 		return children;
 	}
 
-	public void setChildren(AbstractDevice[] children) {
+	public void setChildren(ArrayList<AbstractDevice> children) {
 		this.children = children;
 	}
 

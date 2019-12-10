@@ -2,7 +2,7 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
-public abstract class DaiSmartGrid extends AbstractDevice {
+public abstract class Readings extends AbstractDevice {
 
 	//inherent values
 	private float
@@ -32,7 +32,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 		apparent_power_S3,
 		frequency_grid;
 
-	protected DaiSmartGrid() {
+	protected Readings() {
 		super();
 	}
 

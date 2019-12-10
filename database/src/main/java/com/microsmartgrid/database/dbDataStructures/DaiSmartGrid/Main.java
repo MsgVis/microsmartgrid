@@ -3,7 +3,7 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Main extends DaiSmartGrid {
+public class Main extends Readings {
 
 	protected Main() {
 		super();
