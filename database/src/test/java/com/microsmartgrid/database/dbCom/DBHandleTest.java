@@ -1,5 +1,7 @@
 package com.microsmartgrid.database.dbCom;
 
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -8,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,7 +50,7 @@ public class DBHandleTest {
 	void testConnectTwice() throws SQLException {
 		DBHandle handle = new DBHandle();
 		handle.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
-		handle.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+		assertThrows(IllegalStateException.class, () -> handle.connect("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", ""));
 		handle.cleanUp();
 	}
 
@@ -66,5 +70,53 @@ public class DBHandleTest {
 		ResultSet rs = db.executeQuery("SELECT * FROM names;");
 		rs.first();
 		assertEquals(rs.getString(1), "lucca", "Retrieved value is not equal to inserted value");
+	}
+
+	@Test
+	@Order(4)
+	void testInsertObject() throws SQLException {
+		db.execute(
+			"CREATE TABLE readings (\n" +
+			"    time\t\tTIMESTAMP,\n" +
+			"    device_id\tINTEGER\tREFERENCES devices (id),\n" +
+			"\ta_minus\t\tREAL,\n" +
+			"\ta_plus\t\tREAL,\n" +
+			"\tr_minus \tREAL,\n" +
+			"\tr_plus \t\tREAL,\n" +
+			"\tp_total \tREAL,\n" +
+			"\tp_r\t\t    REAL,\n" +
+			"\tp_s\t\t    REAL,\n" +
+			"\tp_t\t\t    REAL,\n" +
+			"\tq_total\t\tREAL,\n" +
+			"\tq_r\t\t    REAL,\n" +
+			"\tq_s\t\t    REAL,\n" +
+			"\tq_t\t\t    REAL,\n" +
+			"\ts_total\t\tREAL,\n" +
+			"    s_r\t\t    REAL,\n" +
+			"    s_s\t\t    REAL,\n" +
+			"    s_t\t\t    REAL,\n" +
+			"\ti_avg\t\tREAL,\n" +
+			"\ti_r\t\t    REAL,\n" +
+			"\ti_s\t\t    REAL,\n" +
+			"\ti_t\t\t    REAL,\n" +
+			"\tu_avg\t\tREAL,\n" +
+			"\tu_r\t\t    REAL,\n" +
+			"\tu_s\t\t    REAL,\n" +
+			"\tu_t\t\t    REAL,\n" +
+			"\tf\t\t    REAL,\n" +
+			"\tmeta\t\tJSON,\n" +
+			"\tPRIMARY KEY (time,device_id)\n" +
+			");");
+
+		// db.insertObject(new Battery(), "readings");
+	}
+
+	@Test
+	@Order(5)
+	void testInstant() throws SQLException {
+		Instant now = Instant.now();
+		Timestamp current = Timestamp.from(now);
+		System.out.println(now);
+		System.out.println(current);
 	}
 }
