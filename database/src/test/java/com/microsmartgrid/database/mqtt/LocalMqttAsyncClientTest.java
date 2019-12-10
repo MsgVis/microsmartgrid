@@ -30,7 +30,13 @@ class LocalMqttAsyncClientTest {
 	@Test
 	void testAlreadyConnected() {
 		client.init("tcp://mqtt.eclipse.org:1883");
-		client.connect();
+		try {		client.connect();}
+		catch (Exception e) {
+			System.out.println("\n\n\nExpected Error:\n\n\n\n");
+			System.out.println("Cause: " + e.getCause());
+			System.out.println("Message: " + e.getMessage());
+			e.printStackTrace();
+		}
 		client.connect();
 	}
 
