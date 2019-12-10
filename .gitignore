@@ -3,7 +3,8 @@
 
 # Log file
 *.log
-*.iml
+paho*/
+com-microsmartgrid-database-*/
 
 # BlueJ files
 *.ctxt
@@ -24,11 +25,39 @@
 hs_err_pid*
 
 #config files
-*.iml
+**.iml
 
 #binaries
 **/target
+test.mv.db
 
 # config files not intended for shared usage
-*.lst
+**.lst
 *.properties
+*.directory
+
+# auto generated
+!**/src/main/**
+!**/src/test/**
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+### VS Code ###
+.vscode/
