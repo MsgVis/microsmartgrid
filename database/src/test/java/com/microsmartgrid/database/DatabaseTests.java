@@ -20,7 +20,7 @@ public class DatabaseTests {
 	}
 
 	@Test
-	void canConnectToMqttPublisher() {
+	void testMainRoutine() {
 		Database.main(new String[]{"tcp://mqtt.eclipse.org:1883"});
 	}
 }
