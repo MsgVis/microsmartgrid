@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
+import com.microsmartgrid.database.dbCom.DbHandle;
+import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
+import java.sql.*;
 
 public class DbWriter {
 
@@ -15,7 +18,9 @@ public class DbWriter {
 		AdditionalDeviceInformation deviceInfo;
 
 		// TODO: check 'Device_Information' for existing 'device' and 'name' and create 'DeviceInformation' object for new devices
-		deviceInfo = DbReader.getDeviceInfo(topic);
+		DbHandle db = new DbHandle();
+		db.connect("","","");
+		deviceInfo = db.queryDevices(topic);
 
 		if (objMapper.canSerialize(cls)) {
 			// create object from json
@@ -30,17 +35,23 @@ public class DbWriter {
 			deviceInfo = new AdditionalDeviceInformation(topic, device);
 		}
 
-		writeDeviceToDatabase(deviceInfo, device);
+		try{
+			writeDeviceToDatabase(deviceInfo, device);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+
 	}
 
-	private static <T extends AbstractDevice> void writeDeviceToDatabase(AdditionalDeviceInformation deviceInfo, T device) {
-		// if deviceInfo null, create it first
+	private static <T extends AbstractDevice> void writeDeviceToDatabase(AdditionalDeviceInformation deviceInfo, T device) throws SQLException{
+		// TODO: if deviceInfo null, create it first
 		// (note: new object probably needs to be updated (flushed) to be able to retrieve generated id)
 
-		// assign id from deviceInfo to device
+		// TODO: assign id from deviceInfo to device
 
-		// insertObject(deviceInfo, device);
+		DbHandle db = new DbHandle();
+		db.connect("","","");
+		db.insertDeviceInfo(deviceInfo);
+		db.insertReadings((Readings) device);
 	}
-
-
 }

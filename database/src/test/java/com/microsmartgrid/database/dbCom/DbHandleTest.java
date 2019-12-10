@@ -1,5 +1,6 @@
 package com.microsmartgrid.database.dbCom;
 
+import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -8,11 +9,16 @@ import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.util.ArrayList;
+
+import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
 public class DbHandleTest {
 
@@ -72,11 +78,11 @@ public class DbHandleTest {
 
 	@Test
 	@Order(4)
-	void testInsertObject() throws SQLException {
+	void testInsertReadings() throws SQLException {
 		db.execute(
 			"CREATE TABLE readings (\n" +
 				"    time\t\tTIMESTAMP,\n" +
-				"    device_id\tINTEGER\tREFERENCES devices (id),\n" +
+				"    device_id\tINTEGER,\n" +
 				"\ta_minus\t\tREAL,\n" +
 				"\ta_plus\t\tREAL,\n" +
 				"\tr_minus \tREAL,\n" +
@@ -102,19 +108,35 @@ public class DbHandleTest {
 				"\tu_s\t\t    REAL,\n" +
 				"\tu_t\t\t    REAL,\n" +
 				"\tf\t\t    REAL,\n" +
-				"\tmeta\t\tJSON,\n" +
-				"\tPRIMARY KEY (time,device_id)\n" +
+				"\tmeta\t\tJSON\n" +
 				");");
 
-		// db.insertObject(new Battery(), "readings");
+		Battery bat = new Battery((float) 0.0);
+		bat.setTimestamp(Instant.now());
+		db.insertReadings(bat);
 	}
 
 	@Test
 	@Order(5)
-	void testInstant() throws SQLException {
-		Instant now = Instant.now();
-		Timestamp current = Timestamp.from(now);
-		System.out.println(now);
-		System.out.println(current);
+	void testInsertDevicesInfo() throws SQLException {
+		db.execute(
+			"CREATE TABLE devices (\n" +
+				"\tname\t\tTEXT,\n" +
+				"\tdescription\tTEXT,\n" +
+				"\ttype\t\tTEXT,\n" +
+				"\tsubtype\t\tTEXT,\n" +
+				"\tdepth\t\tINTEGER,\n" +
+				"\ticon\t\tTEXT,\n" +
+				"\tchildren\tARRAY\n" +
+				");");
+
+		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic", new Battery());
+		info.setType(DayOfWeek.MONDAY);
+		info.setSubtype(DayOfWeek.FRIDAY);
+		info.setChildren(new ArrayList<>());
+		db.insertDeviceInfo(info);
+
+		AdditionalDeviceInformation queried_info = db.queryDevices("topic");
+		assertEquals("MONDAY", queried_info.getDescription());
 	}
 }

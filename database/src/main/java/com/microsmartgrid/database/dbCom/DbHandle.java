@@ -31,13 +31,13 @@ public class DbHandle {
 	 * @param username
 	 * @param password
 	 */
-	public void connect(String database, String username, String password) throws SQLException {
+	public void connect(String database, String username, String password) {
 		try {
 			if (conn != null && conn.isValid(0)) throw new IllegalStateException("Handle already connected");
 			conn = DriverManager.getConnection(database, username, password);
 		} catch (SQLException e) {
 			logger.fatal("Couldn't establish connection to database.");
-			throw new SQLException(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -82,7 +82,7 @@ public class DbHandle {
 	 */
 	public void insertDeviceInfo(AdditionalDeviceInformation deviceInfo) throws SQLException {
 		conn.setAutoCommit(false);
-		try (PreparedStatement info = conn.prepareStatement(INSERT_READINGS_SQL)) {
+		try (PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL)) {
 
 			info.setString(1, deviceInfo.getName());
 			info.setString(2, deviceInfo.getDescription());
@@ -92,6 +92,7 @@ public class DbHandle {
 			info.setString(6, deviceInfo.getIcon());
 			info.setArray(7, conn.createArrayOf("INTEGER", deviceInfo.getChildren().stream().map(AbstractDevice::getId).toArray()));
 
+			info.executeUpdate();
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -111,7 +112,7 @@ public class DbHandle {
 	 */
 	public void insertReadings(Readings device) throws SQLException {
 		conn.setAutoCommit(false);
-		try (PreparedStatement reading = conn.prepareStatement(INSERT_DEVICES_SQL)) {
+		try (PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
 			reading.setInt(2, device.getId());
@@ -142,6 +143,9 @@ public class DbHandle {
 			reading.setFloat(27, device.getVoltage_U3());
 			reading.setFloat(28, device.getFrequency_grid());
 
+			reading.executeUpdate();
+			conn.commit();
+
 		} catch (SQLException e) {
 			logger.warn("Couldn't commit reading connected to device with id " +
 				(device.getId() > 0 ? device.getId() : "none (no device information set yet)") + " to database");
@@ -149,6 +153,27 @@ public class DbHandle {
 		} finally {
 			conn.setAutoCommit(true);
 		}
+	}
+
+	public AdditionalDeviceInformation queryDevices(String topic){
+		AdditionalDeviceInformation info = null;
+		try{
+			ResultSet rs = executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
+			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
+
+			info = new AdditionalDeviceInformation(rs.getString(2), null);
+
+			info.setDescription(rs.getString(3));
+			info.setType(null);
+			info.setSubtype(null);
+			info.setDepth(rs.getInt(6));
+			info.setIcon(rs.getString(7));
+			info.setChildren(null);
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return info;
 	}
 
 	/**
