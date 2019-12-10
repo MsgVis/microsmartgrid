@@ -1,9 +1,6 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.google.gson.Gson;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-
-import java.time.LocalDateTime;
 
 public class Weather extends AbstractDevice {
 
@@ -12,5 +9,30 @@ public class Weather extends AbstractDevice {
 	private String summary;
 	private float temperature;
 
-	protected Weather () {}
+	protected Weather() {
+	}
+
+	public String getIcon() {
+		return this.icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getSummary() {
+		return this.summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public float getTemperature() {
+		return this.temperature;
+	}
+
+	public void setTemperature(float temperature) {
+		this.temperature = temperature;
+	}
 }

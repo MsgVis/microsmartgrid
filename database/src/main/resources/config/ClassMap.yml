@@ -1,0 +1,14 @@
+-   regex: DaiSmartGrid/Weather.*
+    path: DaiSmartGrid.Weather
+-   regex: DaiSmartGrid/ladestation.*
+    path: DaiSmartGrid.ladestation
+-   regex: DaiSmartGrid/PV_Meter.*
+    path: DaiSmartGrid.Main
+-   regex: DaiSmartGrid/Main_Meter.*
+    path: DaiSmartGrid.Main
+-   regex: DaiSmartGrid/Battery.*
+    path: DaiSmartGrid.Main
+
+-   regex: shellies/shellyplug.*
+    path: shellies.shellyplug
+

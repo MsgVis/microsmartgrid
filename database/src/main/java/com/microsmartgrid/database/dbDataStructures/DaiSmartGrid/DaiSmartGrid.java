@@ -1,9 +1,6 @@
 package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
-import com.google.gson.Gson;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-
-import java.time.LocalDateTime;
 
 public abstract class DaiSmartGrid extends AbstractDevice {
 
@@ -19,6 +16,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 		voltage_U3,
 		active_energy_A_plus,
 		active_energy_A_minus,
+		active_power_P_total,
 		active_power_P1,
 		active_power_P2,
 		active_power_P3,
@@ -36,16 +34,10 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 
 	protected DaiSmartGrid() {
 		super();
-		//TODO: take JSON and parse into values
 	}
 
-	/**
-	 * Translates input into DaiSmartGrid-values
-	 */
-	abstract void normalize();
-
 	public float getCurrent_I_avg() {
-		return current_I_avg;
+		return this.current_I_avg;
 	}
 
 	public void setCurrent_I_avg(float current_I_avg) {
@@ -53,7 +45,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getCurrent_I1() {
-		return current_I1;
+		return this.current_I1;
 	}
 
 	public void setCurrent_I1(float current_I1) {
@@ -61,7 +53,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getCurrent_I2() {
-		return current_I2;
+		return this.current_I2;
 	}
 
 	public void setCurrent_I2(float current_I2) {
@@ -69,7 +61,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getCurrent_I3() {
-		return current_I3;
+		return this.current_I3;
 	}
 
 	public void setCurrent_I3(float current_I3) {
@@ -77,7 +69,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getVoltage_U_avg() {
-		return voltage_U_avg;
+		return this.voltage_U_avg;
 	}
 
 	public void setVoltage_U_avg(float voltage_U_avg) {
@@ -85,7 +77,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getVoltage_U1() {
-		return voltage_U1;
+		return this.voltage_U1;
 	}
 
 	public void setVoltage_U1(float voltage_U1) {
@@ -93,7 +85,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getVoltage_U2() {
-		return voltage_U2;
+		return this.voltage_U2;
 	}
 
 	public void setVoltage_U2(float voltage_U2) {
@@ -101,7 +93,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getVoltage_U3() {
-		return voltage_U3;
+		return this.voltage_U3;
 	}
 
 	public void setVoltage_U3(float voltage_U3) {
@@ -109,7 +101,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getActive_energy_A_plus() {
-		return active_energy_A_plus;
+		return this.active_energy_A_plus;
 	}
 
 	public void setActive_energy_A_plus(float active_energy_A_plus) {
@@ -117,15 +109,23 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getActive_energy_A_minus() {
-		return active_energy_A_minus;
+		return this.active_energy_A_minus;
 	}
 
 	public void setActive_energy_A_minus(float active_energy_A_minus) {
 		this.active_energy_A_minus = active_energy_A_minus;
 	}
 
+	public float getActive_power_P_total() {
+		return this.active_power_P_total;
+	}
+
+	public void setActive_power_P_total(float active_power_P_total) {
+		this.active_power_P_total = active_power_P_total;
+	}
+
 	public float getActive_power_P1() {
-		return active_power_P1;
+		return this.active_power_P1;
 	}
 
 	public void setActive_power_P1(float active_power_P1) {
@@ -133,7 +133,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getActive_power_P2() {
-		return active_power_P2;
+		return this.active_power_P2;
 	}
 
 	public void setActive_power_P2(float active_power_P2) {
@@ -141,7 +141,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getActive_power_P3() {
-		return active_power_P3;
+		return this.active_power_P3;
 	}
 
 	public void setActive_power_P3(float active_power_P3) {
@@ -149,7 +149,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_energy_R_plus() {
-		return reactive_energy_R_plus;
+		return this.reactive_energy_R_plus;
 	}
 
 	public void setReactive_energy_R_plus(float reactive_energy_R_plus) {
@@ -157,7 +157,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_energy_R_minus() {
-		return reactive_energy_R_minus;
+		return this.reactive_energy_R_minus;
 	}
 
 	public void setReactive_energy_R_minus(float reactive_energy_R_minus) {
@@ -165,7 +165,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_power_Q_total() {
-		return reactive_power_Q_total;
+		return this.reactive_power_Q_total;
 	}
 
 	public void setReactive_power_Q_total(float reactive_power_Q_total) {
@@ -173,7 +173,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_power_Q1() {
-		return reactive_power_Q1;
+		return this.reactive_power_Q1;
 	}
 
 	public void setReactive_power_Q1(float reactive_power_Q1) {
@@ -181,7 +181,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_power_Q2() {
-		return reactive_power_Q2;
+		return this.reactive_power_Q2;
 	}
 
 	public void setReactive_power_Q2(float reactive_power_Q2) {
@@ -189,7 +189,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getReactive_power_Q3() {
-		return reactive_power_Q3;
+		return this.reactive_power_Q3;
 	}
 
 	public void setReactive_power_Q3(float reactive_power_Q3) {
@@ -197,7 +197,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getApparent_power_S_total() {
-		return apparent_power_S_total;
+		return this.apparent_power_S_total;
 	}
 
 	public void setApparent_power_S_total(float apparent_power_S_total) {
@@ -205,7 +205,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getApparent_power_S1() {
-		return apparent_power_S1;
+		return this.apparent_power_S1;
 	}
 
 	public void setApparent_power_S1(float apparent_power_S1) {
@@ -213,7 +213,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getApparent_power_S2() {
-		return apparent_power_S2;
+		return this.apparent_power_S2;
 	}
 
 	public void setApparent_power_S2(float apparent_power_S2) {
@@ -221,7 +221,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getApparent_power_S3() {
-		return apparent_power_S3;
+		return this.apparent_power_S3;
 	}
 
 	public void setApparent_power_S3(float apparent_power_S3) {
@@ -229,7 +229,7 @@ public abstract class DaiSmartGrid extends AbstractDevice {
 	}
 
 	public float getFrequency_grid() {
-		return frequency_grid;
+		return this.frequency_grid;
 	}
 
 	public void setFrequency_grid(float frequency_grid) {
