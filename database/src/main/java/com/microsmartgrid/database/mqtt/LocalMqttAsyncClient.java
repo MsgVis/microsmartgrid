@@ -27,7 +27,7 @@ public class LocalMqttAsyncClient {
 		}
 	}
 
-	public void connect() throws NullPointerException {
+	public void connect(int... timeout) throws NullPointerException {
 		if (mqtt_client == null) {
 			throw new NullPointerException("mqtt client must be initialised before it can be connected.");
 		}
@@ -36,6 +36,7 @@ public class LocalMqttAsyncClient {
 			return;
 		}
 		MqttConnectOptions options = new MqttConnectOptions();
+		options.setConnectionTimeout(timeout.length > 0 ? timeout[0] : 30);
 		options.setAutomaticReconnect(true);
 		options.setCleanSession(true);
 		try {

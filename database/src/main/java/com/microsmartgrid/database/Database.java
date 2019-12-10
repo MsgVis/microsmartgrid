@@ -14,15 +14,15 @@ public class Database {
 	/**
 	 * @param args - first: serverURI, second: topic
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, int... mqtt_timeout) {
 		if (args.length == 0 || args[0].isEmpty()) msg_serverURI = "tcp://192.168.121.172";
 		else msg_serverURI = args[0];
-		if (args.length < 2 || args[1].isEmpty()) mqtt_topic = "#";
+		if (args.length < 2 || args[1].isBlank()) mqtt_topic = "#";
 		else mqtt_topic = args[1];
 
 		LocalMqttAsyncClient mqtt_client = new LocalMqttAsyncClient();
 		mqtt_client.init(msg_serverURI);
-		mqtt_client.connect();
+		mqtt_client.connect(mqtt_timeout.length > 0 ? mqtt_timeout[0] : 30);
 		mqtt_client.standardSubscribe(mqtt_topic);
 
 	}

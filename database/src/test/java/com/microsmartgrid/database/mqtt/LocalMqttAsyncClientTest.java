@@ -1,46 +1,45 @@
 package com.microsmartgrid.database.mqtt;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LocalMqttAsyncClientTest {
 	private static LocalMqttAsyncClient client;
 
 	@BeforeEach
 	void setup() {
-		this.client = new LocalMqttAsyncClient();
+		client = new LocalMqttAsyncClient();
 	}
 
 	@AfterEach
 	void cleanup() {
-		if (this.client.isConnected()) {
-			this.client.disconnect();
+		if (client.isConnected()) {
+			client.disconnect();
 		}
-		this.client = null;
+		client = null;
 	}
 
 	@Test
 	void testInitNull() {
-		assertThrows(RuntimeException.class, () -> this.client.init(null));
+		assertThrows(RuntimeException.class, () -> client.init(null));
 	}
 
 	@Test
 	void testAlreadyConnected() {
-		this.client.init("tcp://mqtt.eclipse.org:1883");
-		this.client.connect();
-		this.client.connect();
+		client.init("tcp://mqtt.eclipse.org:1883");
+		client.connect();
+		client.connect();
 	}
 
 
 	@Test
 	void setupSuccessful() {
-		this.client.init("tcp://mqtt.eclipse.org:1883");
+		client.init("tcp://mqtt.eclipse.org:1883");
 		//this.client.init("tcp://192.168.121.172:1883"); if connected to msg-VPN...
-		this.client.connect();
-		this.client.standardSubscribe("#");
+		client.connect();
+		client.standardSubscribe("#");
 	}
 }
