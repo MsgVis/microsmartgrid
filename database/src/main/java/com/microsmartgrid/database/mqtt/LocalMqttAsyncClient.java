@@ -27,7 +27,7 @@ public class LocalMqttAsyncClient {
 		}
 	}
 
-	public void connect(int... timeout) throws NullPointerException {
+	public void connect(int... timeout) throws NullPointerException, RuntimeException {
 		if (mqtt_client == null) {
 			throw new NullPointerException("mqtt client must be initialised before it can be connected.");
 		}
