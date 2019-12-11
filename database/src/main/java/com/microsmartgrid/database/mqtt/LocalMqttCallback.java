@@ -1,7 +1,7 @@
 package com.microsmartgrid.database.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.microsmartgrid.database.Configurations;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.Device;
 import com.microsmartgrid.database.dbcom.DbWriter;
@@ -11,13 +11,9 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
-
-import static com.microsmartgrid.database.ObjectMapperManager.getYmlMapper;
 
 public class LocalMqttCallback implements MqttCallback {
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class.getName());
@@ -30,12 +26,9 @@ public class LocalMqttCallback implements MqttCallback {
 		Class<? extends AbstractDevice> cls;
 		String class_name;
 		final String package_start = "com.microsmartgrid.database.dbDataStructures.";
-		File classMapFile = new File("src/main/resources/config/ClassMap.yml");
 
 		try {
-			ArrayList<LinkedHashMap<String, String>> classMaps = getYmlMapper().readValue(classMapFile,
-				new TypeReference<>() {
-				});
+			ArrayList<LinkedHashMap<String, String>> classMaps = Configurations.retrieveClassMap();
 			class_name = package_start +
 				classMaps.stream()
 					.filter(t -> name.matches(t.get("regex")))
