@@ -4,30 +4,26 @@ import java.util.ArrayList;
 
 public class AdditionalDeviceInformation {
 
+	public enum Type {POWERGRID, PRODUCER, CONSUMER, ELECTRICMETER};
+	public enum Subtype {POWERGRID, ELECTRICMETER, LIGHT, CHARGINGSTATION, BATTERY};
+
 	private String icon;
 	/*
 	In the case of MQTT, this should be the topic
 	 */
 	private String name;
 	private String description;
-	/*
-	Since Timescale doesn't support references on it's hypertables,
-	we might need to switch to simple ids instead of objects
-	@Id
-	 */
-	private AbstractDevice abstractDevice;
-	private ArrayList<AbstractDevice> children;
-	private Enum type;
-	private Enum subtype;
+	private Integer[] children;
+	private Type type;
+	private Subtype subtype;
 	private int depth;
 
 	protected AdditionalDeviceInformation() {
 	}
 
 	// minimal constructor
-	public AdditionalDeviceInformation(String name, AbstractDevice abstractDevice) {
+	public AdditionalDeviceInformation(String name) {
 		this.name = name;
-		this.abstractDevice = abstractDevice;
 	}
 
 	public String getIcon() {
@@ -54,19 +50,11 @@ public class AdditionalDeviceInformation {
 		this.description = description;
 	}
 
-	public AbstractDevice getAbstractDevice() {
-		return abstractDevice;
-	}
-
-	public void setAbstractDevice(AbstractDevice abstractDevice) {
-		this.abstractDevice = abstractDevice;
-	}
-
-	public ArrayList<AbstractDevice> getChildren() {
+	public Integer[] getChildren() {
 		return children;
 	}
 
-	public void setChildren(ArrayList<AbstractDevice> children) {
+	public void setChildren(Integer[] children) {
 		this.children = children;
 	}
 
@@ -74,7 +62,7 @@ public class AdditionalDeviceInformation {
 		return type;
 	}
 
-	public void setType(Enum type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
@@ -82,7 +70,7 @@ public class AdditionalDeviceInformation {
 		return subtype;
 	}
 
-	public void setSubtype(Enum subtype) {
+	public void setSubtype(Subtype subtype) {
 		this.subtype = subtype;
 	}
 

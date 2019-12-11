@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
-import com.microsmartgrid.database.dbCom.DbHandle;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import java.sql.*;
 
@@ -32,7 +31,7 @@ public class DbWriter {
 
 		if (deviceInfo == null) {
 			// create new additionalDeviceInformation to the corresponding 'device' and save topic to 'name'
-			deviceInfo = new AdditionalDeviceInformation(topic, device);
+			deviceInfo = new AdditionalDeviceInformation(topic);
 		}
 
 		try{

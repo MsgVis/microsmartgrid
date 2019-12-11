@@ -121,6 +121,7 @@ public class DbHandleTest {
 	void testInsertDevicesInfo() throws SQLException {
 		db.execute(
 			"CREATE TABLE devices (\n" +
+				"id INTEGER auto_increment,\n" +
 				"\tname\t\tTEXT,\n" +
 				"\tdescription\tTEXT,\n" +
 				"\ttype\t\tTEXT,\n" +
@@ -130,13 +131,13 @@ public class DbHandleTest {
 				"\tchildren\tARRAY\n" +
 				");");
 
-		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic", new Battery());
-		info.setType(DayOfWeek.MONDAY);
-		info.setSubtype(DayOfWeek.FRIDAY);
-		info.setChildren(new ArrayList<>());
+		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
+		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
+		info.setSubtype(AdditionalDeviceInformation.Subtype.BATTERY);
+		info.setChildren(new Integer[0]);
 		db.insertDeviceInfo(info);
 
 		AdditionalDeviceInformation queried_info = db.queryDevices("topic");
-		assertEquals("MONDAY", queried_info.getDescription());
+		assertEquals("topic", queried_info.getName());
 	}
 }

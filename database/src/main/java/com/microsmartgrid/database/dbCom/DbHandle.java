@@ -19,7 +19,7 @@ public class DbHandle {
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	private static final String INSERT_DEVICES_SQL = "INSERT INTO " +
 		"devices " +
-		"VALUES (?, ?, ?, ?, ?, ?, ?);";
+		"VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?);";
 	private Connection conn;
 	private Statement stmt;
 	private ResultSet rs;
@@ -90,7 +90,7 @@ public class DbHandle {
 			info.setString(4, deviceInfo.getSubtype().toString());
 			info.setInt(5, deviceInfo.getDepth());
 			info.setString(6, deviceInfo.getIcon());
-			info.setArray(7, conn.createArrayOf("INTEGER", deviceInfo.getChildren().stream().map(AbstractDevice::getId).toArray()));
+			info.setArray(7, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
 
 			info.executeUpdate();
 			conn.commit();
@@ -161,14 +161,14 @@ public class DbHandle {
 			ResultSet rs = executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
 			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
 
-			info = new AdditionalDeviceInformation(rs.getString(2), null);
+			info = new AdditionalDeviceInformation(rs.getString(2));
 
 			info.setDescription(rs.getString(3));
-			info.setType(null);
-			info.setSubtype(null);
+			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString(4)));
+			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString(5)));
 			info.setDepth(rs.getInt(6));
 			info.setIcon(rs.getString(7));
-			info.setChildren(null);
+			info.setChildren((Integer[])rs.getArray(8).getArray());
 
 		}catch(SQLException e){
 			e.printStackTrace();
