@@ -18,7 +18,6 @@ public class DbWriter {
 
 		// TODO: check 'Device_Information' for existing 'device' and 'name' and create 'DeviceInformation' object for new devices
 		DbHandle db = new DbHandle();
-		db.connect("","","");
 		deviceInfo = db.queryDevices(topic);
 
 		if (objMapper.canSerialize(cls)) {
@@ -49,7 +48,6 @@ public class DbWriter {
 		// TODO: assign id from deviceInfo to device
 
 		DbHandle db = new DbHandle();
-		db.connect("","","");
 		db.insertDeviceInfo(deviceInfo);
 		db.insertReadings((Readings) device);
 	}

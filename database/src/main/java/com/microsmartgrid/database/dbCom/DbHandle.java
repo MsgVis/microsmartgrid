@@ -19,27 +19,9 @@ public class DbHandle {
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	private static final String INSERT_DEVICES_SQL = "INSERT INTO " +
 		"devices " +
-		"VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?);";
-	private Connection conn;
-	private Statement stmt;
-	private ResultSet rs;
+		"VALUES (DEFAULT, ?, ?, ?, ?, ?);";
+	private static final String QUERY_DEVICES_SQL = "SELECT * FROM devices WHERE name=?;";
 
-	/**
-	 * Connect to postgres database on same machine (localhost)
-	 *
-	 * @param database
-	 * @param username
-	 * @param password
-	 */
-	public void connect(String database, String username, String password) {
-		try {
-			if (conn != null && conn.isValid(0)) throw new IllegalStateException("Handle already connected");
-			conn = DriverManager.getConnection(database, username, password);
-		} catch (SQLException e) {
-			logger.fatal("Couldn't establish connection to database.");
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Execute SQL command
@@ -47,9 +29,8 @@ public class DbHandle {
 	 * @param command
 	 */
 	public void execute(String command) throws SQLException {
-		try {
-			if (conn == null || conn.isClosed()) throw new NullPointerException("Handle not connected");
-			stmt = conn.createStatement();
+		try(Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			Statement stmt = conn.createStatement()){
 			stmt.execute(command);
 		} catch (SQLException e) {
 			logger.error("Couldn't excecute: " + command);
@@ -58,39 +39,19 @@ public class DbHandle {
 	}
 
 	/**
-	 * Execute SQL command which returns ResultSet
-	 *
-	 * @param command
-	 * @return
-	 */
-	public ResultSet executeQuery(String command) {
-		try {
-			if (conn == null || conn.isClosed()) throw new NullPointerException("Handle not connected");
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(command);
-		} catch (SQLException e) {
-			logger.error("Couldn't execute query: " + command);
-			logger.error(e);
-		}
-		return rs;
-	}
-
-	/**
-	 * Insert deviceInformation object into database
+	 * Insert AdditionalDeviceInformation object into database
 	 *
 	 * @param deviceInfo
 	 */
 	public void insertDeviceInfo(AdditionalDeviceInformation deviceInfo) throws SQLException {
-		conn.setAutoCommit(false);
-		try (PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL)) {
+		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL);) {
 
 			info.setString(1, deviceInfo.getName());
 			info.setString(2, deviceInfo.getDescription());
 			info.setString(3, deviceInfo.getType().toString());
 			info.setString(4, deviceInfo.getSubtype().toString());
-			info.setInt(5, deviceInfo.getDepth());
-			info.setString(6, deviceInfo.getIcon());
-			info.setArray(7, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
+			info.setArray(5, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
 
 			info.executeUpdate();
 			conn.commit();
@@ -98,21 +59,18 @@ public class DbHandle {
 		} catch (SQLException e) {
 			logger.warn("Couldn't commit deviceInformation with name " + deviceInfo.getName() + " to database.");
 			e.printStackTrace();
-		} finally {
-			conn.setAutoCommit(true);
 		}
-
 	}
 
 
 	/**
-	 * Insert device object into database
+	 * Insert Readings object into database
 	 *
 	 * @param device
 	 */
 	public void insertReadings(Readings device) throws SQLException {
-		conn.setAutoCommit(false);
-		try (PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
+		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
 			reading.setInt(2, device.getId());
@@ -150,43 +108,38 @@ public class DbHandle {
 			logger.warn("Couldn't commit reading connected to device with id " +
 				(device.getId() > 0 ? device.getId() : "none (no device information set yet)") + " to database");
 			e.printStackTrace();
-		} finally {
-			conn.setAutoCommit(true);
 		}
 	}
 
+
+	/**
+	 * Query devices table
+	 * @param topic
+	 * @return
+	 */
 	public AdditionalDeviceInformation queryDevices(String topic){
 		AdditionalDeviceInformation info = null;
-		try{
-			ResultSet rs = executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
+		try(Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES_SQL,Statement.RETURN_GENERATED_KEYS)){
+
+			stmt.setString(1,"'" + topic + "'");
+			ResultSet rs = stmt.executeQuery();
+
 			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
 
 			info = new AdditionalDeviceInformation(rs.getString(2));
-
 			info.setDescription(rs.getString(3));
 			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString(4)));
 			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString(5)));
-			info.setDepth(rs.getInt(6));
-			info.setIcon(rs.getString(7));
-			info.setChildren((Integer[])rs.getArray(8).getArray());
+			info.setChildren((Integer[])rs.getArray(6).getArray());
+
+			rs.close();
 
 		}catch(SQLException e){
+			logger.warn("Could not fetch device info with name " + topic);
 			e.printStackTrace();
 		}
 		return info;
 	}
 
-	/**
-	 * Close connection
-	 */
-	public void cleanUp() throws SQLException {
-		try {
-			if (rs != null) rs.close();
-			if (stmt != null) stmt.close();
-			if (conn != null) conn.close();
-		} catch (SQLException e) {
-			logger.fatal("Couldn't close connection to database.");
-			throw new SQLException(e);
-		}
-	}
 }

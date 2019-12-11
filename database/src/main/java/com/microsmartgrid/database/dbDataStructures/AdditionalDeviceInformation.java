@@ -7,7 +7,6 @@ public class AdditionalDeviceInformation {
 	public enum Type {POWERGRID, PRODUCER, CONSUMER, ELECTRICMETER};
 	public enum Subtype {POWERGRID, ELECTRICMETER, LIGHT, CHARGINGSTATION, BATTERY};
 
-	private String icon;
 	/*
 	In the case of MQTT, this should be the topic
 	 */
@@ -16,7 +15,6 @@ public class AdditionalDeviceInformation {
 	private Integer[] children;
 	private Type type;
 	private Subtype subtype;
-	private int depth;
 
 	protected AdditionalDeviceInformation() {
 	}
@@ -24,14 +22,6 @@ public class AdditionalDeviceInformation {
 	// minimal constructor
 	public AdditionalDeviceInformation(String name) {
 		this.name = name;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
 	}
 
 	public String getName() {
@@ -72,14 +62,6 @@ public class AdditionalDeviceInformation {
 
 	public void setSubtype(Subtype subtype) {
 		this.subtype = subtype;
-	}
-
-	public int getDepth() {
-		return depth;
-	}
-
-	public void setDepth(int depth) {
-		this.depth = depth;
 	}
 
 }
