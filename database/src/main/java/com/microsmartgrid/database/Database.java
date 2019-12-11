@@ -13,7 +13,7 @@ public class Database {
 	private static String mqtt_timeout;
 
 	/**
-	 * @param args - first: serverURI, second: topic
+	 * @param args - first: serverURI, second: topic, third: timeout
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0 || args[0].isEmpty()) msg_serverURI = "tcp://192.168.121.172";
