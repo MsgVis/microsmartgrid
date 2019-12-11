@@ -291,25 +291,25 @@ function parse() {
                 distanceX = distanceX * -1;
             }
             let centerPoint = {
-                x: currentLink.source.x,
-                y: currentLink.source.y + distanceY
-            }
-            let edgePoint = {
-                x: currentLink.target.x,
-                y: currentLink.source.y + distanceY
-            }
-            let firstLink = {
-                source: currentLink.source,
-                target: centerPoint
-            }
-            let secondLink = {
-                source: centerPoint,
-                target: edgePoint
-            }
-            let thirdLink = {
-                source: edgePoint,
-                target: currentLink.target
-            }
+				x: currentLink.source.x,
+				y: currentLink.source.y + distanceY
+			};
+			let edgePoint = {
+				x: currentLink.target.x,
+				y: currentLink.source.y + distanceY
+			};
+			let firstLink = {
+				source: currentLink.source,
+				target: centerPoint
+			};
+			let secondLink = {
+				source: centerPoint,
+				target: edgePoint
+			};
+			let thirdLink = {
+				source: edgePoint,
+				target: currentLink.target
+			};
             //Only add unique entries
             if(linkList.indexOf(firstLink) === -1) {
                 linkListFinal.push(firstLink);

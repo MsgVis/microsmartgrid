@@ -151,6 +151,7 @@
 
 	<modules>
 		<module>database</module>
+		<module>webapp</module>
 		<!--
 		<module>computation</module>
 		<module>view</module>

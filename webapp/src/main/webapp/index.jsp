@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,54 +34,48 @@
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" data-toggle="tab" href="#history" >
-                        <span data-feather="archive"></span>
-                        History
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </nav>
-              <script>
-                feather.replace()
-              </script>
+						  <span data-feather="archive"></span>
+						  History
+					  </a>
+					</li>
+				  </ul>
+				</div>
+			  </nav>
+				<script>
+					feather.replace()
+				</script>
+			</div>
 
-          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 
-                <div class="tab-content">
+			<div class="tab-content">
 
-                   <!-- Live Ansicht -->
-                  <div id="live" class="tab-pane fade show active">
+				<!-- Live Ansicht -->
+				<div id="live" class="tab-pane fade show active">
 
 
-
-                      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">Live</h1>
                       </div>
                       <svg id="liveSVG"></svg><br>
                       <svg id="historySVG"></svg><br>
                       <script type="text/javascript" src="js/parse.js"></script>
-
                       <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
+				</div>
 
-
-                  </div>
-
-                <!-- History Ansicht -->
-                  <div id="history" class="tab-pane fade in active">
-
-
-                      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2">History</h1>
-                      </div>
-
-
-                  </div>
-                </div>
-                <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-
-    <script type="text/javascript" src="js/javascript.js"></script>
-
-
+				<!-- History Ansicht -->
+				<div id="history" class="tab-pane fade in active">
+					<div
+						class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+						<h1 class="h2">History</h1>
+					</div>
+				</div>
+			</div>
+			<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a
+				href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+		</main>
+	</div>
+	<script type="text/javascript" src="js/javascript.js"></script>
 
 </body>
 </html>
