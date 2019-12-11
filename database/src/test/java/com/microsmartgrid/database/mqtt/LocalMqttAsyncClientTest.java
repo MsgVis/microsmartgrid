@@ -48,6 +48,6 @@ class LocalMqttAsyncClientTest {
 		client.init("tcp://mqtt.eclipse.org:1883");
 		//this.client.init("tcp://192.168.121.172:1883"); if connected to msg-VPN...
 		client.connect();
-		client.standardSubscribe("#");
+		client.standardSubscribe("bbc/subtitles/notice");
 	}
 }
