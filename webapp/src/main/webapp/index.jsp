@@ -18,33 +18,32 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-dark fixed-top bg-dark  flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Micro-Smart-Grid</a>
-    </nav>
-    <div class="container-fluid">
-            <div class="row">
-              <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                  <ul class="nav flex-column">
-                    <li class="nav-item">
-                      <a class="nav-link active" data-toggle="tab" href="#live"  >
-                        <span data-feather="activity"></span>
-                        Live
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" data-toggle="tab" href="#history" >
-						  <span data-feather="archive"></span>
-						  History
-					  </a>
+<nav class="navbar navbar-dark fixed-top bg-dark  flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Micro-Smart-Grid</a>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+			<div class="sidebar-sticky">
+				<ul class="nav flex-column">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#live"  >
+							<span data-feather="activity"></span>
+							Live
+						</a>
 					</li>
-				  </ul>
-				</div>
-			  </nav>
-				<script>
-					feather.replace()
-				</script>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#history" >
+							<span data-feather="archive"></span>
+							History
+						</a>
+					</li>
+				</ul>
 			</div>
+		</nav>
+		<script>
+			feather.replace()
+		</script>
 
 		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 
@@ -54,28 +53,33 @@
 				<div id="live" class="tab-pane fade show active">
 
 
+
 					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2">Live</h1>
-                      </div>
-                      <svg id="liveSVG"></svg><br>
-                      <svg id="historySVG"></svg><br>
-                      <script type="text/javascript" src="js/parse.js"></script>
-                      <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
+						<h1 class="h2">Live</h1>
+					</div>
+					<svg id="liveSVG"></svg><br>
+					<svg id="historySVG"></svg><br>
+					<script type="text/javascript" src="js/parse.js"></script>
+
+					<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
+
+
 				</div>
 
 				<!-- History Ansicht -->
 				<div id="history" class="tab-pane fade in active">
-					<div
-						class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 						<h1 class="h2">History</h1>
 					</div>
+
+
 				</div>
 			</div>
-			<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a
+			<div>Icons made by <a href="https://www.flaticon.com/authors/freepik"
+								  title="Freepik">Freepik</a> from <a
 				href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-		</main>
-	</div>
-	<script type="text/javascript" src="js/javascript.js"></script>
 
 </body>
 </html>

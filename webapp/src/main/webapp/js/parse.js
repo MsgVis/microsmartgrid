@@ -280,7 +280,7 @@ function parse() {
     // Makes <g> elements for links
     let linkList = root.links();
     var linkListFinal = [];
-    for(var i = 0; i < 14 ;i ++){
+    for(var i = 0; i < linkList.length;i ++){
         let currentLink = linkList[i];
         if(currentLink.target){
             //Add new Links
