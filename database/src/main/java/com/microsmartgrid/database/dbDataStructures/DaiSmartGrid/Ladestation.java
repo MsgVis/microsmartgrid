@@ -2,13 +2,13 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ladestation extends DaiSmartGrid {
+public class Ladestation extends DaiSmartGrid {
 
-	protected ladestation() {
+	protected Ladestation() {
 		super();
 	}
 
-	public ladestation(@JsonProperty("I_avg") float I_avg,
+	public Ladestation(@JsonProperty("I_avg") float I_avg,
 					   @JsonProperty("I_r") float I_r,
 					   @JsonProperty("I_s") float I_s,
 					   @JsonProperty("I_t") float I_t,

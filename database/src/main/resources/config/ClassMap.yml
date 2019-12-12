@@ -1,8 +1,8 @@
 -   regex: DaiSmartGrid/Weather.*
     path: DaiSmartGrid.Weather
 -   regex: DaiSmartGrid/ladestation.*
-    path: DaiSmartGrid.ladestation
--   regex: DaiSmartGrid/PV_Meter.*
+    path: DaiSmartGrid.Ladestation
+-   regex: DaiSmartGrid/PV.*
     path: DaiSmartGrid.Main
 -   regex: DaiSmartGrid/Main_Meter.*
     path: DaiSmartGrid.Main
