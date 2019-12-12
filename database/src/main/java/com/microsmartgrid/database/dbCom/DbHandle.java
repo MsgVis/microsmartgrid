@@ -120,18 +120,19 @@ public class DbHandle {
 	public AdditionalDeviceInformation queryDevices(String topic){
 		AdditionalDeviceInformation info = null;
 		try(Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
-			PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES_SQL,Statement.RETURN_GENERATED_KEYS)){
+			Statement stmt = conn.createStatement()){
 
-			stmt.setString(1,"'" + topic + "'");
-			ResultSet rs = stmt.executeQuery();
+			// stmt.executeUpdate("SELECT * FROM devices WHERE name='" + topic + "';", Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
 
+			if(rs == null) throw new SQLException("Database does not exist");
 			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
 
-			info = new AdditionalDeviceInformation(rs.getString(2));
-			info.setDescription(rs.getString(3));
-			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString(4)));
-			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString(5)));
-			info.setChildren((Integer[])rs.getArray(6).getArray());
+			info = new AdditionalDeviceInformation(rs.getString("name"));
+			info.setDescription(rs.getString("description"));
+			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString("type")));
+			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString("subtype")));
+			info.setChildren((Integer[]) rs.getArray("children").getArray());
 
 			rs.close();
 

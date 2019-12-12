@@ -83,7 +83,7 @@ public class DbHandleTest {
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
 		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
 		info.setSubtype(AdditionalDeviceInformation.Subtype.BATTERY);
-		info.setChildren(new Integer[0]);
+		info.setChildren(new Integer[]{1,2});
 		db.insertDeviceInfo(info);
 
 		AdditionalDeviceInformation queried_info = db.queryDevices("topic");
