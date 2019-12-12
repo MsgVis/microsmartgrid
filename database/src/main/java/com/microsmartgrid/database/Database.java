@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 
 public class Database {
-	private static final Logger logger = LogManager.getLogger(Database.class.getName());
+	private static final Logger logger = LogManager.getLogger();
 	private static String msg_serverURI;
 	private static String mqtt_topic;
 	private static String mqtt_timeout;

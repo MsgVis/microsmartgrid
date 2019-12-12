@@ -1,7 +1,6 @@
 package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.microsmartgrid.database.mqtt.LocalMqttCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +15,7 @@ import java.util.Properties;
 import static com.microsmartgrid.database.ObjectMapperManager.getYmlMapper;
 
 public class Configurations {
-	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class.getName());
+	private static final Logger logger = LogManager.getLogger();
 	private static final String FOLDER_PATH = "src/main/resources/config/";
 
 	public static ArrayList<LinkedHashMap<String, String>> retrieveClassMap() {

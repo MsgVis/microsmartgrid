@@ -12,7 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 
 public class LocalMqttCallback implements MqttCallback {
-	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class.getName());
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public void connectionLost(Throwable cause) {

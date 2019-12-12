@@ -2,7 +2,6 @@ package com.microsmartgrid.database;
 
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.Device;
-import com.microsmartgrid.database.mqtt.LocalMqttCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 
 public class HelperFunctions {
-	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class.getName());
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * @param name - Mqtt topic or other String that matches the regular expression
