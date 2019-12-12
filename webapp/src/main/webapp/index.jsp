@@ -15,6 +15,8 @@
     <!-- Icons -->
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 
+
+
 </head>
 <body>
 
@@ -59,9 +61,7 @@
 					</div>
 					<svg id="liveSVG"></svg><br>
 					<svg id="historySVG"></svg><br>
-					<script type="text/javascript" src="js/parse.js"></script>
-
-					<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
+					<script type="text/javascript" src="js/drawGraphs.js"></script>
 
 
 				</div>
@@ -80,6 +80,14 @@
 			<div>Icons made by <a href="https://www.flaticon.com/authors/freepik"
 								  title="Freepik">Freepik</a> from <a
 				href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+		</main>
+
+
+	</div>
+
+
+</div>
 
 </body>
+
 </html>
