@@ -138,7 +138,7 @@ public class DbHandle {
 			rs.close();
 
 		}catch(SQLException e){
-			logger.warn("Could not fetch device info with name " + topic);
+			logger.warn("Could not fetch device info with name='" + topic + "'");
 			e.printStackTrace();
 		}
 		return info;

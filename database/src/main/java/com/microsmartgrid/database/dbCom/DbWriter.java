@@ -46,6 +46,7 @@ public class DbWriter {
 		// (note: new object probably needs to be updated (flushed) to be able to retrieve generated id)
 
 		// TODO: assign id from deviceInfo to device
+		device.setId(deviceInfo.getId());
 
 		DbHandle db = new DbHandle();
 		db.insertDeviceInfo(deviceInfo);

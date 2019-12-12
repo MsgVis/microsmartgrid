@@ -2,7 +2,7 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ladestation extends Readings {
+public class Ladestation extends Readings {
 	protected Ladestation() {
 		super();
 	}
