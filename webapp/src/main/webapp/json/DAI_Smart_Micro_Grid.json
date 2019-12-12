@@ -4,7 +4,7 @@
   "subtype": "POWERGRID",
   "children": [{
     "databaseId": "Battery_SMA",
-    "type": "BATTERY",
+    "type": "CONSUMER",
     "subtype": "BATTERY",
     "children": []
   }, {
@@ -14,17 +14,17 @@
     "children": []
   }, {
     "databaseId": "ladestation-ebg-parkplatz-1",
-    "type": "CHARGINGSTATION",
+    "type": "CONSUMER",
     "subtype": "CHARGINGSTATION",
     "children": []
   }, {
     "databaseId": "ladestation-ebg-parkplatz-2",
-    "type": "CHARGINGSTATION",
+    "type": "CONSUMER",
     "subtype": "CHARGINGSTATION",
     "children": []
   }, {
     "databaseId": "ladestation-ebg-parkplatz-3",
-    "type": "CHARGINGSTATION",
+    "type": "CONSUMER",
     "subtype": "CHARGINGSTATION",
     "children": []
   }]
