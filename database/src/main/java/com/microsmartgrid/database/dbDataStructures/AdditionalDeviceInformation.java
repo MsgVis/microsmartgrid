@@ -7,6 +7,7 @@ public class AdditionalDeviceInformation {
 	public enum Type {POWERGRID, PRODUCER, CONSUMER, ELECTRICMETER};
 	public enum Subtype {POWERGRID, ELECTRICMETER, LIGHT, CHARGINGSTATION, BATTERY};
 
+	private int id;
 	/*
 	In the case of MQTT, this should be the topic
 	 */
@@ -23,6 +24,10 @@ public class AdditionalDeviceInformation {
 	public AdditionalDeviceInformation(String name) {
 		this.name = name;
 	}
+
+	public int getId() {return id;}
+
+	public void setId(int id) {this.id = id;}
 
 	public String getName() {
 		return name;

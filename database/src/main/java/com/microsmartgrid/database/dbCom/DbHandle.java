@@ -15,10 +15,10 @@ public class DbHandle {
 
 	private static final Logger logger = LogManager.getLogger(DbHandle.class.getName());
 	private static final String INSERT_READINGS_SQL = "INSERT INTO " +
-		"readings " +
-		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		"readings (time, device_id, a_minus, a_plus, r_minus, r_plus, p_total, p_r, p_s, p_t, q_total, q_r, q_s, q_t, s_total, s_r, s_s, s_t, i_avg, i_r, i_s, i_t, u_avg, u_r, u_s, u_t, f, meta" +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT);";
 	private static final String INSERT_DEVICES_SQL = "INSERT INTO " +
-		"devices " +
+		"devices (id, name, description, type, subtype, children) " +
 		"VALUES (DEFAULT, ?, ?, ?, ?, ?);";
 	private static final String QUERY_DEVICES_SQL = "SELECT * FROM devices WHERE name=?;";
 
@@ -129,6 +129,7 @@ public class DbHandle {
 			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
 
 			info = new AdditionalDeviceInformation(rs.getString("name"));
+			info.setId(rs.getInt("id"));
 			info.setDescription(rs.getString("description"));
 			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString("type")));
 			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString("subtype")));
