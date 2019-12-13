@@ -6,25 +6,21 @@ import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import com.microsmartgrid.database.dbCom.DbWriter;
-
-import java.sql.SQLException;
 import java.time.Instant;
 
 public class DbWriterTest {
 
 	@BeforeAll
-	static void cleanUp() throws SQLException {
+	static void cleanUp() {
 		DbHandle db = new DbHandle();
 		db.execute("DROP ALL OBJECTS;");
 	}
 
 	@Test
-	void testDeserializeJson() throws ClassNotFoundException, JsonProcessingException, SQLException {
+	void testDeserializeJson() throws ClassNotFoundException, JsonProcessingException {
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
 
@@ -45,7 +41,7 @@ public class DbWriterTest {
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("battery");
 		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
 		info.setSubtype(AdditionalDeviceInformation.Subtype.BATTERY);
-		info.setChildren(new Integer[]{1,2});
+		info.setChildren(new Integer[]{1, 2});
 		db.insertDeviceInfo(info);
 
 		db.execute(

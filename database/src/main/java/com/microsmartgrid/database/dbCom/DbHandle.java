@@ -42,9 +42,10 @@ public class DbHandle {
 	 *
 	 * @param deviceInfo
 	 */
-	public void insertDeviceInfo(AdditionalDeviceInformation deviceInfo) throws SQLException {
+	public int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
+		int generatedId = 0;
 		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
-			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL);) {
+			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL, Statement.RETURN_GENERATED_KEYS);) {
 
 			info.setString(1, deviceInfo.getName());
 			info.setString(2, deviceInfo.getDescription());
@@ -52,13 +53,20 @@ public class DbHandle {
 			info.setString(4, deviceInfo.getSubtype().toString());
 			info.setArray(5, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
 
-			info.executeUpdate();
+			if (info.executeUpdate() > 0) {
+				ResultSet rs = info.getGeneratedKeys();
+				rs.first();
+				generatedId = rs.getInt(1);
+			} else {
+				throw new SQLIntegrityConstraintViolationException("Couldn't create new id for deviceInformattion with name " + deviceInfo.getName());
+			}
 			conn.commit();
 
 		} catch (SQLException e) {
 			logger.warn("Couldn't commit deviceInformation with name " + deviceInfo.getName() + " to database.");
 			e.printStackTrace();
 		}
+		return generatedId;
 	}
 
 
