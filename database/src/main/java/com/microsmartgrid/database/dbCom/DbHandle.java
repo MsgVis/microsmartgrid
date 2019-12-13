@@ -1,6 +1,5 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +27,9 @@ public class DbHandle {
 	 *
 	 * @param command
 	 */
-	public void execute(String command) throws SQLException {
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
-			Statement stmt = conn.createStatement()){
+	public void execute(String command) {
+		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			 Statement stmt = conn.createStatement()) {
 			stmt.execute(command);
 		} catch (SQLException e) {
 			logger.error("Couldn't excecute: " + command);
@@ -68,7 +67,7 @@ public class DbHandle {
 	 *
 	 * @param device
 	 */
-	public void insertReadings(Readings device) throws SQLException {
+	public void insertReadings(Readings device) {
 		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
 
@@ -114,30 +113,36 @@ public class DbHandle {
 
 	/**
 	 * Query devices table
+	 *
 	 * @param topic
 	 * @return
 	 */
-	public AdditionalDeviceInformation queryDevices(String topic){
+	public AdditionalDeviceInformation queryDevices(String topic) {
 		AdditionalDeviceInformation info = null;
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
-			Statement stmt = conn.createStatement()){
+		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+			 Statement stmt = conn.createStatement()) {
 
-			// stmt.executeUpdate("SELECT * FROM devices WHERE name='" + topic + "';", Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
 
-			if(rs == null) throw new SQLException("Database does not exist");
-			if(!rs.next()) throw new SQLException("No entry found with name='" + topic + "'");
+			if (rs == null) throw new SQLException("Database does not exist");
+			if (!rs.next()) return info;
 
 			info = new AdditionalDeviceInformation(rs.getString("name"));
 			info.setId(rs.getInt("id"));
 			info.setDescription(rs.getString("description"));
 			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString("type")));
 			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString("subtype")));
-			info.setChildren((Integer[]) rs.getArray("children").getArray());
+
+			Object[] sqlArray = (Object[]) rs.getArray("children").getArray();
+			Integer[] children = new Integer[sqlArray.length];
+			for (int i = 0; i < sqlArray.length; i++) {
+				children[i] = (Integer) sqlArray[i];
+			}
+			info.setChildren(children);
 
 			rs.close();
 
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			logger.warn("Could not fetch device info with name='" + topic + "'");
 			e.printStackTrace();
 		}
