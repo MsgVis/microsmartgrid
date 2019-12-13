@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
+import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABLE;
+
 public class DbWriterTest {
 
 	@AfterAll
@@ -28,15 +31,7 @@ public class DbWriterTest {
 		String json = objMapper.writeValueAsString(bat);
 
 		DbHandle db = new DbHandle();
-		db.execute(
-			"CREATE TABLE devices (" +
-				"id INTEGER auto_increment," +
-				"name TEXT," +
-				"description TEXT," +
-				"type TEXT," +
-				"subtype TEXT," +
-				"children ARRAY" +
-				");");
+		db.execute(CREATE_DEVICE_TABLE);
 
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("battery");
 		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
@@ -44,39 +39,9 @@ public class DbWriterTest {
 		info.setChildren(new Integer[]{1, 2});
 		db.insertDeviceInfo(info);
 
-		db.execute(
-			"CREATE TABLE readings (" +
-				"time TIMESTAMP," +
-				"device_id INTEGER," +
-				"a_minus REAL," +
-				"a_plus REAL," +
-				"r_minus REAL," +
-				"r_plus REAL," +
-				"p_total REAL," +
-				"p_r REAL," +
-				"p_s REAL," +
-				"p_t REAL," +
-				"q_total REAL," +
-				"q_r REAL," +
-				"q_s REAL," +
-				"q_t REAL," +
-				"s_total REAL," +
-				"s_r REAL," +
-				"s_s REAL," +
-				"s_t REAL," +
-				"i_avg REAL," +
-				"i_r REAL," +
-				"i_s REAL," +
-				"i_t REAL," +
-				"u_avg REAL," +
-				"u_r REAL," +
-				"u_s REAL," +
-				"u_t REAL," +
-				"f REAL," +
-				"meta JSON" +
-				");");
+		db.execute(CREATE_READINGS_TABLE);
 
-		DbWriter.deserializeJson(json, "battery", Class.forName("com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery").asSubclass(AbstractDevice.class));
+		DbWriter.deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
 	}
 
 	@Test
@@ -88,49 +53,11 @@ public class DbWriterTest {
 		String json = objMapper.writeValueAsString(bat);
 
 		DbHandle db = new DbHandle();
-		db.execute(
-			"CREATE TABLE devices (" +
-				"id INTEGER auto_increment," +
-				"name TEXT," +
-				"description TEXT," +
-				"type TEXT," +
-				"subtype TEXT," +
-				"children ARRAY" +
-				");");
+		db.execute(CREATE_DEVICE_TABLE);
 
-		db.execute(
-			"CREATE TABLE readings (" +
-				"time TIMESTAMP," +
-				"device_id INTEGER," +
-				"a_minus REAL," +
-				"a_plus REAL," +
-				"r_minus REAL," +
-				"r_plus REAL," +
-				"p_total REAL," +
-				"p_r REAL," +
-				"p_s REAL," +
-				"p_t REAL," +
-				"q_total REAL," +
-				"q_r REAL," +
-				"q_s REAL," +
-				"q_t REAL," +
-				"s_total REAL," +
-				"s_r REAL," +
-				"s_s REAL," +
-				"s_t REAL," +
-				"i_avg REAL," +
-				"i_r REAL," +
-				"i_s REAL," +
-				"i_t REAL," +
-				"u_avg REAL," +
-				"u_r REAL," +
-				"u_s REAL," +
-				"u_t REAL," +
-				"f REAL," +
-				"meta JSON" +
-				");");
+		db.execute(CREATE_READINGS_TABLE);
 
-		DbWriter.deserializeJson(json, "battery", Class.forName("com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery").asSubclass(AbstractDevice.class));
+		DbWriter.deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
 	}
 
 }
