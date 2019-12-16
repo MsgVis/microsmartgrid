@@ -7,19 +7,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
+import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES_SQL;
+import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
+
 /**
  * Connection to PostgreSQL database
  */
 public class DbHandle {
 
 	private static final Logger logger = LogManager.getLogger(DbHandle.class.getName());
-	private static final String INSERT_READINGS_SQL = "INSERT INTO " +
-		"readings (time, device_id, a_minus, a_plus, r_minus, r_plus, p_total, p_r, p_s, p_t, q_total, q_r, q_s, q_t, s_total, s_r, s_s, s_t, i_avg, i_r, i_s, i_t, u_avg, u_r, u_s, u_t, f, meta) " +
-		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT);";
-	private static final String INSERT_DEVICES_SQL = "INSERT INTO " +
-		"devices (id, name, description, type, subtype, children) " +
-		"VALUES (DEFAULT, ?, ?, ?, ?, ?);";
-	private static final String QUERY_DEVICES_SQL = "SELECT * FROM devices WHERE name=?;";
 
 
 	/**

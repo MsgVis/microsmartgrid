@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.time.Instant;
 
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
@@ -19,18 +18,18 @@ public class DbHandleTest {
 	private static DbHandle db;
 
 	@BeforeEach
-	void setup() throws SQLException {
+	void setup() {
 		db = new DbHandle();
 	}
 
 	@AfterEach
-	void cleanUp() throws SQLException {
+	void cleanUp() {
 		db.execute("DROP ALL OBJECTS;");
 	}
 
 	@Test
 	@Order(1)
-	void testInsertReadings() throws SQLException {
+	void testInsertReadings() {
 		db.execute(CREATE_READINGS_TABLE);
 
 		Battery bat = new Battery((float) 0.0);
@@ -40,7 +39,7 @@ public class DbHandleTest {
 
 	@Test
 	@Order(2)
-	void testInsertDevicesInfo() throws SQLException {
+	void testInsertDevicesInfo() {
 		db.execute(CREATE_DEVICE_TABLE);
 
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
