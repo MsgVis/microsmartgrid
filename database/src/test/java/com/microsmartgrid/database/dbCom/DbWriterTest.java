@@ -22,6 +22,11 @@ public class DbWriterTest {
 		db.execute("DROP ALL OBJECTS;");
 	}
 
+	@BeforeEach
+	void setup() {
+		setJdbcConfiguration("jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "");
+	}
+
 	@Test
 	void testDeserializeJson() throws ClassNotFoundException, JsonProcessingException {
 		Battery bat = new Battery((float) 0.0);

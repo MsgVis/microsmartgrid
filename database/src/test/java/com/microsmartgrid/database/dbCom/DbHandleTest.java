@@ -19,7 +19,7 @@ public class DbHandleTest {
 
 	@BeforeEach
 	void setup() {
-		db = new DbHandle();
+		setJdbcConfiguration("jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "");
 	}
 
 	@AfterEach

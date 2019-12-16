@@ -12,15 +12,15 @@ public class DatabaseTests {
 	@Test
 	void validateSocketTimeout() {
 		// Positive test to make sure timout value doesn't affect it
-		Database.main(new String[]{"tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice", "5"});
+		Database.main(new String[]{"jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "", "tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice", "5"});
 		// Incorrect endpoint
-		RuntimeException e = assertThrows(RuntimeException.class, () -> Database.main(new String[]{"tcp://iot.eclipse.org:1883", "bbc/subtitles/notice", "5"}));
+		RuntimeException e = assertThrows(RuntimeException.class, () -> Database.main(new String[]{"jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "", "tcp://iot.eclipse.org:1883", "bbc/subtitles/notice", "5"}));
 		// Wrapped in RuntimeException -> MqttException -> SocketTimeoutException
 		assertEquals(SocketTimeoutException.class, e.getCause().getCause().getClass());
 	}
 
 	@Test
 	void testMainRoutine() {
-		Database.main(new String[]{"tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice"});
+		Database.main(new String[]{"jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "", "tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice"});
 	}
 }
