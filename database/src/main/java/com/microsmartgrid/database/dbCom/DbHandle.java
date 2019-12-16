@@ -1,11 +1,13 @@
 package com.microsmartgrid.database.dbCom;
 
+import com.microsmartgrid.database.Configurations;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.Map;
 
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES_SQL;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
@@ -13,18 +15,17 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
 /**
  * Connection to PostgreSQL database
  */
-public class DbHandle {
+public abstract class DbHandle {
 
-	private static final Logger logger = LogManager.getLogger(DbHandle.class.getName());
-
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Execute SQL command
 	 *
 	 * @param command
 	 */
-	public void execute(String command) {
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+	public static void execute(String command) {
+		try (Connection conn = getConnection();
 			 Statement stmt = conn.createStatement()) {
 			stmt.execute(command);
 		} catch (SQLException e) {
@@ -38,15 +39,15 @@ public class DbHandle {
 	 *
 	 * @param deviceInfo
 	 */
-	public int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
+	public static int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
 		int generatedId = 0;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+		try (Connection conn = getConnection();
 			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL, Statement.RETURN_GENERATED_KEYS);) {
 
 			info.setString(1, deviceInfo.getName());
 			info.setString(2, deviceInfo.getDescription());
-			info.setString(3, deviceInfo.getType() == null ? null : deviceInfo.getType().toString());
-			info.setString(4, deviceInfo.getSubtype() == null ? null : deviceInfo.getSubtype().toString());
+			info.setString(3, deviceInfo.getType() == null ? null : deviceInfo.getType().name());
+			info.setString(4, deviceInfo.getSubtype() == null ? null : deviceInfo.getSubtype().name());
 			info.setArray(5, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
 
 			if (info.executeUpdate() > 0) {
@@ -65,14 +66,18 @@ public class DbHandle {
 		return generatedId;
 	}
 
+	private static Connection getConnection() throws SQLException {
+		Map<String, String> cfg = Configurations.getJdbcConfiguration();
+		return DriverManager.getConnection(cfg.get("url"), cfg.get("username"), cfg.get("password"));
+	}
 
 	/**
 	 * Insert Readings object into database
 	 *
 	 * @param device
 	 */
-	public void insertReadings(Readings device) {
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+	public static void insertReadings(Readings device) {
+		try (Connection conn = getConnection();
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
@@ -120,9 +125,9 @@ public class DbHandle {
 	 * @param topic
 	 * @return
 	 */
-	public AdditionalDeviceInformation queryDevices(String topic) {
+	public static AdditionalDeviceInformation queryDevices(String topic) {
 		AdditionalDeviceInformation info = null;
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:./test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE", "sa", "");
+		try (Connection conn = getConnection();
 			 Statement stmt = conn.createStatement()) {
 
 			ResultSet rs = stmt.executeQuery("SELECT * FROM devices WHERE name='" + topic + "';");
@@ -133,13 +138,21 @@ public class DbHandle {
 			info = new AdditionalDeviceInformation(rs.getString("name"));
 			info.setId(rs.getInt("id"));
 			info.setDescription(rs.getString("description"));
-			info.setType(AdditionalDeviceInformation.Type.valueOf(rs.getString("type")));
-			info.setSubtype(AdditionalDeviceInformation.Subtype.valueOf(rs.getString("subtype")));
+			String type = rs.getString("type");
+			info.setType(type == null ? null : AdditionalDeviceInformation.Type.valueOf(type));
+			String subtype = rs.getString("subtype");
+			info.setSubtype(subtype == null ? null : AdditionalDeviceInformation.Subtype.valueOf(subtype));
 
-			Object[] sqlArray = (Object[]) rs.getArray("children").getArray();
-			Integer[] children = new Integer[sqlArray.length];
-			for (int i = 0; i < sqlArray.length; i++) {
-				children[i] = (Integer) sqlArray[i];
+			Array arr = rs.getArray("children");
+			Integer[] children;
+			if (arr == null) {
+				children = new Integer[0];
+			} else {
+				Object[] sqlArray = (Object[]) arr.getArray();
+				children = new Integer[sqlArray.length];
+				for (int i = 0; i < sqlArray.length; i++) {
+					children[i] = (Integer) sqlArray[i];
+				}
 			}
 			info.setChildren(children);
 

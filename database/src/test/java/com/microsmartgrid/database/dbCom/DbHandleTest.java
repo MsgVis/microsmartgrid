@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static com.microsmartgrid.database.Configurations.setJdbcConfiguration;
+import static com.microsmartgrid.database.dbCom.DbHandle.*;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DbHandleTest {
-
-	private static DbHandle db;
 
 	@BeforeEach
 	void setup() {
@@ -24,31 +24,31 @@ public class DbHandleTest {
 
 	@AfterEach
 	void cleanUp() {
-		db.execute("DROP ALL OBJECTS;");
+		execute("DROP ALL OBJECTS;");
 	}
 
 	@Test
 	@Order(1)
 	void testInsertReadings() {
-		db.execute(CREATE_READINGS_TABLE);
+		execute(CREATE_READINGS_TABLE);
 
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
-		db.insertReadings(bat);
+		insertReadings(bat);
 	}
 
 	@Test
 	@Order(2)
 	void testInsertDevicesInfo() {
-		db.execute(CREATE_DEVICE_TABLE);
+		execute(CREATE_DEVICE_TABLE);
 
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
 		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
 		info.setSubtype(AdditionalDeviceInformation.Subtype.BATTERY);
 		info.setChildren(new Integer[]{1, 2});
-		db.insertDeviceInfo(info);
+		insertDeviceInfo(info);
 
-		AdditionalDeviceInformation queried_info = db.queryDevices("topic");
+		AdditionalDeviceInformation queried_info = queryDevices("topic");
 		assertEquals("topic", queried_info.getName());
 	}
 }

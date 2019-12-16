@@ -7,16 +7,17 @@ import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 
+import static com.microsmartgrid.database.dbCom.DbHandle.*;
+
 public class DbWriter {
 
 	public static <T extends AbstractDevice> void deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException {
 		ObjectMapper objMapper = ObjectMapperManager.getMapper();
-		DbHandle db = new DbHandle();
 
 		T device;
 		AdditionalDeviceInformation deviceInfo;
 
-		deviceInfo = db.queryDevices(topic);
+		deviceInfo = queryDevices(topic);
 
 		if (objMapper.canSerialize(cls)) {
 			// create object from json
@@ -29,7 +30,7 @@ public class DbWriter {
 		if (deviceInfo == null) {
 			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'
 			deviceInfo = new AdditionalDeviceInformation(topic);
-			deviceInfo.setId(db.insertDeviceInfo(deviceInfo));
+			deviceInfo.setId(insertDeviceInfo(deviceInfo));
 		}
 
 		writeDeviceToDatabase(deviceInfo.getId(), device);
@@ -39,7 +40,6 @@ public class DbWriter {
 	private static <T extends AbstractDevice> void writeDeviceToDatabase(int id, T device) {
 		device.setId(id);
 
-		DbHandle db = new DbHandle();
-		db.insertReadings((Readings) device);
+		insertReadings((Readings) device);
 	}
 }
