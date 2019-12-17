@@ -68,31 +68,33 @@ public class DbWriter {
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
 			reading.setInt(2, device.getId());
-			reading.setFloat(3, device.getActive_energy_A_minus());
-			reading.setFloat(4, device.getActive_energy_A_plus());
-			reading.setFloat(5, device.getReactive_energy_R_minus());
-			reading.setFloat(6, device.getReactive_energy_R_plus());
-			reading.setFloat(7, device.getActive_power_P_total());
-			reading.setFloat(8, device.getActive_power_P1());
-			reading.setFloat(9, device.getActive_power_P2());
-			reading.setFloat(10, device.getActive_power_P3());
-			reading.setFloat(11, device.getReactive_power_Q_total());
-			reading.setFloat(12, device.getReactive_power_Q1());
-			reading.setFloat(13, device.getReactive_power_Q2());
-			reading.setFloat(14, device.getReactive_power_Q3());
-			reading.setFloat(15, device.getApparent_power_S_total());
-			reading.setFloat(16, device.getApparent_power_S1());
-			reading.setFloat(17, device.getApparent_power_S2());
-			reading.setFloat(18, device.getApparent_power_S3());
-			reading.setFloat(19, device.getCurrent_I_avg());
-			reading.setFloat(20, device.getCurrent_I1());
-			reading.setFloat(21, device.getCurrent_I2());
-			reading.setFloat(22, device.getCurrent_I3());
-			reading.setFloat(23, device.getVoltage_U_avg());
-			reading.setFloat(24, device.getVoltage_U1());
-			reading.setFloat(25, device.getVoltage_U2());
-			reading.setFloat(26, device.getVoltage_U3());
-			reading.setFloat(27, device.getFrequency_grid());
+			// SQLType 1 = float
+			int f = Types.FLOAT;
+			reading.setObject(3, device.getActive_energy_A_minus(), f);
+			reading.setObject(4, device.getActive_energy_A_plus(), f);
+			reading.setObject(5, device.getReactive_energy_R_minus(), f);
+			reading.setObject(6, device.getReactive_energy_R_plus(), f);
+			reading.setObject(7, device.getActive_power_P_total(), f);
+			reading.setObject(8, device.getActive_power_P1(), f);
+			reading.setObject(9, device.getActive_power_P2(), f);
+			reading.setObject(10, device.getActive_power_P3(), f);
+			reading.setObject(11, device.getReactive_power_Q_total(), f);
+			reading.setObject(12, device.getReactive_power_Q1(), f);
+			reading.setObject(13, device.getReactive_power_Q2(), f);
+			reading.setObject(14, device.getReactive_power_Q3(), f);
+			reading.setObject(15, device.getApparent_power_S_total(), f);
+			reading.setObject(16, device.getApparent_power_S1(), f);
+			reading.setObject(17, device.getApparent_power_S2(), f);
+			reading.setObject(18, device.getApparent_power_S3(), f);
+			reading.setObject(19, device.getCurrent_I_avg(), f);
+			reading.setObject(20, device.getCurrent_I1(), f);
+			reading.setObject(21, device.getCurrent_I2(), f);
+			reading.setObject(22, device.getCurrent_I3(), f);
+			reading.setObject(23, device.getVoltage_U_avg(), f);
+			reading.setObject(24, device.getVoltage_U1(), f);
+			reading.setObject(25, device.getVoltage_U2(), f);
+			reading.setObject(26, device.getVoltage_U3(), f);
+			reading.setObject(27, device.getFrequency_grid(), f);
 
 			reading.executeUpdate();
 

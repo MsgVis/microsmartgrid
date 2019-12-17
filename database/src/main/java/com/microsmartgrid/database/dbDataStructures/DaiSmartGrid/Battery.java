@@ -8,7 +8,7 @@ public class Battery extends Readings {
 		super();
 	}
 
-	public Battery(@JsonProperty("frequency_Grid") float frequency) {
+	public Battery(@JsonProperty("frequency_Grid") Float frequency) {
 		this();
 		super.setFrequency_grid(frequency);
 	}
