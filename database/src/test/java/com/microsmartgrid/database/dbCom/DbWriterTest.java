@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 
 import static com.microsmartgrid.database.Configurations.setJdbcConfiguration;
+import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.dbCom.DbHandle.execute;
-import static com.microsmartgrid.database.dbCom.DbHandle.insertDeviceInfo;
+import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABLE;
 
@@ -48,7 +49,7 @@ public class DbWriterTest {
 
 		execute(CREATE_READINGS_TABLE);
 
-		DbWriter.deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
+		deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
 	}
 
 	@Test
@@ -63,7 +64,7 @@ public class DbWriterTest {
 
 		execute(CREATE_READINGS_TABLE);
 
-		DbWriter.deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
+		deserializeJson(json, "battery", Battery.class.asSubclass(AbstractDevice.class));
 	}
 
 }

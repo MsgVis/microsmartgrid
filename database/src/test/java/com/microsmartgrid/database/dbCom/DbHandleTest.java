@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 
 import static com.microsmartgrid.database.Configurations.setJdbcConfiguration;
-import static com.microsmartgrid.database.dbCom.DbHandle.*;
+import static com.microsmartgrid.database.dbCom.DbHandle.execute;
+import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
+import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
+import static com.microsmartgrid.database.dbCom.DbWriter.insertReadings;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;

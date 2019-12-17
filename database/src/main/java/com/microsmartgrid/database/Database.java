@@ -27,9 +27,10 @@ public class Database {
 			logger.info("No connection timeout was specified. Connecting with timeout 30 seconds.");
 			mqtt_timeout = "30";
 		} else {
-			logger.info(String.format("Set the connection timeout to %s seconds", args[5]));
 			mqtt_timeout = args[5];
 		}
+
+		logger.info(String.format("Using the server %s with topic %s and timeout %s.", msg_serverURI, mqtt_topic, mqtt_timeout));
 
 		Configurations.setJdbcConfiguration(args[0], args[1], args[2]);
 

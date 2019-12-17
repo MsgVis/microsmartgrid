@@ -1,7 +1,6 @@
 package com.microsmartgrid.database.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.microsmartgrid.database.dbCom.DbWriter;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +8,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 
 public class LocalMqttCallback implements MqttCallback {
@@ -23,7 +23,7 @@ public class LocalMqttCallback implements MqttCallback {
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) {
 		Class<? extends AbstractDevice> cls = getClassFromIdentifier(topic_name);
 		try {
-			DbWriter.deserializeJson(mqttMessage.toString(), topic_name, cls);
+			deserializeJson(mqttMessage.toString(), topic_name, cls);
 		} catch (JsonProcessingException e) {
 			logger.error("Couldn't construct instance from topic " + topic_name);
 			logger.error(e);
