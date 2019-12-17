@@ -1,5 +1,7 @@
 package com.microsmartgrid.database.dbCom;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
@@ -8,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
+import static com.microsmartgrid.database.ObjectMapperManager.getMapper;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES_SQL;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
@@ -65,6 +68,7 @@ public class DbWriter {
 	public static <T extends Readings> void insertReadings(T device) {
 		try (Connection conn = getConnection();
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
+			ObjectMapper objM = getMapper();
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
 			reading.setInt(2, device.getId());
@@ -95,12 +99,16 @@ public class DbWriter {
 			reading.setObject(25, device.getVoltage_U2(), f);
 			reading.setObject(26, device.getVoltage_U3(), f);
 			reading.setObject(27, device.getFrequency_grid(), f);
+			reading.setString(28, objM.writeValueAsString(device.getMetaInformation()));
 
 			reading.executeUpdate();
 
 		} catch (SQLException e) {
 			logger.warn("Couldn't commit reading connected to device with id " +
-				(device.getId() > 0 ? device.getId() : "none (no device information set yet)") + " to database");
+				(device.getId() > 0 ? device.getId() : "none (no device information set yet)") + " to database.");
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.warn("Couldn't create json from meta information map.");
 			e.printStackTrace();
 		}
 	}
