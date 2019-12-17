@@ -8,6 +8,7 @@ import com.microsmartgrid.database.dbDataStructures.Device;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
@@ -23,7 +24,7 @@ public class HelperFunctions {
 	 * @param name - Mqtt topic or other String that matches the regular expression
 	 *             in the ClassMap.yml config file
 	 */
-	public static Class<? extends AbstractDevice> getClassFromIdentifier(final String name) {
+	public static Class<? extends AbstractDevice> getClassFromIdentifier(final String name) throws IOException {
 		Class<? extends AbstractDevice> cls;
 		String class_name;
 		final String package_start = "com.microsmartgrid.database.dbDataStructures.";

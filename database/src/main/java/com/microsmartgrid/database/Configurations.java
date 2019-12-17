@@ -18,7 +18,7 @@ public class Configurations {
 	private static final String FOLDER_PATH = "src/main/resources/config/";
 	private static Map<String, String> dataSource;
 
-	public static ArrayList<LinkedHashMap<String, String>> retrieveClassMap() {
+	public static ArrayList<LinkedHashMap<String, String>> retrieveClassMap() throws IOException {
 		File classMapFile = new File(FOLDER_PATH + "ClassMap.yml");
 		ArrayList<LinkedHashMap<String, String>> classMap;
 
@@ -27,7 +27,7 @@ public class Configurations {
 			});
 		} catch (IOException e) {
 			logger.error("Couldn't read from ClassMap.yml configuration file!");
-			throw new RuntimeException(e);
+			throw new IOException(e);
 		}
 		return classMap;
 	}

@@ -3,6 +3,7 @@ package com.microsmartgrid.database;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConfigurationsTests {
 
 	@Test
-	public void checkClassMapExistance() {
+	public void checkClassMapExistance() throws IOException {
 		Configurations.retrieveClassMap();
 		// just make sure this doesn't produce a RuntimeException
 	}

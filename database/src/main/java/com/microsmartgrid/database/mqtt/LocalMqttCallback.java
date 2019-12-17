@@ -8,6 +8,8 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.IOException;
+
 import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 
@@ -20,7 +22,7 @@ public class LocalMqttCallback implements MqttCallback {
 	}
 
 	@Override
-	public void messageArrived(String topic_name, MqttMessage mqttMessage) {
+	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
 		Class<? extends AbstractDevice> cls = getClassFromIdentifier(topic_name);
 		try {
 			deserializeJson(mqttMessage.toString(), topic_name, cls);
