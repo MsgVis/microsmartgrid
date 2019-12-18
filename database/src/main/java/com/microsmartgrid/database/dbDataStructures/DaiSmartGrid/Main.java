@@ -3,17 +3,17 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Main extends DaiSmartGrid {
+public class Main extends Readings {
 
 	protected Main() {
 		super();
 	}
 
-	public Main(@JsonProperty("reactive_power_total") float reactive_total,
-				@JsonProperty("active_power_total") float active_total,
-				@JsonProperty("reactive_energy_A_minus") float reactive_A_minus,
-				@JsonProperty("reactive_energy_A_plus") float reactive_A_plus,
-				@JsonProperty("frequency_Mgrid") @JsonAlias("frequency_Grid") float frequency) {
+	public Main(@JsonProperty("reactive_power_total") Float reactive_total,
+				@JsonProperty("active_power_total") Float active_total,
+				@JsonProperty("reactive_energy_A_minus") Float reactive_A_minus,
+				@JsonProperty("reactive_energy_A_plus") Float reactive_A_plus,
+				@JsonProperty("frequency_Mgrid") @JsonAlias("frequency_Grid") Float frequency) {
 		this();
 		super.setReactive_power_Q_total(reactive_total);
 		super.setActive_power_P_total(active_total);

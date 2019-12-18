@@ -30,6 +30,7 @@ hs_err_pid*
 #binaries
 **/target
 test.mv.db
+test.trace.db
 
 # config files not intended for shared usage
 **.lst
@@ -61,3 +62,6 @@ test.mv.db
 build/
 ### VS Code ###
 .vscode/
+
+# This has to be at the bottom for it to work???
+database/src/main/resources/config/db-config.properties

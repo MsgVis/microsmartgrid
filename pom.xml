@@ -116,7 +116,13 @@
 				<artifactId>spring-webmvc</artifactId>
 				<version>${spring.framework.version}</version>
 			</dependency>
-			<!---->
+
+			<!-- H2 - memory database for testing -->
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

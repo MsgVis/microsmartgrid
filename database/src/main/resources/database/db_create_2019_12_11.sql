@@ -6,8 +6,6 @@ CREATE TABLE devices (
 	description	TEXT,
 	type		TEXT,
 	subtype		TEXT,
-	depth		INTEGER,
-	icon		TEXT,
 	children	INTEGER[]
 );
 

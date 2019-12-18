@@ -2,17 +2,16 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// Only for fallback; uses Main class
-public class PV extends DaiSmartGrid {
+public class PV extends Readings {
 
 	protected PV() {
 		super();
 	}
 
-	public PV(@JsonProperty("reactive_power_total") float reactive_total,
-			  @JsonProperty("active_power_total") float active_total,
-			  @JsonProperty("reactive_energy_A_minus") float reactive_A_minus,
-			  @JsonProperty("reactive_energy_A_plus") float reactive_A_plus) {
+	public PV(@JsonProperty("reactive_power_total") Float reactive_total,
+			  @JsonProperty("active_power_total") Float active_total,
+			  @JsonProperty("reactive_energy_A_minus") Float reactive_A_minus,
+			  @JsonProperty("reactive_energy_A_plus") Float reactive_A_plus) {
 		this();
 		super.setReactive_power_Q_total(reactive_total);
 		super.setActive_power_P_total(active_total);
