@@ -18,7 +18,7 @@ import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
 import static com.microsmartgrid.database.dbCom.DbWriter.writeDeviceToDatabase;
 
 public class HelperFunctions {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(HelperFunctions.class);
 
 	/**
 	 * @param name - Mqtt topic or other String that matches the regular expression

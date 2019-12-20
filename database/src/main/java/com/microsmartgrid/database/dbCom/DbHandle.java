@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public abstract class DbHandle {
 
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(DbHandle.class);
 
 	/**
 	 * Execute SQL command
