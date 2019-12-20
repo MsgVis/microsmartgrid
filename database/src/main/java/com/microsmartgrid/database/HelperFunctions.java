@@ -64,10 +64,12 @@ public class HelperFunctions {
 		T device;
 		AdditionalDeviceInformation deviceInfo;
 
+		logger.debug("Querying for device with topic " + topic);
 		deviceInfo = queryDevices(topic);
 
 		if (objMapper.canSerialize(cls)) {
 			// create object from json
+			logger.debug("Deserializing json to class.");
 			device = objMapper.readValue(json, cls);
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes

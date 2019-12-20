@@ -18,7 +18,7 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void connectionLost(Throwable cause) {
-		//TODO
+		logger.info("Connection lost. Automatically reconnecting...");
 	}
 
 	@Override
