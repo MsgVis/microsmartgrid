@@ -67,13 +67,14 @@ public class HelperFunctions {
 		logger.debug("Querying for device with topic " + topic);
 		deviceInfo = queryDevices(topic);
 
-		if (objMapper.canSerialize(cls)) {
+		if (objMapper.canSerialize(cls) && json.startsWith("{")) {
 			// create object from json
 			logger.debug("Deserializing json to class.");
 			device = objMapper.readValue(json, cls);
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes
-			throw new UnsupportedOperationException("Input is not a json.");
+			logger.warn("Input is not a json.");
+			return;
 		}
 
 		if (deviceInfo == null) {
