@@ -14,11 +14,11 @@ import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 
 public class LocalMqttCallback implements MqttCallback {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
 
 	@Override
 	public void connectionLost(Throwable cause) {
-		//TODO
+		logger.info(cause.toString() + ". Automatically reconnecting...");
 	}
 
 	@Override

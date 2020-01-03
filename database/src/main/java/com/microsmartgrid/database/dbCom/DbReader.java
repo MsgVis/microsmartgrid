@@ -10,7 +10,7 @@ import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 
 public class DbReader {
 
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(DbReader.class);
 
 	/**
 	 * Query devices table

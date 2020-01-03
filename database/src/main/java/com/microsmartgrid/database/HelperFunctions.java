@@ -18,7 +18,7 @@ import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
 import static com.microsmartgrid.database.dbCom.DbWriter.writeDeviceToDatabase;
 
 public class HelperFunctions {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(HelperFunctions.class);
 
 	/**
 	 * @param name - Mqtt topic or other String that matches the regular expression
@@ -64,14 +64,17 @@ public class HelperFunctions {
 		T device;
 		AdditionalDeviceInformation deviceInfo;
 
+		logger.debug("Querying for device with topic " + topic);
 		deviceInfo = queryDevices(topic);
 
-		if (objMapper.canSerialize(cls)) {
+		if (objMapper.canSerialize(cls) && json.startsWith("{")) {
 			// create object from json
+			logger.debug("Deserializing json to class.");
 			device = objMapper.readValue(json, cls);
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes
-			throw new UnsupportedOperationException("Input is not a json.");
+			logger.warn("Input is not a json.");
+			return;
 		}
 
 		if (deviceInfo == null) {

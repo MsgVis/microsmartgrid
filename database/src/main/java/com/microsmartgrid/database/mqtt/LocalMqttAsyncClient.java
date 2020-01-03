@@ -6,7 +6,7 @@ import org.eclipse.paho.client.mqttv3.*;
 
 
 public class LocalMqttAsyncClient {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(LocalMqttAsyncClient.class);
 	private static MqttAsyncClient mqtt_client = null;
 
 	public LocalMqttAsyncClient() {
@@ -27,7 +27,7 @@ public class LocalMqttAsyncClient {
 		}
 	}
 
-	public void connect(int... timeout) throws NullPointerException, RuntimeException {
+	public void connect(int... timeout) throws RuntimeException {
 		if (mqtt_client == null) {
 			throw new NullPointerException("mqtt client must be initialised before it can be connected.");
 		}

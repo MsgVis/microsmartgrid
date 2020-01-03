@@ -16,7 +16,7 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES_SQL;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
 
 public class DbWriter {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(DbWriter.class);
 
 	public static <T extends AbstractDevice> void writeDeviceToDatabase(int id, T device) {
 		device.setId(id);

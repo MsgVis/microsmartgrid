@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,12 +14,11 @@ import java.util.Map;
 import static com.microsmartgrid.database.ObjectMapperManager.getYmlMapper;
 
 public class Configurations {
-	private static final Logger logger = LogManager.getLogger();
-	private static final String FOLDER_PATH = "src/main/resources/config/";
+	private static final Logger logger = LogManager.getLogger(Configurations.class);
 	private static Map<String, String> dataSource;
 
 	public static ArrayList<LinkedHashMap<String, String>> retrieveClassMap() throws IOException {
-		File classMapFile = new File(FOLDER_PATH + "ClassMap.yml");
+		InputStream classMapFile = Configurations.class.getResourceAsStream("/config/ClassMap.yml");
 		ArrayList<LinkedHashMap<String, String>> classMap;
 
 		try {
@@ -27,7 +26,10 @@ public class Configurations {
 			});
 		} catch (IOException e) {
 			logger.error("Couldn't read from ClassMap.yml configuration file!");
+			e.printStackTrace();
 			throw new IOException(e);
+		} finally {
+			classMapFile.close();
 		}
 		return classMap;
 	}
