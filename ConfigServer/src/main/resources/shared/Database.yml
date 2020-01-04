@@ -1,0 +1,4 @@
+server:
+    servlet:
+        context-path: /statistics
+    port: 7000
