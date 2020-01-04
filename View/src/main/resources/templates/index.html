@@ -1,8 +1,8 @@
-<html lang="en">
+<html lang="en" xmlns="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
-    <link rel="stylesheet" type="text/css" href="Style/style.css">
+    <link rel="stylesheet" type="text/css" th:href="${Style/style.css}">
     <script src="https://d3js.org/d3.v5.min.js"></script><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -61,7 +61,7 @@
 					</div>
 					<svg id="liveSVG"></svg><br>
 					<svg id="historySVG"></svg><br>
-					<script type="text/javascript" src="js/drawGraphs.js"></script>
+					<script type="text/javascript" th:src="${/js/drawGraphs.js}"></script>
 
 
 				</div>
