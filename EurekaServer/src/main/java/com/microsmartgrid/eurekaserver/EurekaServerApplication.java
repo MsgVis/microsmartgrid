@@ -1,4 +1,4 @@
-package com.microsmartgrid.EurekaServer;
+package com.microsmartgrid.eurekaserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -46,7 +46,7 @@
 	<modules>
 		<module>ConfigServer</module>
 		<module>EurekaServer</module>
-		<module>Database</module>
+		<!--<module>Database</module>-->
 		<module>View</module>
 	</modules>
 
