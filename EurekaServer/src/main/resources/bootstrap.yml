@@ -1,23 +1,7 @@
 spring:
     application:
-        name: eureka-server
+        name: EurekaServer
     cloud:
         config:
-            uri: http://config:8888
+            uri: ${CONFIG_SERVER_URL:http://localhost:8888}
             fail-fast: true
-            password: ${CONFIG_SERVICE_PASSWORD}
-            username: user
-
-eureka:
-    instance:
-        prefer-ip-address: true
-    client:
-        registerWithEureka: false
-        fetchRegistry: false
-        server:
-            waitTimeInMsWhenSyncEmpty: 0
-
-logging:
-    level:
-        com.netflix.discovery: 'OFF'
-        org.springframework.cloud: 'DEBUG'
