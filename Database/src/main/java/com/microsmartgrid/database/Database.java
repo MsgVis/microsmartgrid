@@ -4,8 +4,12 @@ package com.microsmartgrid.database;
 import com.microsmartgrid.database.mqtt.LocalMqttAsyncClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-
+@SpringBootApplication
+@EnableDiscoveryClient
 public class Database {
 	private static final Logger logger = LogManager.getLogger(Database.class);
 	private static String msg_serverURI;
@@ -17,6 +21,7 @@ public class Database {
 	 *             fourth: serverURI, fifth: topic, sixth: timeout
 	 */
 	public static void main(String[] args) {
+		SpringApplication.run(Database.class, args);
 		if (args.length < 3)
 			throw new IllegalArgumentException("Please specify the database url, username, and password.");
 		if (args.length < 4 || args[3].isEmpty()) msg_serverURI = "tcp://192.168.121.172";
