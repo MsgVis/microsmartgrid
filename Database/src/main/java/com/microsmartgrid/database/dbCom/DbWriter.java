@@ -12,8 +12,8 @@ import java.sql.*;
 
 import static com.microsmartgrid.database.ObjectMapperManager.getMapper;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
-import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES_SQL;
-import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS_SQL;
+import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
+import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
 public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
@@ -37,7 +37,7 @@ public class DbWriter {
 	public static int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
 		int generatedId = 0;
 		try (Connection conn = getConnection();
-			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES_SQL, Statement.RETURN_GENERATED_KEYS);) {
+			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES, Statement.RETURN_GENERATED_KEYS);) {
 
 			info.setString(1, deviceInfo.getName());
 			info.setString(2, deviceInfo.getDescription());
@@ -67,7 +67,7 @@ public class DbWriter {
 	 */
 	public static <T extends Readings> void insertReadings(T device) {
 		try (Connection conn = getConnection();
-			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS_SQL)) {
+			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS)) {
 			ObjectMapper objM = getMapper();
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
