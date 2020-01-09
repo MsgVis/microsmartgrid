@@ -140,4 +140,61 @@ public class DbReader {
 
 		return info;
 	}
+
+	public static List<T extends Readings> queryReadings(int id, string start, string end, string min_interval) {
+		List<AdditionalDeviceInformation> readings = new ArrayList<>();
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS)) {
+
+			stmt.setString(1, min_interval);
+			stmt.setInt(2, id);
+			stmt.setString(3, start);
+			stmt.setString(4, end);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs == null) throw new SQLException("Database does not exist");
+
+			while (rs.next()) {
+				Readings read = new Readings();
+
+				read.setId(rs.getInt("device_id"));
+				read.setTimestamp(rs.getTimestamp("bucket"));
+				read.setCurrent_I_avg(rs.getFloat("i_avg"));
+				read.setCurrent_I1(rs.getFloat("i_r"));
+				read.setCurrent_I2(rs.getFloat("i_s"));
+				read.setCurrent_I3(rs.getFloat("i_t"));
+				read.setVoltage_U_avg(rs.getFloat("u_avg"));
+				read.setVoltage_U1(rs.getFloat("u_r"));
+				read.setVoltage_U2(rs.getFloat("u_s"));
+				read.setVoltage_U3(rs.getFloat("u_t"));
+				read.setActive_energy_A_plus(rs.getFloat("a_plus"));
+				read.setActive_energy_A_minus(rs.getFloat("a_minus"));
+				read.setReactive_energy_R_plus(rs.getFloat("r_plus"));
+				read.setReactive_energy_R_minus(rs.getFloat("r_minus"));
+				read.setActive_power_P_total(rs.getFloat("p_total"));
+				read.setActive_power_P1(rs.getFloat("p_r"));
+				read.setActive_power_P2(rs.getFloat("p_s"));
+				read.setActive_power_P3(rs.getFloat("p_t"));
+				read.setReactive_power_Q_total(rs.getFloat("q_total"));
+				read.setReactive_power_Q1(rs.getFloat("q_r"));
+				read.setReactive_power_Q2(rs.getFloat("q_s"));
+				read.setReactive_power_Q3(rs.getFloat("q_t"));
+				read.setApparent_power_S_total(rs.getFloat("s_total"));
+				read.setApparent_power_S1(rs.getFloat("s_r"));
+				read.setApparent_power_S2(rs.getFloat("s_s"));
+				read.setApparent_power_S3(rs.getFloat("s_t"));
+				read.setFrequency_grid(rs.getFloat("f"));
+				read.setMetaInformation(null);
+
+				readings.add(read);
+			}
+
+			rs.close();
+		} catch (SQLException e) {
+			logger.warn("Could not fetch readings.");
+			e.printStackTrace();
+		}
+		return readings;
+	}
 }
