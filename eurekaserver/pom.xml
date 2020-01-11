@@ -9,26 +9,31 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>View</artifactId>
-	<name>View</name>
+	<artifactId>eurekaserver</artifactId>
+	<packaging>jar</packaging>
 
-	<packaging>war</packaging>
+	<properties>
+		<java.version>1.11</java.version>
+	</properties>
 
+
+	<name>eurekaserver</name>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-			<version>2.0.0.RELEASE</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -42,21 +47,12 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>microsmartgrid_visualiser</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>3.0.0-M1</version>
-				<configuration>
-					<file>${project.basedir}/../ConfigServer/target/ConfigServer.jar</file>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<finalName>View</finalName>
+					<finalName>eurekaserver</finalName>
 				</configuration>
 			</plugin>
 		</plugins>

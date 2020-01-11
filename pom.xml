@@ -44,8 +44,8 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>ConfigServer</module>
-		<module>EurekaServer</module>
+		<module>configserver</module>
+		<module>eurekaserver</module>
 		<!--<module>Database</module>-->
 		<module>View</module>
 	</modules>
@@ -78,6 +78,8 @@
 				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<release>${maven.compiler.release.version}</release>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>

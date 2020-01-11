@@ -9,8 +9,8 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>ConfigServer</artifactId>
-	<name>ConfigServer</name>
+	<artifactId>configserver</artifactId>
+	<name>configserver</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -26,7 +26,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<finalName>ConfigServer</finalName>
+					<finalName>configserver</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
