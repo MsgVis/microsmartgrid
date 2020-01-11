@@ -12,8 +12,8 @@ public abstract class SqlCommands {
 
 	public static final String QUERY_DEVICES = "SELECT * FROM devices WHERE name=?;";
 	public static final String QUERY_DEVICES_BY_ID = "SELECT * FROM devices WHERE id=?;";
-	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices";
-	public static final String QUERY_READINGS = "SELECT time_bucket(?, time) AS bucket, min(devie_id) AS device_id, avg(a_minus) AS a_minus, avg(a_plus) AS a_plus, avg(r_minus) AS r_minus, avg(r_plus) AS r_plus, avg(p_total) AS p_total, avg(p_r) AS p_r, avg(p_s) AS p_s, avg(p_t) AS p_t, avg(q_total) AS q_total, avg(q_r) AS q_r, avg(q_s) AS q_s, avg(q_t) AS q_t, avg(s_total) AS s_total, avg(s_r) AS s_r, avg(s_s) AS s_s, avg(s_t) AS s_t, avg(i_avg) AS i_avg, avg(i_r) AS i_r, avg(i_s) AS i_s, avg(i_t) AS i_t, avg(u_avg) AS u_avg, avg(u_r) AS u_r, avg(u_s) AS u_s, avg(u_t) AS u_t, avg(f) as f FROM readings WHERE device_id=? and time > ? and time < ? GROUP BY bucket ORDER BY bucket;"
+	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices;";
+	public static final String QUERY_READINGS = "SELECT time_bucket(?, time) AS bucket, min(devie_id) AS device_id, avg(a_minus) AS a_minus, avg(a_plus) AS a_plus, avg(r_minus) AS r_minus, avg(r_plus) AS r_plus, avg(p_total) AS p_total, avg(p_r) AS p_r, avg(p_s) AS p_s, avg(p_t) AS p_t, avg(q_total) AS q_total, avg(q_r) AS q_r, avg(q_s) AS q_s, avg(q_t) AS q_t, avg(s_total) AS s_total, avg(s_r) AS s_r, avg(s_s) AS s_s, avg(s_t) AS s_t, avg(i_avg) AS i_avg, avg(i_r) AS i_r, avg(i_s) AS i_s, avg(i_t) AS i_t, avg(u_avg) AS u_avg, avg(u_r) AS u_r, avg(u_s) AS u_s, avg(u_t) AS u_t, avg(f) as f FROM readings WHERE device_id=? and time > ? and time < ? GROUP BY bucket ORDER BY bucket;";
 
 	public static String CREATE_DEVICE_TABLE =
 		"CREATE TABLE devices (" +

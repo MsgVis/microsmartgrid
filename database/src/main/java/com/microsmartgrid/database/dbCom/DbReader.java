@@ -141,7 +141,7 @@ public class DbReader {
 		return info;
 	}
 
-	public static List<T extends Readings> queryReadings(int id, string start, string end, string min_interval) {
+	public static List<Readings> queryReadings(int id, String start, String end, String min_interval) {
 		List<AdditionalDeviceInformation> readings = new ArrayList<>();
 		try (Connection conn = getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS)) {
