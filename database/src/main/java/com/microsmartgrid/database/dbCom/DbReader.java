@@ -1,19 +1,21 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.ObjectMapperManager;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
+import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
@@ -30,7 +32,8 @@ public class DbReader {
 		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
 	}
 
-	/**''
+	/**
+	 * ''
 	 * Query for all devices
 	 *
 	 * @return A list of all registered devices
@@ -141,8 +144,8 @@ public class DbReader {
 		return info;
 	}
 
-	public static List<Readings> queryReadings(int id, String start, String end, String min_interval) {
-		List<AdditionalDeviceInformation> readings = new ArrayList<>();
+	public static <T extends Readings> List<T> queryReadings(int id, String start, String end, String min_interval) {
+		List<T> readings = new ArrayList<>();
 		try (Connection conn = getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS)) {
 
@@ -156,10 +159,13 @@ public class DbReader {
 			if (rs == null) throw new SQLException("Database does not exist");
 
 			while (rs.next()) {
-				Readings read = new Readings();
+				int device_id = rs.getInt("device_id");
+				AdditionalDeviceInformation info = queryDevices(device_id);
+				Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
+				T read = (T) cls.getDeclaredConstructor().newInstance();
 
-				read.setId(rs.getInt("device_id"));
-				read.setTimestamp(rs.getTimestamp("bucket"));
+				read.setId(device_id);
+				read.setTimestamp(rs.getTimestamp("bucket").toInstant());
 				read.setCurrent_I_avg(rs.getFloat("i_avg"));
 				read.setCurrent_I1(rs.getFloat("i_r"));
 				read.setCurrent_I2(rs.getFloat("i_s"));
@@ -191,7 +197,7 @@ public class DbReader {
 			}
 
 			rs.close();
-		} catch (SQLException e) {
+		} catch (SQLException | IOException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 			logger.warn("Could not fetch readings.");
 			e.printStackTrace();
 		}
