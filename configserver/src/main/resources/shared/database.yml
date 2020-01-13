@@ -1,4 +1,4 @@
 server:
     servlet:
-        context-path: /Database
+        context-path: /database
     port: 7000
