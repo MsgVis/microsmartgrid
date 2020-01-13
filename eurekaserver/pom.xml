@@ -46,4 +46,8 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<finalName>eurekaserver</finalName>
+	</build>
 </project>

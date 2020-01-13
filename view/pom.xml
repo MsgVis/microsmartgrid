@@ -58,7 +58,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>microsmartgrid_visualiser</finalName>
+		<finalName>view</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
