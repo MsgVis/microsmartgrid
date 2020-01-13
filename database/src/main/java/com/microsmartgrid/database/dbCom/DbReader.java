@@ -203,4 +203,12 @@ public class DbReader {
 		}
 		return readings;
 	}
+
+	public static <T extends Readings> List<T> queryReadings(int id, String start, String min_interval) {
+		return queryReadings(id, start, "2100-01-01", min_interval);
+	}
+
+	public static <T extends Readings> List<T> queryReadings(int id, String min_interval) {
+		return queryReadings(id, "2010-01-01", "2100-01-01", min_interval);
+	}
 }

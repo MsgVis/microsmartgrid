@@ -43,7 +43,7 @@ public abstract class SqlCommands {
 		" FROM readings" +
 		" WHERE device_id=? AND time > ? AND time < ?" +
 		" GROUP BY bucket" +
-		" ORDER BY bucket;";
+		" ORDER BY bucket ASC;";
 
 	public static String CREATE_DEVICE_TABLE =
 		"CREATE TABLE devices (" +
