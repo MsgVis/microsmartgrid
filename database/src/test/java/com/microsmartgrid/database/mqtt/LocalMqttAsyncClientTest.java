@@ -10,12 +10,12 @@ class LocalMqttAsyncClientTest {
 	private static LocalMqttAsyncClient client;
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		client = new LocalMqttAsyncClient();
 	}
 
 	@AfterEach
-	void cleanup() {
+	public void cleanup() {
 		if (client.isConnected()) {
 			client.disconnect();
 		}
@@ -23,7 +23,7 @@ class LocalMqttAsyncClientTest {
 	}
 
 	@Test
-	void testInitNull() {
+	public void testInitNull() {
 		assertThrows(RuntimeException.class, () -> client.init(null));
 	}
 
@@ -44,7 +44,7 @@ class LocalMqttAsyncClientTest {
 
 
 	@Test
-	void setupSuccessful() {
+	public void setupSuccessful() {
 		client.init("tcp://mqtt.eclipse.org:1883");
 		//this.client.init("tcp://192.168.121.172:1883"); if connected to msg-VPN...
 		client.connect();
