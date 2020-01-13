@@ -81,30 +81,7 @@
 				<configuration>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 				</configuration>
-			</plugin><!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>3.0.0-M1</version>
-				<executions>
-					<execution>
-						<id>install-external</id>
-						<phase>clean</phase>
-						<configuration>
-							<file>${main.basedir}/ConfigServer/target/ConfigServer.jar</file>
-							<repositoryLayout>default</repositoryLayout>
-							<groupId>com.microsmartgrid</groupId>
-							<artifactId>ConfigServer</artifactId>
-							<version>${project.version}</version>
-							<packaging>jar</packaging>
-							<generatePom>false</generatePom>
-						</configuration>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>-->
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
