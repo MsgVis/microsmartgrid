@@ -46,8 +46,8 @@
 	<modules>
 		<module>configserver</module>
 		<module>eurekaserver</module>
-		<!--<module>Database</module>-->
-		<module>View</module>
+		<!--<module>database</module>-->
+		<module>view</module>
 	</modules>
 
 	<build>
