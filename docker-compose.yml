@@ -1,0 +1,41 @@
+version: '2.1'
+services:
+    configserver:
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: configserver:latest
+        restart: always
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    eurekaserver:
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: eurekaserver:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+        ports:
+            - 8761:8761
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    view:
+        image: view:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+            eurekaserver:
+                condition: service_healthy
+        ports:
+            - 80:6000
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
