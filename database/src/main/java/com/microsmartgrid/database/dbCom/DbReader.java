@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,15 +145,15 @@ public class DbReader {
 		return info;
 	}
 
-	public static <T extends Readings> List<T> queryReadings(int id, String start, String end, String min_interval) {
+	public static <T extends Readings> List<T> queryReadings(int id, Timestamp start, Timestamp end, String step) {
 		List<T> readings = new ArrayList<>();
 		try (Connection conn = getConnection();
-			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS)) {
+			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS_AS_BUCKET)) {
 
-			stmt.setString(1, min_interval);
+			stmt.setString(1, step);
 			stmt.setInt(2, id);
-			stmt.setString(3, start);
-			stmt.setString(4, end);
+			stmt.setTimestamp(3, start);
+			stmt.setTimestamp(4, end);
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -197,18 +198,23 @@ public class DbReader {
 			}
 
 			rs.close();
-		} catch (SQLException | IOException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+		} catch (SQLException | IOException | NoSuchMethodException | IllegalAccessException
+			| InstantiationException | InvocationTargetException e) {
 			logger.warn("Could not fetch readings.");
 			e.printStackTrace();
 		}
 		return readings;
 	}
 
-	public static <T extends Readings> List<T> queryReadings(int id, String start, String min_interval) {
-		return queryReadings(id, start, "2100-01-01", min_interval);
+	public static <T extends Readings> List<T> queryReadings(int id, Timestamp start, String step) {
+		return queryReadings(id, start, Timestamp.from(Instant.MAX), step);
 	}
 
-	public static <T extends Readings> List<T> queryReadings(int id, String min_interval) {
-		return queryReadings(id, "2010-01-01", "2100-01-01", min_interval);
+	public static <T extends Readings> List<T> queryReadings(int id, String step) {
+		return queryReadings(id, Timestamp.from(Instant.MIN), Timestamp.from(Instant.MAX), step);
+	}
+
+	public static <T extends Readings> List<T> queryReadings(int id) {
+		return queryReadings(id, Timestamp.from(Instant.MIN), Timestamp.from(Instant.MAX), "1 second");
 	}
 }

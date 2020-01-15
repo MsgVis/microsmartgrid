@@ -13,8 +13,8 @@ public abstract class SqlCommands {
 	public static final String QUERY_DEVICES = "SELECT * FROM devices WHERE name=?;";
 	public static final String QUERY_DEVICES_BY_ID = "SELECT * FROM devices WHERE id=?;";
 	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices;";
-	public static final String QUERY_READINGS = "SELECT time_bucket(?, time) AS bucket," +
-		" min(device_id) AS device_id," +
+	public static final String QUERY_READINGS_AS_BUCKET = "SELECT time_bucket(?, time) AS bucket," +
+		" device_id," +
 		" avg(a_minus) AS a_minus," +
 		" avg(a_plus) AS a_plus," +
 		" avg(r_minus) AS r_minus," +
