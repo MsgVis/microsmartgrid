@@ -20,6 +20,7 @@ public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
 
 	public static <T extends AbstractDevice> void writeDeviceToDatabase(String topic, T device) {
+		logger.debug("Querying for device with topic " + topic);
 		AdditionalDeviceInformation deviceInfo = queryDevices(topic);
 		if (deviceInfo == null) {
 			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'

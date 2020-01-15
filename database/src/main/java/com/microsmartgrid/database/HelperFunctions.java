@@ -58,8 +58,6 @@ public class HelperFunctions {
 
 		T device;
 
-		logger.debug("Querying for device with topic " + topic);
-
 		if (objMapper.canSerialize(cls) && json.startsWith("{")) {
 			// create object from json
 			logger.debug("Deserializing json to class.");
