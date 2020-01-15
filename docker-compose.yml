@@ -2,6 +2,7 @@ version: '2.4'
 services:
     configserver:
         build: ./configserver
+        network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: configserver:latest
@@ -15,6 +16,7 @@ services:
 
     eurekaserver:
         build: ./eurekaserver
+        network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: eurekaserver:latest
@@ -31,6 +33,7 @@ services:
 
     view:
         build: ./view
+        network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: view:latest
@@ -47,6 +50,7 @@ services:
 
     database:
         build: ./database
+        network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: database:latest
