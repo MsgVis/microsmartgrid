@@ -1,7 +1,8 @@
 FROM tomcat:8-jre11
 # Copy to images tomcat path
 
-CMD rm -rf /usr/local/tomcat/webapps
-ADD ./target/view.war /usr/local/tomcat/webapps/
+RUN   rm -rf /usr/local/tomcat/webapps/ROOT
+ADD ./target/view.war /usr/local/tomcat/webapps/ROOT.war
+CMD [ "catalina.sh", "run" ]
 
 EXPOSE 8080

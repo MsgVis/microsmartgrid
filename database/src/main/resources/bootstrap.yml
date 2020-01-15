@@ -1,6 +1,10 @@
 spring:
     application:
-        name: eurekaserver
+        name: database
+    datasource:
+        url: jdbc:postgresql://localhost/msg
+        username: msg
+        password: msg
     cloud:
         config:
             uri: ${CONFIG_SERVER_URL:http://localhost:8888}

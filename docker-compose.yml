@@ -6,6 +6,8 @@ services:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: configserver:latest
         restart: always
+        ports:
+            - 8888:8888
         logging:
             options:
                 max-size: "10m"

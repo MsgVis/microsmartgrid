@@ -1,15 +1,13 @@
-package com.microsmartgrid.view;
+package com.microsmartgrid.database;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ViewMain extends SpringBootServletInitializer {
+public class DatabaseMain {
 	public static void main(String[] args) {
-
-		SpringApplication.run(ViewMain.class, args);
+		SpringApplication.run(DatabaseMain.class, args);
 	}
 }
