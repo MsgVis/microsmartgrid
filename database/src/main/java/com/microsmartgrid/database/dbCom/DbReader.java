@@ -1,15 +1,14 @@
 package com.microsmartgrid.database.dbCom;
 
+import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,8 @@ public class DbReader {
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
 
 	@GetMapping("/dummyCall")
-	public static String dummyString () {
-		return "{\"databaseId\": \"Main_Meter\",\"type\": \"POWERGRID\",\"subtype\": \"POWERGRID\",\"children\": [{\"databaseId\": \"Battery_SMA\",\"type\": \"CONSUMER\",\"subtype\": \"BATTERY\",\"children\": []}, {\"databaseId\": \"PV_Meter\",\"type\": \"PRODUCER\",\"subtype\": \"SOLARPANEL\",\"children\": []}, {\"databaseId\": \"ladestation-ebg-parkplatz-1\",\"type\": \"CONSUMER\",\"subtype\": \"CHARGINGSTATION\",\"children\": []}, {\"databaseId\": \"ladestation-ebg-parkplatz-2\",\"type\": \"CONSUMER\",\"subtype\": \"CHARGINGSTATION\",\"children\": []}, {\"databaseId\": \"ladestation-ebg-parkplatz-3\",\"type\": \"CONSUMER\",\"subtype\": \"CHARGINGSTATION\",\"children\": []}]}";
+	public static String dummyString() throws IOException {
+		return ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
 	}
 
 	/**
