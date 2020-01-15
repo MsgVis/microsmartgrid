@@ -12,14 +12,23 @@ import java.sql.*;
 
 import static com.microsmartgrid.database.ObjectMapperManager.getMapper;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
+import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
 public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
 
-	public static <T extends AbstractDevice> void writeDeviceToDatabase(int id, T device) {
-		device.setId(id);
+	public static <T extends AbstractDevice> void writeDeviceToDatabase(String topic, T device) {
+		AdditionalDeviceInformation deviceInfo = queryDevices(topic);
+		if (deviceInfo == null) {
+			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'
+			deviceInfo = new AdditionalDeviceInformation(topic);
+			deviceInfo.setId(insertDeviceInfo(deviceInfo));
+			logger.info("Created new device information object for name " + deviceInfo.getName() +
+				" with the generated id " + deviceInfo.getId());
+		}
+		device.setId(deviceInfo.getId());
 
 		logger.info("Writing " + device.toString() + " to database.");
 		if (device instanceof Readings) {

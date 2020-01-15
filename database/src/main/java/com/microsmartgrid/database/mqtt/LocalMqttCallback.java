@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
+import static com.microsmartgrid.database.dbCom.DbWriter.writeDeviceToDatabase;
 
 public class LocalMqttCallback implements MqttCallback {
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
@@ -25,7 +26,9 @@ public class LocalMqttCallback implements MqttCallback {
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
 		Class<? extends AbstractDevice> cls = getClassFromIdentifier(topic_name);
 		try {
-			deserializeJson(mqttMessage.toString(), topic_name, cls);
+			AbstractDevice device = deserializeJson(mqttMessage.toString(), topic_name, cls);
+			if (device == null) return;
+			writeDeviceToDatabase(topic_name, device);
 		} catch (JsonProcessingException e) {
 			logger.error("Couldn't construct instance from topic " + topic_name);
 			logger.error(e);
