@@ -31,6 +31,8 @@ services:
 
     view:
         build: ./view
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
         image: view:latest
         restart: always
         depends_on:
@@ -38,6 +40,22 @@ services:
                 condition: service_healthy
         ports:
             - 8080:8080
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    database:
+        build: ./database
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: database:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+        ports:
+            - 4711:4711
         logging:
             options:
                 max-size: "10m"

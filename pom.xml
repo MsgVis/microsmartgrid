@@ -46,7 +46,7 @@
 	<modules>
 		<module>configserver</module>
 		<module>eurekaserver</module>
-		<!--<module>database</module>-->
+		<module>database</module>
 		<module>view</module>
 	</modules>
 
