@@ -17,6 +17,7 @@ import java.util.List;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
+//TODO Access noch richtig einstellen. Momentan kann jeder darauf zugreifen.
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class DbReader {
