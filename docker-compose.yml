@@ -1,0 +1,66 @@
+version: '2.4'
+services:
+    configserver:
+        build: ./configserver
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: configserver:latest
+        restart: always
+        ports:
+            - 8888:8888
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    eurekaserver:
+        build: ./eurekaserver
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: eurekaserver:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+        ports:
+            - 8761:8761
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    view:
+        build: ./view
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: view:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+        ports:
+            - 8080:8080
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    database:
+        build: ./database
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: database:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+        ports:
+            - 4711:4711
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"

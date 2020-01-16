@@ -10,18 +10,16 @@
 	<packaging>pom</packaging>
 	<name>microsmartgrid</name>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.2.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.jupiter.version>5.5.2</junit.jupiter.version>
-		<junit.platform.version>1.5.2</junit.platform.version>
-		<paho.mqtt.client.version>1.2.2</paho.mqtt.client.version>
-		<dailab.jiac.agentcore.version>5.2.4</dailab.jiac.agentcore.version>
-		<log4j.logging.version>2.12.1</log4j.logging.version>
-		<h2.database.version>1.4.200</h2.database.version>
-		<fasterxml.jackson.core.version>2.10.0</fasterxml.jackson.core.version>
-		<fasterxml.jackson.module.version>2.10.0.pr2</fasterxml.jackson.module.version>
-		<jdbc.postgres.driver.version>42.2.8</jdbc.postgres.driver.version>
-		<spring.framework.version>5.1.9.RELEASE</spring.framework.version>
+		<java.version>11</java.version>
 		<maven.enforcer.plugin.version>3.0.0-M3</maven.enforcer.plugin.version>
 		<required.maven.version>3.5</required.maven.version>
 		<maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
@@ -30,129 +28,26 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<maven.failsafe.plugin.version>2.22.0</maven.failsafe.plugin.version>
+		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Jiac V - framework for distributed services -->
 			<dependency>
-				<groupId>de.dailab.jiactng</groupId>
-				<artifactId>agentCore</artifactId>
-				<version>${dailab.jiac.agentcore.version}</version>
-			</dependency>
-			<!-- Jupitor/junit - testing framework -->
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${junit.jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-runner</artifactId>
-				<version>${junit.platform.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter</artifactId>
-				<version>${junit.jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<!-- Paho - mqtt client -->
-			<dependency>
-				<groupId>org.eclipse.paho</groupId>
-				<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-				<version>${paho.mqtt.client.version}</version>
-			</dependency>
-			<!-- log4j - external logging library -->
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>${log4j.logging.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>${log4j.logging.version}</version>
-			</dependency>
-			<!-- Jackson - json processing library -->
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>${fasterxml.jackson.core.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-annotations</artifactId>
-				<version>${fasterxml.jackson.core.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-				<version>${fasterxml.jackson.core.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-jsr310</artifactId>
-				<version>${fasterxml.jackson.module.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.dataformat</groupId>
-				<artifactId>jackson-dataformat-yaml</artifactId>
-				<version>${fasterxml.jackson.module.version}</version>
-			</dependency>
-
-			<!-- postgresql - JDBC driver for postgresql database -->
-			<dependency>
-				<groupId>org.postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>${jdbc.postgres.driver.version}</version>
-				<scope>runtime</scope>
-			</dependency>
-
-			<!-- Spring MVC - REST based annotation framework -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-
-			<!-- H2 - memory database for testing -->
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.database.version}</version>
-				<scope>test</scope>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
-	<repositories>
-		<repository>
-			<id>dai-open</id>
-			<name>DAI Open</name>
-			<url>http://repositories.dai-labor.de/extern/content/repositories/dai-open</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>Eclipse Paho Repo</id>
-			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-		</repository>
-	</repositories>
-
 	<modules>
+		<module>configserver</module>
+		<module>eurekaserver</module>
 		<module>database</module>
-		<module>webapp</module>
-		<!--
-		<module>computation</module>
 		<module>view</module>
-		-->
 	</modules>
 
 	<build>
@@ -183,6 +78,8 @@
 				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<release>${maven.compiler.release.version}</release>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>

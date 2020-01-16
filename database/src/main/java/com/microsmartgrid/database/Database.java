@@ -4,7 +4,9 @@ package com.microsmartgrid.database;
 import com.microsmartgrid.database.mqtt.LocalMqttAsyncClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 public class Database {
 	private static final Logger logger = LogManager.getLogger(Database.class);

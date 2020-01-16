@@ -22,17 +22,17 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABL
 public class DbWriterTest {
 
 	@AfterAll
-	static void cleanUp() {
+	public static void cleanUp() {
 		execute("DROP ALL OBJECTS;");
 	}
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		setJdbcConfiguration("jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "");
 	}
 
 	@Test
-	void testDeserializeJson() throws JsonProcessingException {
+	public void testDeserializeJson() throws JsonProcessingException {
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
 
@@ -53,7 +53,7 @@ public class DbWriterTest {
 	}
 
 	@Test
-	void testDeserializeJsonWithoutDeviceInfo() throws JsonProcessingException {
+	public void testDeserializeJsonWithoutDeviceInfo() throws JsonProcessingException {
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
 

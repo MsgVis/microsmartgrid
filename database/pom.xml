@@ -2,100 +2,104 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>database</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>database</name>
-
 	<parent>
 		<groupId>com.microsmartgrid</groupId>
 		<artifactId>microsmartgrid</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<version>1.0-SNAPSHOT</version>
+	<artifactId>database</artifactId>
+	<groupId>com.microsmartgrid.database</groupId>
+	<name>database</name>
+	<packaging>jar</packaging>
 
 	<dependencies>
-		<!-- Jiac V - framework for distributed services -->
-		<dependency>
-			<groupId>de.dailab.jiactng</groupId>
-			<artifactId>agentCore</artifactId>
-		</dependency>
 		<!-- Paho - mqtt client -->
 		<dependency>
 			<groupId>org.eclipse.paho</groupId>
 			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.2.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>4.0.1</version>
-			<scope>provided</scope>
+			<!--<scope>provided</scope>-->
 		</dependency>
 		<!-- log4j - external logging library -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 		<!-- Jupitor - testing framework -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
+			<version>5.5.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Jackson - json processing library -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 		<!-- postgresql - JDBC driver for postgresql database -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>42.2.9</version>
 		</dependency>
-		<!---->
+		<!-- Hibernate - in-memory database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+		</dependency>
+		<!-- spring - modular java framework -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- eureka - service discovery -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>2.2.1.RELEASE</version>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>dai-open</id>
-			<name>DAI Open</name>
-			<url>http://repositories.dai-labor.de/extern/content/repositories/dai-open</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<build>
+		<finalName>database</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -144,6 +148,10 @@
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<!-- Build an executable JAR for manual execution  -->
 			<!-- Not needed for normal operation

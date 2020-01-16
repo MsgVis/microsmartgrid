@@ -2,15 +2,17 @@ package com.microsmartgrid.database.dbCom;
 
 public abstract class SqlCommands {
 
-	public static final String INSERT_READINGS_SQL = "INSERT INTO " +
+	public static final String INSERT_READINGS = "INSERT INTO " +
 		"readings (time, device_id, a_minus, a_plus, r_minus, r_plus, p_total, p_r, p_s, p_t, q_total, q_r, q_s, q_t, s_total, s_r, s_s, s_t, i_avg, i_r, i_s, i_t, u_avg, u_r, u_s, u_t, f, meta) " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (?::json));";
 
-	public static final String INSERT_DEVICES_SQL = "INSERT INTO " +
+	public static final String INSERT_DEVICES = "INSERT INTO " +
 		"devices (id, name, description, type, subtype, children) " +
 		"VALUES (DEFAULT, ?, ?, ?, ?, ?);";
 
-	public static final String QUERY_DEVICES_SQL = "SELECT * FROM devices WHERE name=?;";
+	public static final String QUERY_DEVICES = "SELECT * FROM devices WHERE name=?;";
+	public static final String QUERY_DEVICES_BY_ID = "SELECT * FROM devices WHERE id=?;";
+	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices";
 
 	public static String CREATE_DEVICE_TABLE =
 		"CREATE TABLE devices (" +

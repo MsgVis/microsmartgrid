@@ -3,7 +3,6 @@ package com.microsmartgrid.database;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.Device;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,10 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
-
-import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
-import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
-import static com.microsmartgrid.database.dbCom.DbWriter.writeDeviceToDatabase;
 
 public class HelperFunctions {
 	private static final Logger logger = LogManager.getLogger(HelperFunctions.class);
@@ -58,14 +53,10 @@ public class HelperFunctions {
 		return cls;
 	}
 
-	public static <T extends AbstractDevice> void deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException {
+	public static <T extends AbstractDevice> AbstractDevice deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException {
 		ObjectMapper objMapper = ObjectMapperManager.getMapper();
 
 		T device;
-		AdditionalDeviceInformation deviceInfo;
-
-		logger.debug("Querying for device with topic " + topic);
-		deviceInfo = queryDevices(topic);
 
 		if (objMapper.canSerialize(cls) && json.startsWith("{")) {
 			// create object from json
@@ -74,17 +65,9 @@ public class HelperFunctions {
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes
 			logger.warn("Input is not a json.");
-			return;
+			return null;
 		}
 
-		if (deviceInfo == null) {
-			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'
-			deviceInfo = new AdditionalDeviceInformation(topic);
-			deviceInfo.setId(insertDeviceInfo(deviceInfo));
-			logger.info("Created new device information object for name " + deviceInfo.getName() +
-				" with the generated id " + deviceInfo.getId());
-		}
-
-		writeDeviceToDatabase(deviceInfo.getId(), device);
+		return device;
 	}
 }

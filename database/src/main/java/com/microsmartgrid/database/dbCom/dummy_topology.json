@@ -1,0 +1,37 @@
+{
+	"databaseId": "Main_Meter",
+	"type": "POWERGRID",
+	"subtype": "POWERGRID",
+	"children": [
+		{
+			"databaseId": "Battery_SMA",
+			"type": "CONSUMER",
+			"subtype": "BATTERY",
+			"children": []
+		},
+		{
+			"databaseId": "PV_Meter",
+			"type": "PRODUCER",
+			"subtype": "SOLARPANEL",
+			"children": []
+		},
+		{
+			"databaseId": "ladestation-ebg-parkplatz-1",
+			"type": "CONSUMER",
+			"subtype": "CHARGINGSTATION",
+			"children": []
+		},
+		{
+			"databaseId": "ladestation-ebg-parkplatz-2",
+			"type": "CONSUMER",
+			"subtype": "CHARGINGSTATION",
+			"children": []
+		},
+		{
+			"databaseId": "ladestation-ebg-parkplatz-3",
+			"type": "CONSUMER",
+			"subtype": "CHARGINGSTATION",
+			"children": []
+		}
+	]
+}

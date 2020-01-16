@@ -21,18 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DbHandleTest {
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		setJdbcConfiguration("jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "");
 	}
 
 	@AfterEach
-	void cleanUp() {
+	public void cleanUp() {
 		execute("DROP ALL OBJECTS;");
 	}
 
 	@Test
 	@Order(1)
-	void testInsertReadings() {
+	public void testInsertReadings() {
 		execute(CREATE_READINGS_TABLE);
 
 		Battery bat = new Battery((float) 0.0);
@@ -42,7 +42,7 @@ public class DbHandleTest {
 
 	@Test
 	@Order(2)
-	void testInsertDevicesInfo() {
+	public void testInsertDevicesInfo() {
 		execute(CREATE_DEVICE_TABLE);
 
 		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
