@@ -4,6 +4,7 @@ import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,17 +17,19 @@ import java.util.List;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
 
+
 	@GetMapping("/dummyCall")
 	public static String dummyString() throws IOException {
-		return ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
+		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
 	}
 
-	/**
+	/**''
 	 * Query for all devices
 	 *
 	 * @return A list of all registered devices

@@ -1,7 +1,29 @@
 // ----------------------These are all functions for the History Graph-----------------------
 // This draws the Topology Graph using d3
+
+
+
 function drawGraphs() {
-	document.addEventListener("DOMContentLoaded", function(event) {
+	$.get("http://localhost:4711/dummyCall", {}, function(results){
+		alert(results);
+		//alert($(results).find("div.scores").html()); // show "scores" div in results
+	});
+
+	// var myData = "";
+	// $.ajax({
+	//
+	// 	url: 'http://localhost:4711/dummyCall',
+	// 	data: myData,
+	// 	type: 'GET',
+	// 	crossDomain: true,
+	// 	dataType: 'jsonp',
+	// 	success: function() { alert("Success"); },
+	// 	error: function() { alert('Failed!'); }
+	// });
+
+document.addEventListener("DOMContentLoaded", function(event) {
+
+
 		d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
 			let typeDictionary = {
 				"POWERGRID": "Power Grid",
