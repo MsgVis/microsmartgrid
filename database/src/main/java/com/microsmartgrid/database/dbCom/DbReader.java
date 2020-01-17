@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,15 +144,61 @@ public class DbReader {
 		return info;
 	}
 
-	public static <T extends Readings> List<T> queryReadings(int id, Timestamp start, Timestamp end, String step) {
+	public static <T extends Readings> List<T> queryReadings(int id, Timestamp start, Timestamp end, String step, boolean averages) {
 		List<T> readings = new ArrayList<>();
-		try (Connection conn = getConnection();
-			 PreparedStatement stmt = conn.prepareStatement(QUERY_READINGS_AS_BUCKET)) {
+		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
+		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_BUCKET;
+		if (averages) {
+			DYNAMIC_QUERY += QUERY_READINGS_AVERAGES;
+		}
+		if (/*any other calculations*/false) {
 
-			stmt.setString(1, step);
-			stmt.setInt(2, id);
-			stmt.setTimestamp(3, start);
-			stmt.setTimestamp(4, end);
+		}
+		// default
+		if (!averages && !false) {
+			DYNAMIC_QUERY += QUERY_READINGS;
+		}
+		DYNAMIC_QUERY += FROM_READINGS;
+
+		boolean atleast_one = false;
+		DYNAMIC_QUERY += " WHERE";
+		if (id > 0) {
+			DYNAMIC_QUERY += FILTER_READINGS_ID;
+			atleast_one = true;
+		}
+		if (start != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_BEFORE;
+			atleast_one = true;
+		}
+		if (end != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_AFTER;
+			atleast_one = true;
+		}
+		if (atleast_one) {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " AND");
+		} else {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " WHERE");
+		}
+
+		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
+		DYNAMIC_QUERY += ";";
+
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(DYNAMIC_QUERY)) {
+
+			int i = 1;
+			if (step != null) {
+				stmt.setString(i++, step);
+			}
+			if (id > 0) {
+				stmt.setInt(i++, id);
+			}
+			if (start != null) {
+				stmt.setTimestamp(i++, start);
+			}
+			if (end != null) {
+				stmt.setTimestamp(i++, end);
+			}
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -163,6 +208,9 @@ public class DbReader {
 				int device_id = rs.getInt("device_id");
 				AdditionalDeviceInformation info = queryDevices(device_id);
 				Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
+
+				// TODO create another objekt for each aggregate (averages...)
+				// default
 				T read = (T) cls.getDeclaredConstructor().newInstance();
 
 				read.setId(device_id);
@@ -192,6 +240,7 @@ public class DbReader {
 				read.setApparent_power_S2(rs.getFloat("s_s"));
 				read.setApparent_power_S3(rs.getFloat("s_t"));
 				read.setFrequency_grid(rs.getFloat("f"));
+				// TODO find a good way to serialize json into map and add useful info
 				read.setMetaInformation(null);
 
 				readings.add(read);
@@ -206,15 +255,11 @@ public class DbReader {
 		return readings;
 	}
 
-	public static <T extends Readings> List<T> queryReadings(int id, Timestamp start, String step) {
-		return queryReadings(id, start, Timestamp.from(Instant.MAX), step);
-	}
-
-	public static <T extends Readings> List<T> queryReadings(int id, String step) {
-		return queryReadings(id, Timestamp.from(Instant.MIN), Timestamp.from(Instant.MAX), step);
-	}
-
-	public static <T extends Readings> List<T> queryReadings(int id) {
-		return queryReadings(id, Timestamp.from(Instant.MIN), Timestamp.from(Instant.MAX), "1 second");
+	private static String removeFromEnd(String DYNAMIC_QUERY, String toRemove) {
+		if (DYNAMIC_QUERY.endsWith(toRemove)) {
+			return DYNAMIC_QUERY.substring(0, DYNAMIC_QUERY.lastIndexOf(toRemove));
+		} else {
+			throw new RuntimeException();
+		}
 	}
 }
