@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 
 import static com.microsmartgrid.database.ObjectMapperManager.getMapper;
-import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
@@ -46,7 +45,7 @@ public class DbWriter {
 	 */
 	public static int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
 		int generatedId = 0;
-		try (Connection conn = getConnection();
+		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES, Statement.RETURN_GENERATED_KEYS);) {
 
 			info.setString(1, deviceInfo.getName());
@@ -76,7 +75,7 @@ public class DbWriter {
 	 * @param device
 	 */
 	public static <T extends Readings> void insertReadings(T device) {
-		try (Connection conn = getConnection();
+		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS)) {
 			ObjectMapper objM = getMapper();
 

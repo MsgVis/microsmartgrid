@@ -1,6 +1,5 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,13 +7,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
 //TODO Access noch richtig einstellen. Momentan kann jeder darauf zugreifen.
@@ -30,7 +27,7 @@ public class DbReader {
 		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
 	}
 
-	/**''
+	/**
 	 * Query for all devices
 	 *
 	 * @return A list of all registered devices
@@ -38,7 +35,7 @@ public class DbReader {
 	@GetMapping("/deviceList")
 	public static List<AdditionalDeviceInformation> queryDeviceList() {
 		List<AdditionalDeviceInformation> infos = new ArrayList<>();
-		try (Connection conn = getConnection();
+		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_ALL_DEVICES)) {
 
 			ResultSet rs = stmt.executeQuery();
@@ -65,7 +62,7 @@ public class DbReader {
 	 */
 	public static AdditionalDeviceInformation queryDevices(String name) {
 		AdditionalDeviceInformation info = null;
-		try (Connection conn = getConnection();
+		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES)) {
 
 			stmt.setString(1, name);
@@ -95,7 +92,7 @@ public class DbReader {
 	@GetMapping("/device")
 	public static AdditionalDeviceInformation queryDevices(int id) {
 		AdditionalDeviceInformation info = null;
-		try (Connection conn = getConnection();
+		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES_BY_ID)) {
 
 			stmt.setInt(1, id);

@@ -7,32 +7,28 @@ import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.SQLException;
 import java.time.Instant;
 
-import static com.microsmartgrid.database.Configurations.setJdbcConfiguration;
 import static com.microsmartgrid.database.HelperFunctions.deserializeJson;
 import static com.microsmartgrid.database.dbCom.DbHandle.execute;
 import static com.microsmartgrid.database.dbCom.DbWriter.insertDeviceInfo;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_DEVICE_TABLE;
 import static com.microsmartgrid.database.dbCom.SqlCommands.CREATE_READINGS_TABLE;
 
+@SpringBootTest
 public class DbWriterTest {
 
 	@AfterAll
-	public static void cleanUp() {
+	public static void cleanUp() throws SQLException {
 		execute("DROP ALL OBJECTS;");
 	}
 
-	@BeforeEach
-	public void setup() {
-		setJdbcConfiguration("jdbc:h2:mem:db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", "");
-	}
-
 	@Test
-	public void testDeserializeJson() throws JsonProcessingException {
+	public void testDeserializeJson() throws JsonProcessingException, SQLException {
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
 
@@ -53,7 +49,7 @@ public class DbWriterTest {
 	}
 
 	@Test
-	public void testDeserializeJsonWithoutDeviceInfo() throws JsonProcessingException {
+	public void testDeserializeJsonWithoutDeviceInfo() throws JsonProcessingException, SQLException {
 		Battery bat = new Battery((float) 0.0);
 		bat.setTimestamp(Instant.now());
 
