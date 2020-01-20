@@ -43,31 +43,31 @@ public abstract class SqlCommands {
 		" u_s," +
 		" u_t," +
 		" f";
-	public static final String QUERY_READINGS_AVERAGES = " avg(a_minus) AS a_minus_avg," +
-		" avg(a_plus) AS a_plus_avg," +
-		" avg(r_minus) AS r_minus_avg," +
-		" avg(r_plus) AS r_plus_avg," +
-		" avg(p_total) AS p_total_avg," +
-		" avg(p_r) AS p_r_avg," +
-		" avg(p_s) AS p_s_avg," +
-		" avg(p_t) AS p_t_avg," +
-		" avg(q_total) AS q_total_avg," +
-		" avg(q_r) AS q_r_avg," +
-		" avg(q_s) AS q_s_avg," +
-		" avg(q_t) AS q_t_avg," +
-		" avg(s_total) AS s_total_avg," +
-		" avg(s_r) AS s_r_avg," +
-		" avg(s_s) AS s_s_avg," +
-		" avg(s_t) AS s_t_avg," +
-		" avg(i_avg) AS i_avg_avg," +
-		" avg(i_r) AS i_r_avg," +
-		" avg(i_s) AS i_s_avg," +
-		" avg(i_t) AS i_t_avg," +
-		" avg(u_avg) AS u_avg_avg," +
-		" avg(u_r) AS u_r_avg," +
-		" avg(u_s) AS u_s_avg," +
-		" avg(u_t) AS u_t_avg," +
-		" avg(f) as f_avg";
+	public static final String QUERY_READINGS_AVERAGES = " avg(a_minus) AS a_minus," +
+		" avg(a_plus) AS a_plus," +
+		" avg(r_minus) AS r_minus," +
+		" avg(r_plus) AS r_plus," +
+		" avg(p_total) AS p_total," +
+		" avg(p_r) AS p_r," +
+		" avg(p_s) AS p_s," +
+		" avg(p_t) AS p_t," +
+		" avg(q_total) AS q_total," +
+		" avg(q_r) AS q_r," +
+		" avg(q_s) AS q_s," +
+		" avg(q_t) AS q_t," +
+		" avg(s_total) AS s_total," +
+		" avg(s_r) AS s_r," +
+		" avg(s_s) AS s_s," +
+		" avg(s_t) AS s_t," +
+		" avg(i_avg) AS i_avg," +
+		" avg(i_r) AS i_r," +
+		" avg(i_s) AS i_s," +
+		" avg(i_t) AS i_t," +
+		" avg(u_avg) AS u_avg," +
+		" avg(u_r) AS u_r," +
+		" avg(u_s) AS u_s," +
+		" avg(u_t) AS u_t," +
+		" avg(f) as f";
 	public static final String FROM_READINGS = " FROM readings";
 	public static final String FILTER_READINGS_ID = " device_id = ? AND";
 	public static final String FILTER_READINGS_TIME_AFTER = " time > ? AND";

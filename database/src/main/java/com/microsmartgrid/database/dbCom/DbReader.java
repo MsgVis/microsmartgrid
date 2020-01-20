@@ -15,7 +15,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
 
 import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
@@ -147,98 +146,11 @@ public class DbReader {
 	}
 
 	public static <T extends Readings> List<T> queryAverages(int id, Timestamp start, Timestamp end, String step) {
-		Function<ResultSet, T> callback = (rs) -> {
-			try {
-				int device_id = rs.getInt("device_id");
-				AdditionalDeviceInformation info = queryDevices(device_id);
-				Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
-
-				// TODO create another objekt for each aggregate (averages...)
-				T avg = (T) cls.getDeclaredConstructor().newInstance();
-
-				avg.setId(device_id);
-				avg.setTimestamp(step != null ? rs.getTimestamp("bucket").toInstant() : rs.getTimestamp("time").toInstant());
-				avg.setCurrent_I_avg(rs.getFloat("i_avg_avg"));
-				avg.setCurrent_I1(rs.getFloat("i_r_avg"));
-				avg.setCurrent_I2(rs.getFloat("i_s_avg"));
-				avg.setCurrent_I3(rs.getFloat("i_t_avg"));
-				avg.setVoltage_U_avg(rs.getFloat("u_avg_avg"));
-				avg.setVoltage_U1(rs.getFloat("u_r_avg"));
-				avg.setVoltage_U2(rs.getFloat("u_s_avg"));
-				avg.setVoltage_U3(rs.getFloat("u_t_avg"));
-				avg.setActive_energy_A_plus(rs.getFloat("a_plus_avg"));
-				avg.setActive_energy_A_minus(rs.getFloat("a_minus_avg"));
-				avg.setReactive_energy_R_plus(rs.getFloat("r_plus_avg"));
-				avg.setReactive_energy_R_minus(rs.getFloat("r_minus_avg"));
-				avg.setActive_power_P_total(rs.getFloat("p_total_avg"));
-				avg.setActive_power_P1(rs.getFloat("p_r_avg"));
-				avg.setActive_power_P2(rs.getFloat("p_s_avg"));
-				avg.setActive_power_P3(rs.getFloat("p_t_avg"));
-				avg.setReactive_power_Q_total(rs.getFloat("q_total_avg"));
-				avg.setReactive_power_Q1(rs.getFloat("q_r_avg"));
-				avg.setReactive_power_Q2(rs.getFloat("q_s_avg"));
-				avg.setReactive_power_Q3(rs.getFloat("q_t_avg"));
-				avg.setApparent_power_S_total(rs.getFloat("s_total_avg"));
-				avg.setApparent_power_S1(rs.getFloat("s_r_avg"));
-				avg.setApparent_power_S2(rs.getFloat("s_s_avg"));
-				avg.setApparent_power_S3(rs.getFloat("s_t_avg"));
-				avg.setFrequency_grid(rs.getFloat("f_avg"));
-				// TODO find a good way to serialize json into map and add useful info
-				avg.setMetaInformation(rs.getObject("meta", HashMap.class));
-				return avg;
-			} catch (SQLException | IOException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				logger.warn("Could not create Reading object.");
-				throw new RuntimeException(e);
-			}
-		};
-		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, callback);
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
 	}
 
 	public static <T extends Readings> List<T> queryReading(int id, Timestamp start, Timestamp end, String step) {
-		Function<ResultSet, T> callback = (rs) -> {
-			try {
-				int device_id = rs.getInt("device_id");
-				AdditionalDeviceInformation info = queryDevices(device_id);
-				Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
-
-				T read = (T) cls.getDeclaredConstructor().newInstance();
-
-				read.setId(device_id);
-				read.setTimestamp(step != null ? rs.getTimestamp("bucket").toInstant() : rs.getTimestamp("time").toInstant());
-				read.setCurrent_I_avg(rs.getFloat("i_avg"));
-				read.setCurrent_I1(rs.getFloat("i_r"));
-				read.setCurrent_I2(rs.getFloat("i_s"));
-				read.setCurrent_I3(rs.getFloat("i_t"));
-				read.setVoltage_U_avg(rs.getFloat("u_avg"));
-				read.setVoltage_U1(rs.getFloat("u_r"));
-				read.setVoltage_U2(rs.getFloat("u_s"));
-				read.setVoltage_U3(rs.getFloat("u_t"));
-				read.setActive_energy_A_plus(rs.getFloat("a_plus"));
-				read.setActive_energy_A_minus(rs.getFloat("a_minus"));
-				read.setReactive_energy_R_plus(rs.getFloat("r_plus"));
-				read.setReactive_energy_R_minus(rs.getFloat("r_minus"));
-				read.setActive_power_P_total(rs.getFloat("p_total"));
-				read.setActive_power_P1(rs.getFloat("p_r"));
-				read.setActive_power_P2(rs.getFloat("p_s"));
-				read.setActive_power_P3(rs.getFloat("p_t"));
-				read.setReactive_power_Q_total(rs.getFloat("q_total"));
-				read.setReactive_power_Q1(rs.getFloat("q_r"));
-				read.setReactive_power_Q2(rs.getFloat("q_s"));
-				read.setReactive_power_Q3(rs.getFloat("q_t"));
-				read.setApparent_power_S_total(rs.getFloat("s_total"));
-				read.setApparent_power_S1(rs.getFloat("s_r"));
-				read.setApparent_power_S2(rs.getFloat("s_s"));
-				read.setApparent_power_S3(rs.getFloat("s_t"));
-				read.setFrequency_grid(rs.getFloat("f"));
-				// TODO find a good way to serialize json into map and add useful info
-				read.setMetaInformation(rs.getObject("meta", HashMap.class));
-				return read;
-			} catch (SQLException | IOException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				logger.warn("Could not create Reading object.");
-				throw new RuntimeException(e);
-			}
-		};
-		return generalReadingQuery(id, start, end, step, QUERY_READINGS, callback);
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS, null);
 	}
 
 	public static <T extends Readings> List<T> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
@@ -248,7 +160,7 @@ public class DbReader {
 		return results;
 	}
 
-	private static <T extends Readings> List<T> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, Function<ResultSet, T> callback) {
+	private static <T extends Readings> List<T> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
 		List<T> readings = new ArrayList<>();
 		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
 		if (step != null) {
@@ -305,7 +217,7 @@ public class DbReader {
 			if (rs == null) throw new SQLException("Database does not exist");
 
 			while (rs.next()) {
-				readings.add(callback.apply(rs));
+				readings.add(createObject(rs, step, meta));
 			}
 
 			rs.close();
@@ -314,6 +226,50 @@ public class DbReader {
 			e.printStackTrace();
 		}
 		return readings;
+	}
+
+	private static <T extends Readings> T createObject(ResultSet rs, String step, HashMap<String, Object> meta) {
+		try {
+			int device_id = rs.getInt("device_id");
+			AdditionalDeviceInformation info = queryDevices(device_id);
+			Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
+
+			T read = (T) cls.getDeclaredConstructor().newInstance();
+
+			read.setId(device_id);
+			read.setTimestamp(step != null ? rs.getTimestamp("bucket").toInstant() : rs.getTimestamp("time").toInstant());
+			read.setCurrent_I_avg(rs.getFloat("i_avg"));
+			read.setCurrent_I1(rs.getFloat("i_r"));
+			read.setCurrent_I2(rs.getFloat("i_s"));
+			read.setCurrent_I3(rs.getFloat("i_t"));
+			read.setVoltage_U_avg(rs.getFloat("u_avg"));
+			read.setVoltage_U1(rs.getFloat("u_r"));
+			read.setVoltage_U2(rs.getFloat("u_s"));
+			read.setVoltage_U3(rs.getFloat("u_t"));
+			read.setActive_energy_A_plus(rs.getFloat("a_plus"));
+			read.setActive_energy_A_minus(rs.getFloat("a_minus"));
+			read.setReactive_energy_R_plus(rs.getFloat("r_plus"));
+			read.setReactive_energy_R_minus(rs.getFloat("r_minus"));
+			read.setActive_power_P_total(rs.getFloat("p_total"));
+			read.setActive_power_P1(rs.getFloat("p_r"));
+			read.setActive_power_P2(rs.getFloat("p_s"));
+			read.setActive_power_P3(rs.getFloat("p_t"));
+			read.setReactive_power_Q_total(rs.getFloat("q_total"));
+			read.setReactive_power_Q1(rs.getFloat("q_r"));
+			read.setReactive_power_Q2(rs.getFloat("q_s"));
+			read.setReactive_power_Q3(rs.getFloat("q_t"));
+			read.setApparent_power_S_total(rs.getFloat("s_total"));
+			read.setApparent_power_S1(rs.getFloat("s_r"));
+			read.setApparent_power_S2(rs.getFloat("s_s"));
+			read.setApparent_power_S3(rs.getFloat("s_t"));
+			read.setFrequency_grid(rs.getFloat("f"));
+			// TODO find a good way to serialize json into map and add useful info
+			read.setMetaInformation(rs.getObject("meta", HashMap.class));
+			return read;
+		} catch (SQLException | IOException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			logger.warn("Could not create Reading object.");
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static String removeFromEnd(String DYNAMIC_QUERY, String toRemove) {
