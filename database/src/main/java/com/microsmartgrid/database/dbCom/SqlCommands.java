@@ -17,31 +17,32 @@ public abstract class SqlCommands {
 	public static final String QUERY_READINGS_SELECT_START = "SELECT device_id, meta";
 	public static final String QUERY_READINGS_BUCKET = " time_bucket(?, time) AS bucket,";
 	public static final String QUERY_READINGS_GROUP_BUCKET = " GROUP BY bucket ORDER BY bucket ASC;";
-	public static final String QUERY_READINGS = " a_minus AS a_minus," +
-		" a_plus AS a_plus," +
-		" r_minus AS r_minus," +
-		" r_plus AS r_plus," +
-		" p_total AS p_total," +
-		" p_r AS p_r," +
-		" p_s AS p_s," +
-		" p_t AS p_t," +
-		" q_total AS q_total," +
-		" q_r AS q_r," +
-		" q_s AS q_s," +
-		" q_t AS q_t," +
-		" s_total AS s_total," +
-		" s_r AS s_r," +
-		" s_s AS s_s," +
-		" s_t AS s_t," +
-		" i_avg AS i_avg," +
-		" i_r AS i_r," +
-		" i_s AS i_s," +
-		" i_t AS i_t," +
-		" u_avg AS u_avg," +
-		" u_r AS u_r," +
-		" u_s AS u_s," +
-		" u_t AS u_t," +
-		" f as f";
+	public static final String QUERY_READINGS_TIME = " time,";
+	public static final String QUERY_READINGS = " a_minus," +
+		" a_plus," +
+		" r_minus," +
+		" r_plus," +
+		" p_total," +
+		" p_r," +
+		" p_s," +
+		" p_t," +
+		" q_total," +
+		" q_r," +
+		" q_s," +
+		" q_t," +
+		" s_total," +
+		" s_r," +
+		" s_s," +
+		" s_t," +
+		" i_avg," +
+		" i_r," +
+		" i_s," +
+		" i_t," +
+		" u_avg," +
+		" u_r," +
+		" u_s," +
+		" u_t," +
+		" f";
 	public static final String QUERY_READINGS_AVERAGES = " avg(a_minus) AS a_minus_avg," +
 		" avg(a_plus) AS a_plus_avg," +
 		" avg(r_minus) AS r_minus_avg," +
