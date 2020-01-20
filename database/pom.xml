@@ -112,11 +112,6 @@
 			<artifactId>spring-web</artifactId>
 			<version>5.2.2.RELEASE</version>
 		</dependency>
-		<!-- Eureka - TODO -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
 		<!-- -->
 	</dependencies>
 
