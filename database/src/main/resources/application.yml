@@ -1,3 +1,10 @@
+spring:
+    datasource:
+        url: "jdbc:postgresql://localhost/msg"
+        username: "msg"
+        password: "msg"
+        driverClassName: "org.postgresql.Driver"
+
 eureka:
     client:
         serviceUrl:

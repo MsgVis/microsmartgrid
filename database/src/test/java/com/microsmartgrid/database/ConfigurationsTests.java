@@ -1,15 +1,24 @@
 package com.microsmartgrid.database;
 
-import org.junit.jupiter.api.Disabled;
+import com.microsmartgrid.database.dbCom.DatabaseConfig;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.util.Map;
+import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class ConfigurationsTests {
+
+	@Value("${spring.datasource.url}")
+	private String url;
+	@Value("${spring.datasource.username}")
+	private String username;
+	@Value("${spring.datasource.password}")
+	private String password;
 
 	@Test
 	public void checkClassMapExistance() throws IOException {
@@ -18,20 +27,14 @@ public class ConfigurationsTests {
 	}
 
 	@Test
-	@Disabled("Not suited for current, temporary implementation")
 	public void checkTestDbConfiguration() {
-		Map<String, String> jdbc = Configurations.getJdbcConfiguration();
-		assertFalse(jdbc.get("url").isBlank());
-		assertTrue(jdbc.containsKey("username"));
-		assertTrue(jdbc.containsKey("password"));
+		assertTrue(url.startsWith("jdbc:h2:mem:db"));
+		assertEquals("sa", username);
+		assertTrue(password.isBlank());
 	}
 
 	@Test
-	@Disabled("Not suited for current, temporary implementation")
-	public void checkProductionDbConfiguration() {
-		Map<String, String> jdbc = Configurations.getJdbcConfiguration();
-		assertFalse(jdbc.get("url").isBlank());
-		assertTrue(jdbc.containsKey("username"));
-		assertTrue(jdbc.containsKey("password"));
+	public void checkConfigurationFunction() throws SQLException {
+		assertNotNull(new DatabaseConfig().getConnection());
 	}
 }
