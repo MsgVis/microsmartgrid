@@ -1,6 +1,5 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
@@ -10,13 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.microsmartgrid.database.HelperFunctions.getClassFromIdentifier;
 import static com.microsmartgrid.database.dbCom.DbHandle.getConnection;
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
@@ -26,7 +23,6 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
-
 
 	@GetMapping("/dummyCall")
 	public static String dummyString() throws IOException {
@@ -145,23 +141,23 @@ public class DbReader {
 		return info;
 	}
 
-	public static <T extends Readings> List<T> queryAverages(int id, Timestamp start, Timestamp end, String step) {
+	public static List<Readings> queryAverages(int id, Timestamp start, Timestamp end, String step) {
 		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
 	}
 
-	public static <T extends Readings> List<T> queryReading(int id, Timestamp start, Timestamp end, String step) {
+	public static List<Readings> queryReading(int id, Timestamp start, Timestamp end, String step) {
 		return generalReadingQuery(id, start, end, step, QUERY_READINGS, null);
 	}
 
-	public static <T extends Readings> List<T> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
-		List<T> results = new ArrayList<>();
+	public static List<Readings> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
+		List<Readings> results = new ArrayList<>();
 		if (standard) results.addAll(queryReading(id, start, end, step));
 		if (avg) results.addAll(queryAverages(id, start, end, step));
 		return results;
 	}
 
-	private static <T extends Readings> List<T> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
-		List<T> readings = new ArrayList<>();
+	private static List<Readings> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
+		List<Readings> readings = new ArrayList<>();
 		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
 		if (step != null) {
 			DYNAMIC_QUERY += QUERY_READINGS_BUCKET;
@@ -228,16 +224,10 @@ public class DbReader {
 		return readings;
 	}
 
-	private static <T extends Readings> T createObject(ResultSet rs, String step, HashMap<String, Object> meta) {
+	private static Readings createObject(ResultSet rs, String step, HashMap<String, Object> meta) {
 		try {
-			int device_id = rs.getInt("device_id");
-			AdditionalDeviceInformation info = queryDevices(device_id);
-			Class<? extends AbstractDevice> cls = getClassFromIdentifier(info.getName());
+			Readings read = new Readings(rs.getInt("device_id"), step != null ? rs.getTimestamp("bucket").toInstant() : rs.getTimestamp("time").toInstant());
 
-			T read = (T) cls.getDeclaredConstructor().newInstance();
-
-			read.setId(device_id);
-			read.setTimestamp(step != null ? rs.getTimestamp("bucket").toInstant() : rs.getTimestamp("time").toInstant());
 			read.setCurrent_I_avg(rs.getFloat("i_avg"));
 			read.setCurrent_I1(rs.getFloat("i_r"));
 			read.setCurrent_I2(rs.getFloat("i_s"));
@@ -266,7 +256,7 @@ public class DbReader {
 			// TODO find a good way to serialize json into map and add useful info
 			read.setMetaInformation(rs.getObject("meta", HashMap.class));
 			return read;
-		} catch (SQLException | IOException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+		} catch (SQLException e) {
 			logger.warn("Could not create Reading object.");
 			throw new RuntimeException(e);
 		}

@@ -17,9 +17,9 @@ public abstract class AbstractDevice implements Serializable {
 	protected AbstractDevice() {
 	}
 
-	public AbstractDevice(Instant timestamp, Map<String, Object> metaInformation) {
+	public AbstractDevice(int id, Instant timestamp) {
 		this.timestamp = timestamp;
-		this.metaInformation = metaInformation;
+		this.id = id;
 	}
 
 	public int getId() {
