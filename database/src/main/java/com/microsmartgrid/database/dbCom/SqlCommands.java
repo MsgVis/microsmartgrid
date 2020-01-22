@@ -17,6 +17,7 @@ public abstract class SqlCommands {
 	public static final String QUERY_READINGS_SELECT_START = "SELECT device_id,";
 	public static final String GROUP_BY_ID = " GROUP BY device_id ";
 	public static final String QUERY_READINGS_BUCKET = " time_bucket(make_interval(0,0,0,?), time) AS bucket,";
+	public static final String QUERY_READINGS_FLOW = " max(time) AS time,";
 	public static final String QUERY_READINGS_GROUP_BUCKET = " GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_TIME = " time,";
 	public static final String QUERY_READINGS = " meta," +
@@ -145,6 +146,31 @@ public abstract class SqlCommands {
 		" max(u_s) AS u_s," +
 		" max(u_t) AS u_t," +
 		" max(f) as f";
+	public static final String QUERY_READINGS_LAST = " last(a_minus,time) AS a_minus," +
+		" last(a_plus,time) AS a_plus," +
+		" last(r_minus,time) AS r_minus," +
+		" last(r_plus,time) AS r_plus," +
+		" last(p_total,time) AS p_total," +
+		" last(p_r,time) AS p_r," +
+		" last(p_s,time) AS p_s," +
+		" last(p_t,time) AS p_t," +
+		" last(q_total,time) AS q_total," +
+		" last(q_r,time) AS q_r," +
+		" last(q_s,time) AS q_s," +
+		" last(q_t,time) AS q_t," +
+		" last(s_total,time) AS s_total," +
+		" last(s_r,time) AS s_r," +
+		" last(s_s,time) AS s_s," +
+		" last(s_t,time) AS s_t," +
+		" last(i_avg,time) AS i_avg," +
+		" last(i_r,time) AS i_r," +
+		" last(i_s,time) AS i_s," +
+		" last(i_t,time) AS i_t," +
+		" last(u_avg,time) AS u_avg," +
+		" last(u_r,time) AS u_r," +
+		" last(u_s,time) AS u_s," +
+		" last(u_t,time) AS u_t," +
+		" last(f,time) as f";
 	public static final String FROM_READINGS = " FROM readings";
 	public static final String FILTER_READINGS_ID = " device_id = ? AND";
 	public static final String FILTER_READINGS_TIME_AFTER = " time > ? AND";

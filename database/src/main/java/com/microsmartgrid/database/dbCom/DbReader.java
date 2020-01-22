@@ -133,6 +133,63 @@ public class DbReader {
 		return info;
 	}
 
+	@GetMapping("/flow")
+	@ResponseBody
+	public static List<Readings> queryFlow(@RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end){
+		List<Readings> readings = new ArrayList<>();
+		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
+		DYNAMIC_QUERY += QUERY_READINGS_FLOW;
+
+		DYNAMIC_QUERY += QUERY_READINGS_LAST;
+
+		DYNAMIC_QUERY += FROM_READINGS;
+
+		boolean atleast_one = false;
+		DYNAMIC_QUERY += " WHERE";
+		if (start != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_AFTER;
+			atleast_one = true;
+		}
+		if (end != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_BEFORE;
+			atleast_one = true;
+		}
+		if (atleast_one) {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " AND");
+		} else {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " WHERE");
+		}
+
+		DYNAMIC_QUERY += GROUP_BY_ID;
+		DYNAMIC_QUERY += ";";
+
+		try (Connection conn = DriverManager.getConnection(url,username,password);
+			 PreparedStatement stmt = conn.prepareStatement(DYNAMIC_QUERY)) {
+
+			int i = 1;
+			if (start != null) {
+				stmt.setTimestamp(i++, start);
+			}
+			if (end != null) {
+				stmt.setTimestamp(i++, end);
+			}
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs == null) throw new SQLException("Database does not exist");
+
+			while (rs.next()) {
+				readings.add(createObject(rs, null, null));
+			}
+
+			rs.close();
+		} catch (SQLException e) {
+			logger.warn("Could not fetch flow.");
+			e.printStackTrace();
+		}
+		return readings;
+	}
+
 	@GetMapping("/readings")
 	@ResponseBody
 	public static List<Readings> queryAgg(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step, @RequestParam("agg") String agg) {
@@ -263,7 +320,7 @@ public class DbReader {
 			read.setApparent_power_S3(rs.getFloat("s_t"));
 			read.setFrequency_grid(rs.getFloat("f"));
 			if (step == null) {
-				read.setMetaInformation(rs.getObject("meta", HashMap.class));
+//				read.setMetaInformation(rs.getObject("meta", HashMap.class));
 			} else {
 				read.setMetaInformation(meta);
 			}
