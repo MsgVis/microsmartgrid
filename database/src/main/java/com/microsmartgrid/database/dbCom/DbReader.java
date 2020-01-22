@@ -4,12 +4,7 @@ import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.*;
@@ -197,6 +192,7 @@ public class DbReader {
 		}
 
 		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
+		else DYNAMIC_QUERY += GROUP_BY_ID;
 		DYNAMIC_QUERY += ";";
 
 		try (Connection conn = getConnection();

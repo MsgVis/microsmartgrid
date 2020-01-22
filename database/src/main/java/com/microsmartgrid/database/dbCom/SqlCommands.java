@@ -15,6 +15,7 @@ public abstract class SqlCommands {
 	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices;";
 
 	public static final String QUERY_READINGS_SELECT_START = "SELECT device_id,";
+	public static final String GROUP_BY_ID = " GROUP BY device_id ";
 	public static final String QUERY_READINGS_BUCKET = " time_bucket(make_interval(0,0,0,?), time) AS bucket,";
 	public static final String QUERY_READINGS_GROUP_BUCKET = " GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_TIME = " time,";
