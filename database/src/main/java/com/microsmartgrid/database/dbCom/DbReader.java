@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +20,6 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
-
-	@GetMapping("/dummyCall")
-	public static String dummyString() throws IOException {
-		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
-	}
 
 	/**
 	 * ''
