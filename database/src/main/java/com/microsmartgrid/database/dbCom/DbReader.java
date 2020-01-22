@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import java.io.IOException;
 import java.sql.*;
@@ -141,7 +144,9 @@ public class DbReader {
 		return info;
 	}
 
-	public static List<Readings> queryAverages(int id, Timestamp start, Timestamp end, String step) {
+	@GetMapping("/readings")
+	@ResponseBody
+	public static List<Readings> queryAverages(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
 		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
 	}
 
@@ -158,6 +163,14 @@ public class DbReader {
 
 	private static List<Readings> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
 		List<Readings> readings = new ArrayList<>();
+
+		System.out.println(id);
+		System.out.println(start);
+		System.out.println(end);
+		System.out.println(step);
+		System.out.println(QUERY_FUNCTION);
+		System.out.println(meta);
+
 		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
 		if (step != null) {
 			DYNAMIC_QUERY += QUERY_READINGS_BUCKET;
@@ -175,11 +188,11 @@ public class DbReader {
 			atleast_one = true;
 		}
 		if (start != null) {
-			DYNAMIC_QUERY += FILTER_READINGS_TIME_BEFORE;
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_AFTER;
 			atleast_one = true;
 		}
 		if (end != null) {
-			DYNAMIC_QUERY += FILTER_READINGS_TIME_AFTER;
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_BEFORE;
 			atleast_one = true;
 		}
 		if (atleast_one) {
@@ -191,12 +204,14 @@ public class DbReader {
 		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
 		DYNAMIC_QUERY += ";";
 
-		try (Connection conn = getConnection();
+		System.out.println(DYNAMIC_QUERY);
+
+		try (Connection conn = DriverManager.getConnection(url, username, password);
 			 PreparedStatement stmt = conn.prepareStatement(DYNAMIC_QUERY)) {
 
 			int i = 1;
 			if (step != null) {
-				stmt.setString(i++, step);
+				stmt.setInt(i++, Integer.parseInt(step));
 			}
 			if (id > 0) {
 				stmt.setInt(i++, id);
@@ -254,7 +269,7 @@ public class DbReader {
 			read.setApparent_power_S3(rs.getFloat("s_t"));
 			read.setFrequency_grid(rs.getFloat("f"));
 			// TODO find a good way to serialize json into map and add useful info
-			read.setMetaInformation(rs.getObject("meta", HashMap.class));
+//			read.setMetaInformation(rs.getObject("meta", HashMap.class));
 			return read;
 		} catch (SQLException e) {
 			logger.warn("Could not create Reading object.");
