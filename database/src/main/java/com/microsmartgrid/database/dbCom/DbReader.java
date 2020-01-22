@@ -147,7 +147,10 @@ public class DbReader {
 	@GetMapping("/readings")
 	@ResponseBody
 	public static List<Readings> queryAverages(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
-			return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", "avg");
+		queryInfo.put("interval", step);
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
 	}
 
 	public static List<Readings> queryReading(int id, Timestamp start, Timestamp end, String step) {
@@ -258,8 +261,11 @@ public class DbReader {
 			read.setApparent_power_S2(rs.getFloat("s_s"));
 			read.setApparent_power_S3(rs.getFloat("s_t"));
 			read.setFrequency_grid(rs.getFloat("f"));
-			// TODO find a good way to serialize json into map and add useful info
-//			read.setMetaInformation(rs.getObject("meta", HashMap.class));
+			if (step == null) {
+				read.setMetaInformation(rs.getObject("meta", HashMap.class));
+			} else {
+				read.setMetaInformation(meta);
+			}
 			return read;
 		} catch (SQLException e) {
 			logger.warn("Could not create Reading object.");

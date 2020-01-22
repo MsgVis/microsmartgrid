@@ -18,7 +18,8 @@ public abstract class SqlCommands {
 	public static final String QUERY_READINGS_BUCKET = " time_bucket(make_interval(0,0,0,?), time) AS bucket,";
 	public static final String QUERY_READINGS_GROUP_BUCKET = " GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_TIME = " time,";
-	public static final String QUERY_READINGS = " a_minus," +
+	public static final String QUERY_READINGS = " meta," +
+		" a_minus," +
 		" a_plus," +
 		" r_minus," +
 		" r_plus," +
