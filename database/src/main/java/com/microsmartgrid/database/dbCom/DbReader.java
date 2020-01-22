@@ -135,11 +135,22 @@ public class DbReader {
 
 	@GetMapping("/readings")
 	@ResponseBody
-	public static List<Readings> queryAverages(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
+	public static List<Readings> queryAgg(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step, @RequestParam("agg") String agg) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "avg");
+		queryInfo.put("aggregate", agg);
 		queryInfo.put("interval", step);
-		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
+		if(agg.equals("avg")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
+		}else if(agg.equals("std")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
+		}else if(agg.equals("min")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
+		}else if(agg.equals("max")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
+		}else{
+			logger.warn("Aggregate function " + agg + " is currently not supported");
+			return null;
+		}
 	}
 
 	public static List<Readings> queryReading(int id, Timestamp start, Timestamp end, String step) {
@@ -149,7 +160,7 @@ public class DbReader {
 	public static List<Readings> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
 		List<Readings> results = new ArrayList<>();
 		if (standard) results.addAll(queryReading(id, start, end, step));
-		if (avg) results.addAll(queryAverages(id, start, end, step));
+		if (avg) results.addAll(queryAgg(id, start, end, step, "avg"));
 		return results;
 	}
 
