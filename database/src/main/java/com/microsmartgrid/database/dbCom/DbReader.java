@@ -96,7 +96,11 @@ public class DbReader {
 	 * @return device with input id or null if none could be found
 	 */
 	@GetMapping("/device")
-	public static AdditionalDeviceInformation queryDevices(int id) {
+//	public static List<Readings> queryAverages(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
+//		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
+//	}
+
+	public static AdditionalDeviceInformation queryDevices(@RequestParam("id") int id) {
 		AdditionalDeviceInformation info = null;
 		try (Connection conn = getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES_BY_ID)) {

@@ -63,5 +63,7 @@ build/
 ### VS Code ###
 .vscode/
 
+##Not sure where these come from#
+*.DS_Store
 # This has to be at the bottom for it to work???
 database/src/main/resources/config/db-config.properties

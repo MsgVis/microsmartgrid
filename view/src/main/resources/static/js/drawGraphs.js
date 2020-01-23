@@ -1,8 +1,19 @@
 // ----------------------These are all functions for the History Graph-----------------------
 // This draws the Topology Graph using d3
 
-function getMeterData() {
-	var url = "http://localhost:4711/readings?id=2&start=2000-01-01+00:00:00&end=2030-01-01+00:00:00&step=1";
+function getMeterData(id) {
+	var url = "http://localhost:4711/readings?id="+id+"&start=2000-01-01+00:00:00&end=2030-01-01+00:00:00&step=1";
+	return $.ajax({
+		url:url,
+		type: "GET",
+		error: function(){
+			console.log('Error ${error}');
+		}
+	});
+}
+
+function getDeviceInfo(id) {
+	var url = "http://localhost:4711/device?id="+id;
 	return $.ajax({
 		url:url,
 		type: "GET",
@@ -14,27 +25,8 @@ function getMeterData() {
 
 
 function drawGraphs() {
-	// $.get("http://localhost:4711/readings?id=2&start=2000-01-01+00:00:00&end=2030-01-01+00:00:00&step=1", {}, function(results){
-	// 	results[0].toString();
-	// 	//alert($(results).find("div.scores").html()); // show "scores" div in results
-	// });
-	// debugger;
 
-	// var myData = "";
-	// $.ajax({
-	//
-	// 	url: 'http://localhost:4711/dummyCall',
-	// 	data: myData,
-	// 	type: 'GET',
-	// 	crossDomain: true,
-	// 	dataType: 'jsonp',
-	// 	success: function() { alert("Success"); },
-	// 	error: function() { alert('Failed!'); }
-	// });
-
-//document.addEventListener("DOMContentLoaded", function(event) {
-	getMeterData().then( function(meterData) {
-debugger;
+document.addEventListener("DOMContentLoaded", function(event) {
 
 		d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
 			let typeDictionary = {
@@ -44,7 +36,8 @@ debugger;
 				"ELECTRICMETER": "Electric Meter",
 				"WINDMILL": "Windmill",
 				"CHARGINGSTATION": "Charging Station",
-				"BATTERY": "Battery"
+				"BATTERY": "Battery",
+				"CP": "Charging Point"
 			};
 
 			let iconLibrary = {
@@ -54,7 +47,8 @@ debugger;
 				"ELECTRICMETER": "electricMeter.png",
 				"WINDMILL": "windmill.png",
 				"CHARGINGSTATION": "chargingStation.png",
-				"BATTERY": "battery.png"
+				"BATTERY": "battery.png",
+				"CP": "carPlug.png"
 			};
 
 			let width = 1000;
@@ -161,7 +155,7 @@ debugger;
 
 				})
 				.on("click", function (d) {
-					parseHistorySVGHelper(d);
+					parseTimeSVG(d);
 				});
 
 			node.append("circle")
@@ -200,7 +194,9 @@ function setNodeColor(d){
 		color = "#558dca";
     }else if(d.data.type === "STORAGE"){
         color = "#b8dce6";
-    }
+    }else{
+		color = "#c2c5cc";
+	}
     return color;
 }
 // This calculates and creates the tree object (with nodes positions) from a json object
@@ -215,64 +211,83 @@ function tree(data, width, nodeDistanceX){
 
 
 // ----------------------These are all functions for the History Graph-----------------------
-// This draws the History Graph using d3
-function parseHistorySVG(dataBaseIds){
+// This draws the Time Graph using d3
+function parseTimeSVG(dataBaseIds){
 
-	let margin = {top: 10, right: 30, bottom: 50, left: 100};
-	let width = 1000 - margin.left - margin.right;
-	let height = 500 - margin.top - margin.bottom;
+	let id = dataBaseIds.data.id;
+	if(id != 0) {
+		getMeterData(id).then(function (deviceData) {
 
-	let svg = d3.select("#historySVG")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.right + ")");
+			let margin = {top: 10, right: 30, bottom: 50, left: 100};
+			let width = 1000 - margin.left - margin.right;
+			let height = 500 - margin.top - margin.bottom;
 
-	if(dataBaseIds.length == 0){ return; }
-	let data = dataBaseIds.map(x => getHistoryData(x));
-	if(!data[0]){ return; }
-	let sumstat = d3.nest()
-		.key(function(d){ return d.id })
-		.entries(data.flat());
-	console.log(sumstat);
+			let svg = d3.select("#historySVG")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.right + ")");
 
-	let x = d3.scaleTime()
-		.domain(d3.extent(data, function(d){
-			return (d["time"]);
-		}))
-		.range([0, width]);
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
+			let data = deviceData;
+			if (!data[0]) {
+				return;
+			}
+			let sumstat = d3.nest()
+				.key(function (d) {
+					return d.id
+				})
+				.entries(data.flat());
+			console.log(sumstat);
 
-	let y = d3.scaleLinear()
-		.domain([0, d3.max(data, function(d){
-			return +d["value"];
-		})])
-		.range([height, 0]);
-	svg.append("g")
-		.call(d3.axisLeft(y));
+			let x = d3.scaleTime()
+				.domain(d3.extent(data, function (d) {
+					var time = new Date(d["timestamp"]);
+					return (time);
+				}))
+				.range([0, width]);
+			svg.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x));
 
-	let res = sumstat.map(function(d){ return d.key });
-	let color = d3.scaleOrdinal()
-		.domain(res)
-		.range(["#FF0000"]);
+			let y = d3.scaleLinear()
+				.domain([0, d3.max(data, function (d) {
+					return +d["current_I1"];
+				})])
+				.range([height, 0]);
+			svg.append("g")
+				.call(d3.axisLeft(y));
 
-	svg.selectAll(".line")
-		.data(sumstat)
-		.enter()
-		.append("path")
-		.datum(sumstat)
-		.attr("fill", "none")
-		.attr("stroke", function(d){ return color(d.key) })
-		.attr("stroke-width", 1.5)
-		.attr("d", function(d) {
-			console.log(d);
-			d3.line()
-				.x(function (d) { return x((d["time"])) })
-				.y(function (d) { return y(d["value"]) })
-		});
+			let res = sumstat.map(function (d) {
+				return d.key
+			});
+			let color = d3.scaleOrdinal()
+				.domain(res)
+				.range(["#FF0000"]);
+
+			svg.selectAll(".line")
+				//.data(sumstat)
+				.enter()
+				.append("path")
+				//.datum(sumstat)
+				.attr("fill", "none")
+				.attr("stroke", function (d) {
+					return "#7a0606"
+				})
+				.attr("stroke-width", 1.5)
+				.attr("d", function (d) {
+					d3.line()
+						.x(function (d) {
+							var time = new Date(d["timestamp"]);
+							return x((time));
+						})
+						.y(function (d) {
+							return y(d["current_I1"])
+						})
+				});
+		})
+	}
+
 }
 var shownHistoryDbIds = [];
 function parseHistorySVGHelper(d){
@@ -281,136 +296,10 @@ function parseHistorySVGHelper(d){
 	} else { //not shown -> add to graph
 		shownHistoryDbIds.push(d.data.databaseId);
 	}
-	parseHistorySVG(shownHistoryDbIds);
+	parseTimeSVG(shownHistoryDbIds);
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// ----------------------These functions contain old JSON Objects-----------------------
-function getData(){
-	let text = {
-		"id": "0",
-		"type": "powerGrid",
-		"subtype": "powerGrid",
-		"databaseId": "PPG",
-		"depth": 0,
-		"icon": "powerGrid.png",
-		"children": [{
-			"id": "1",
-			"type": "consumer",
-			"subtype": "light",
-			"databaseId": "KA2013",
-			"depth": "1",
-			"icon": "light.png",
-			"children": []
-		}, {
-			"id": "2",
-			"type": "producer",
-			"subtype": "solarPanel",
-			"databaseId": "sunfun",
-			"depth": "1",
-			"icon": "solarPanel.png",
-			"children": []
-		}, {
-			"id": "3",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "Pald201",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "4",
-				"type": "consumer",
-				"subtype": "chargingStation",
-				"databaseId": "loader42",
-				"depth": "2",
-				"icon": "chargingStation.png",
-				"children": []
-			}, {
-				"id": "5",
-				"type": "consumer",
-				"subtype": "chargingStation",
-				"databaseId": "charger42",
-				"depth": "2",
-				"icon": "chargingStation.png",
-				"children": []
-			}]
-		}, {
-			"id": "6",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "JASD0213",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "7",
-				"type": "storage",
-				"subtype": "battery",
-				"databaseId": "battery123",
-				"depth": "2",
-				"icon": "battery.png",
-				"children": []
-			}]
-		}, {
-			"id": "8",
-			"type": "producer",
-			"subtype": "windmill",
-			"databaseId": "Cloudy202",
-			"depth": "1",
-			"icon": "windmill.png",
-			"children": []
-		}, {
-			"id": "9",
-			"type": "producer",
-			"subtype": "solarPanel",
-			"databaseId": "sunnyDay3",
-			"depth": "1",
-			"icon": "solarPanel.png",
-			"children": []
-		}, {
-			"id": "10",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "ILikeCounting",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "11",
-				"type": "electricMeter",
-				"subtype": "electricMeter",
-				"databaseId": "1plus1is2",
-				"depth": "2",
-				"icon": "electricMeter.png",
-				"children": [{
-					"id": "12",
-					"type": "producer",
-					"subtype": "windmill",
-					"databaseId": "spinningAround",
-					"depth": "3",
-					"icon": "windmill.png",
-					"children": []
-				}, {
-					"id": "13",
-					"type": "storage",
-					"subtype": "battery",
-					"databaseId": "batman",
-					"depth": "3",
-					"icon": "battery.png",
-					"children": []
-				}]
-			}, {
-				"id": "14",
-				"type": "producer",
-				"subtype": "solarPanel",
-				"databaseId": "sunnysun",
-				"depth": "2",
-				"icon": "solarPanel.png",
-				"children": []
-			}]
-		}]
-	};
-
-	return text;
-}
 function getHistoryData(databaseId){
 	console.log(databaseId);
 	switch(databaseId){
