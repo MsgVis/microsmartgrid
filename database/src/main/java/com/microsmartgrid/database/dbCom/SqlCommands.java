@@ -15,10 +15,13 @@ public abstract class SqlCommands {
 	public static final String QUERY_ALL_DEVICES = "SELECT * FROM devices;";
 
 	public static final String QUERY_READINGS_SELECT_START = "SELECT device_id,";
+	public static final String GROUP_BY_ID = " GROUP BY device_id ";
 	public static final String QUERY_READINGS_BUCKET = " time_bucket(make_interval(0,0,0,?), time) AS bucket,";
+	public static final String QUERY_READINGS_FLOW = " max(time) AS time,";
 	public static final String QUERY_READINGS_GROUP_BUCKET = " GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_TIME = " time,";
-	public static final String QUERY_READINGS = " a_minus," +
+	public static final String QUERY_READINGS = " meta," +
+		" a_minus," +
 		" a_plus," +
 		" r_minus," +
 		" r_plus," +
@@ -68,6 +71,106 @@ public abstract class SqlCommands {
 		" avg(u_s) AS u_s," +
 		" avg(u_t) AS u_t," +
 		" avg(f) as f";
+	public static final String QUERY_READINGS_STDDEV = " stddev_pop(a_minus) AS a_minus," +
+		" stddev_pop(a_plus) AS a_plus," +
+		" stddev_pop(r_minus) AS r_minus," +
+		" stddev_pop(r_plus) AS r_plus," +
+		" stddev_pop(p_total) AS p_total," +
+		" stddev_pop(p_r) AS p_r," +
+		" stddev_pop(p_s) AS p_s," +
+		" stddev_pop(p_t) AS p_t," +
+		" stddev_pop(q_total) AS q_total," +
+		" stddev_pop(q_r) AS q_r," +
+		" stddev_pop(q_s) AS q_s," +
+		" stddev_pop(q_t) AS q_t," +
+		" stddev_pop(s_total) AS s_total," +
+		" stddev_pop(s_r) AS s_r," +
+		" stddev_pop(s_s) AS s_s," +
+		" stddev_pop(s_t) AS s_t," +
+		" stddev_pop(i_avg) AS i_avg," +
+		" stddev_pop(i_r) AS i_r," +
+		" stddev_pop(i_s) AS i_s," +
+		" stddev_pop(i_t) AS i_t," +
+		" stddev_pop(u_avg) AS u_avg," +
+		" stddev_pop(u_r) AS u_r," +
+		" stddev_pop(u_s) AS u_s," +
+		" stddev_pop(u_t) AS u_t," +
+		" stddev_pop(f) as f";
+	public static final String QUERY_READINGS_MIN = " min(a_minus) AS a_minus," +
+		" min(a_plus) AS a_plus," +
+		" min(r_minus) AS r_minus," +
+		" min(r_plus) AS r_plus," +
+		" min(p_total) AS p_total," +
+		" min(p_r) AS p_r," +
+		" min(p_s) AS p_s," +
+		" min(p_t) AS p_t," +
+		" min(q_total) AS q_total," +
+		" min(q_r) AS q_r," +
+		" min(q_s) AS q_s," +
+		" min(q_t) AS q_t," +
+		" min(s_total) AS s_total," +
+		" min(s_r) AS s_r," +
+		" min(s_s) AS s_s," +
+		" min(s_t) AS s_t," +
+		" min(i_avg) AS i_avg," +
+		" min(i_r) AS i_r," +
+		" min(i_s) AS i_s," +
+		" min(i_t) AS i_t," +
+		" min(u_avg) AS u_avg," +
+		" min(u_r) AS u_r," +
+		" min(u_s) AS u_s," +
+		" min(u_t) AS u_t," +
+		" min(f) as f";
+	public static final String QUERY_READINGS_MAX = " max(a_minus) AS a_minus," +
+		" max(a_plus) AS a_plus," +
+		" max(r_minus) AS r_minus," +
+		" max(r_plus) AS r_plus," +
+		" max(p_total) AS p_total," +
+		" max(p_r) AS p_r," +
+		" max(p_s) AS p_s," +
+		" max(p_t) AS p_t," +
+		" max(q_total) AS q_total," +
+		" max(q_r) AS q_r," +
+		" max(q_s) AS q_s," +
+		" max(q_t) AS q_t," +
+		" max(s_total) AS s_total," +
+		" max(s_r) AS s_r," +
+		" max(s_s) AS s_s," +
+		" max(s_t) AS s_t," +
+		" max(i_avg) AS i_avg," +
+		" max(i_r) AS i_r," +
+		" max(i_s) AS i_s," +
+		" max(i_t) AS i_t," +
+		" max(u_avg) AS u_avg," +
+		" max(u_r) AS u_r," +
+		" max(u_s) AS u_s," +
+		" max(u_t) AS u_t," +
+		" max(f) as f";
+	public static final String QUERY_READINGS_LAST = " last(a_minus,time) AS a_minus," +
+		" last(a_plus,time) AS a_plus," +
+		" last(r_minus,time) AS r_minus," +
+		" last(r_plus,time) AS r_plus," +
+		" last(p_total,time) AS p_total," +
+		" last(p_r,time) AS p_r," +
+		" last(p_s,time) AS p_s," +
+		" last(p_t,time) AS p_t," +
+		" last(q_total,time) AS q_total," +
+		" last(q_r,time) AS q_r," +
+		" last(q_s,time) AS q_s," +
+		" last(q_t,time) AS q_t," +
+		" last(s_total,time) AS s_total," +
+		" last(s_r,time) AS s_r," +
+		" last(s_s,time) AS s_s," +
+		" last(s_t,time) AS s_t," +
+		" last(i_avg,time) AS i_avg," +
+		" last(i_r,time) AS i_r," +
+		" last(i_s,time) AS i_s," +
+		" last(i_t,time) AS i_t," +
+		" last(u_avg,time) AS u_avg," +
+		" last(u_r,time) AS u_r," +
+		" last(u_s,time) AS u_s," +
+		" last(u_t,time) AS u_t," +
+		" last(f,time) as f";
 	public static final String FROM_READINGS = " FROM readings";
 	public static final String FILTER_READINGS_ID = " device_id = ? AND";
 	public static final String FILTER_READINGS_TIME_AFTER = " time > ? AND";

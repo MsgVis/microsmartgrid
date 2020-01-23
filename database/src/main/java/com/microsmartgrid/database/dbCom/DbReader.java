@@ -4,14 +4,8 @@ import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,12 +20,14 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
+	private static final String url = "jdbc:postgresql://192.168.121.10/msg";
+	private static final String username = "postgres";
+	private static final String password = "postgres";
 
 	@GetMapping("/dummyCall")
 	public static String dummyString() throws IOException {
 		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
 	}
-
 	/**
 	 * ''
 	 * Query for all devices
@@ -41,7 +37,7 @@ public class DbReader {
 	@GetMapping("/deviceList")
 	public static List<AdditionalDeviceInformation> queryDeviceList() {
 		List<AdditionalDeviceInformation> infos = new ArrayList<>();
-		try (Connection conn = getConnection();
+		try (Connection conn = DriverManager.getConnection(url, username, password);
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_ALL_DEVICES)) {
 
 			ResultSet rs = stmt.executeQuery();
@@ -102,7 +98,7 @@ public class DbReader {
 
 	public static AdditionalDeviceInformation queryDevices(@RequestParam("id") int id) {
 		AdditionalDeviceInformation info = null;
-		try (Connection conn = getConnection();
+		try (Connection conn = DriverManager.getConnection(url, username, password);
 			 PreparedStatement stmt = conn.prepareStatement(QUERY_DEVICES_BY_ID)) {
 
 			stmt.setInt(1, id);
@@ -148,10 +144,81 @@ public class DbReader {
 		return info;
 	}
 
+	@GetMapping("/flow")
+	@ResponseBody
+	public static List<Readings> queryFlow(@RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end){
+		List<Readings> readings = new ArrayList<>();
+		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
+		DYNAMIC_QUERY += QUERY_READINGS_FLOW;
+
+		DYNAMIC_QUERY += QUERY_READINGS_LAST;
+
+		DYNAMIC_QUERY += FROM_READINGS;
+
+		boolean atleast_one = false;
+		DYNAMIC_QUERY += " WHERE";
+		if (start != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_AFTER;
+			atleast_one = true;
+		}
+		if (end != null) {
+			DYNAMIC_QUERY += FILTER_READINGS_TIME_BEFORE;
+			atleast_one = true;
+		}
+		if (atleast_one) {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " AND");
+		} else {
+			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " WHERE");
+		}
+
+		DYNAMIC_QUERY += GROUP_BY_ID;
+		DYNAMIC_QUERY += ";";
+
+		try (Connection conn = DriverManager.getConnection(url,username,password);
+			 PreparedStatement stmt = conn.prepareStatement(DYNAMIC_QUERY)) {
+
+			int i = 1;
+			if (start != null) {
+				stmt.setTimestamp(i++, start);
+			}
+			if (end != null) {
+				stmt.setTimestamp(i++, end);
+			}
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs == null) throw new SQLException("Database does not exist");
+
+			while (rs.next()) {
+				readings.add(createObject(rs, null, null));
+			}
+
+			rs.close();
+		} catch (SQLException e) {
+			logger.warn("Could not fetch flow.");
+			e.printStackTrace();
+		}
+		return readings;
+	}
+
 	@GetMapping("/readings")
 	@ResponseBody
-	public static List<Readings> queryAverages(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
-		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, null);
+	public static List<Readings> queryAgg(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step, @RequestParam("agg") String agg) {
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", agg);
+		queryInfo.put("interval", step);
+		if(agg.equals("avg")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
+		}else if(agg.equals("std")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
+		}else if(agg.equals("min")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
+		}else if(agg.equals("max")){
+			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
+		}else{
+			logger.warn("Aggregate function " + agg + " is currently not supported");
+			return null;
+		}
 	}
 
 	public static List<Readings> queryReading(int id, Timestamp start, Timestamp end, String step) {
@@ -161,7 +228,7 @@ public class DbReader {
 	public static List<Readings> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
 		List<Readings> results = new ArrayList<>();
 		if (standard) results.addAll(queryReading(id, start, end, step));
-		if (avg) results.addAll(queryAverages(id, start, end, step));
+		if (avg) results.addAll(queryAgg(id, start, end, step, "avg"));
 		return results;
 	}
 
@@ -206,6 +273,7 @@ public class DbReader {
 		}
 
 		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
+		else DYNAMIC_QUERY += GROUP_BY_ID;
 		DYNAMIC_QUERY += ";";
 
 		System.out.println(DYNAMIC_QUERY);
@@ -272,8 +340,11 @@ public class DbReader {
 			read.setApparent_power_S2(rs.getFloat("s_s"));
 			read.setApparent_power_S3(rs.getFloat("s_t"));
 			read.setFrequency_grid(rs.getFloat("f"));
-			// TODO find a good way to serialize json into map and add useful info
-//			read.setMetaInformation(rs.getObject("meta", HashMap.class));
+			if (step == null) {
+//				read.setMetaInformation(rs.getObject("meta", HashMap.class));
+			} else {
+				read.setMetaInformation(meta);
+			}
 			return read;
 		} catch (SQLException e) {
 			logger.warn("Could not create Reading object.");
