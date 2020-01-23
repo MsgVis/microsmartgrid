@@ -47,21 +47,33 @@
 			feather.replace()
 		</script>
 
-		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+		<main role="main" class="col-md-20 ml-sm-auto col-lg-10 px-4">
 
 			<div class="tab-content">
 
 				<!-- Live Ansicht -->
 				<div id="live" class="tab-pane fade show active">
 
-
+					<!-- Überschrift Leiste -->
 					<div
 						class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 						<h1 class="h2">Live</h1>
 					</div>
-					<svg id="liveSVG"></svg>
-					<br>
-					<svg id="historySVG"></svg>
+
+					<!-- Charts -->
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-5">
+								<svg id="liveSVG"></svg>
+							</div>
+							<div class="col-md-5">
+								<svg id="historySVG"></svg>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group"></div>
+							</div>
+						</div>
+					</div>
 					<br>
 					<script type="text/javascript" src="./js/drawGraphs.js"></script>
 

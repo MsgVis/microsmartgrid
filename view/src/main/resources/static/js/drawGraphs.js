@@ -29,7 +29,7 @@ function drawGraphs() {
 document.addEventListener("DOMContentLoaded", function(event) {
 
 		d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
-			let typeDictionary = {
+			this.typeDictionary = {
 				"POWERGRID": "Power Grid",
 				"LIGHT": "Light",
 				"SOLARPANEL": "Solar Panel",
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				"CP": "Charging Point"
 			};
 
-			let iconLibrary = {
+			this.iconLibrary = {
 				"POWERGRID": "powerGrid.png",
 				"LIGHT": "light.png",
 				"SOLARPANEL": "solarPanel.png",
@@ -51,15 +51,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				"CP": "carPlug.png"
 			};
 
-			let width = 1000;
-			let height = 1000;
+			let width = 700;
+			let height = 700;
 
 			let circleRadius = 18;
 			let nodeDistanceX = 45;
 			let padding = 10;
 
 
-			const root = this.tree(data, width, nodeDistanceX);
+			const root = this.tree(data, width, height/15);
 
 			let x0 = Infinity;
 			let x1 = -x0;
@@ -215,80 +215,133 @@ function tree(data, width, nodeDistanceX){
 function parseTimeSVG(dataBaseIds){
 
 	let id = dataBaseIds.data.id;
+	this.deviceData = dataBaseIds.data;
+
+    // Delete old chart
+	d3.selectAll("#historySVG > *").remove();
+	d3.selectAll(".form-group > *").remove();
 	if(id != 0) {
 		getMeterData(id).then(function (deviceData) {
 
-			let margin = {top: 10, right: 30, bottom: 50, left: 100};
-			let width = 1000 - margin.left - margin.right;
-			let height = 500 - margin.top - margin.bottom;
+			var data = deviceData
+			plotTimeSeries(data,  Object.keys(data[0]).sort()[0])
 
-			let svg = d3.select("#historySVG")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform",
-					"translate(" + margin.left + "," + margin.right + ")");
+			///// Create Options:
+			// Handler for dropdown value change
+			var dropdownChange = function() {
+				var newMeterValue = d3.select(this).property('value');
+				plotTimeSeries(data, newMeterValue);
+			};
 
-			let data = deviceData;
-			if (!data[0]) {
-				return;
-			}
-			let sumstat = d3.nest()
-				.key(function (d) {
-					return d.id
-				})
-				.entries(data.flat());
-			console.log(sumstat);
+			// Get names of Meter Values
+			var meterValueNames = Object.keys(data[0]).sort();
+			meterValueNames.splice(meterValueNames.indexOf('id'), 1); //remove id
+			meterValueNames.splice(meterValueNames.indexOf('timestamp'), 1);
+			meterValueNames.splice(meterValueNames.indexOf('metaInformation'), 1);
 
-			let x = d3.scaleTime()
-				.domain(d3.extent(data, function (d) {
-					var time = new Date(d["timestamp"]);
-					return (time);
-				}))
-				.range([0, width]);
-			svg.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(d3.axisBottom(x));
+			var dropdown = d3.select(".form-group")
+				.insert("label", ".form-group")
+				.attr("for","meterValues_"+dataBaseIds)
+				.text("Select Meter Value:")
+				.insert("select", ".form-group")
+				.attr("id","meterValues_"+dataBaseIds)
+				.on("change", dropdownChange)
+				.attr("class","form-control");
 
-			let y = d3.scaleLinear()
-				.domain([0, d3.max(data, function (d) {
-					return +d["current_I1"];
-				})])
-				.range([height, 0]);
-			svg.append("g")
-				.call(d3.axisLeft(y));
-
-			let res = sumstat.map(function (d) {
-				return d.key
-			});
-			let color = d3.scaleOrdinal()
-				.domain(res)
-				.range(["#FF0000"]);
-
-			svg.selectAll(".line")
-				//.data(sumstat)
-				.enter()
-				.append("path")
-				//.datum(sumstat)
-				.attr("fill", "none")
-				.attr("stroke", function (d) {
-					return "#7a0606"
-				})
-				.attr("stroke-width", 1.5)
-				.attr("d", function (d) {
-					d3.line()
-						.x(function (d) {
-							var time = new Date(d["timestamp"]);
-							return x((time));
-						})
-						.y(function (d) {
-							return y(d["current_I1"])
-						})
+			dropdown.selectAll("option")
+				.data(meterValueNames)
+				.enter().append("option")
+				.attr("value", function (d) { return d; })
+				.text(function (d) {
+					return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
 				});
+
+
+
+
+
+
 		})
 	}
 
 }
+
+function plotTimeSeries(data, plotItem){
+
+	// Delete old chart
+	d3.selectAll("#historySVG > *").remove();
+	d3.selectAll(".form-group > *").remove();
+
+	// Setting Window Parameter
+	let margin = {top: 0, right: 30, bottom: 200, left: 100};
+	let width = 700 - margin.left - margin.right;
+	let height = 700 - margin.top - margin.bottom;
+
+	// Attaching svg to dom
+	let svg = d3.select("#historySVG")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.right + ")");
+
+	// Check that data is not empty
+	if (!data[0]) {
+		return;
+	}
+
+	// Add X axis --> it is a date format
+	let x = d3.scaleTime()
+		.domain(d3.extent(data, function (d) {
+			var time = new Date(d["timestamp"]);
+			return (time);
+		}))
+		.range([0, width]);
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x));
+
+	// Add Y axis
+	let y = d3.scaleLinear()
+		.domain([d3.min(data, function (d) {
+			return +d[plotItem];
+		}), d3.max(data, function (d) {
+			return +d[plotItem];
+		})])
+		.range([height, 0]);
+	svg.append("g")
+		.call(d3.axisLeft(y));
+
+	// Add the line
+	svg.append("path")
+		.datum(data)
+		.attr("fill", "none")
+		.attr("stroke", "steelblue")
+		.attr("stroke-width", 1.5)
+		.attr("d", d3.line()
+			.x(function (d) {
+				var time = new Date(d["timestamp"]);
+				return x((time));
+			})
+			.y(function (d) {
+				return y(d[plotItem])
+			})
+		)
+
+	// // Add Name
+	// d3.select(".form-group")
+	// 	.insert("text", ".form-group")
+	// 	.attr("x", (width / 2))
+	// 	.attr("y", height + 50)
+	// 	.attr("text-anchor", "middle")
+	// 	.style("font-size", "16px")
+	// 	.style("font-weight", "bold")
+	// 	.text(typeDictionary[this.deviceData.subtype] +": "+ this.deviceData.databaseId);
+
+}
+
+
+
 var shownHistoryDbIds = [];
 function parseHistorySVGHelper(d){
 	if(shownHistoryDbIds.includes(d.data.databaseId)){ //already shown -> remove from graph
