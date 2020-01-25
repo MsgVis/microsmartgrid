@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +19,6 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
-
-
-	@GetMapping("/dummyCall")
-	public static String dummyString() throws IOException {
-		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
-	}
 
 	/**
 	 * Query for all devices

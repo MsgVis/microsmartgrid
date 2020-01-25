@@ -1,4 +1,4 @@
-package com.microsmartgrid.database;
+package com.microsmartgrid.mqttclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import static com.microsmartgrid.database.ObjectMapperManager.getYmlMapper;
-
 public class Configurations {
 	private static final Logger logger = LogManager.getLogger(Configurations.class);
 
@@ -19,7 +17,7 @@ public class Configurations {
 		ArrayList<LinkedHashMap<String, String>> classMap;
 
 		try {
-			classMap = getYmlMapper().readValue(classMapFile, new TypeReference<>() {
+			classMap = ObjectMapperManager.getYmlMapper().readValue(classMapFile, new TypeReference<>() {
 			});
 		} catch (IOException e) {
 			logger.error("Couldn't read from ClassMap.yml configuration file!");

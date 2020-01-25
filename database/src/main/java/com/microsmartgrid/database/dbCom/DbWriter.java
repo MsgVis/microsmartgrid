@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
-import static com.microsmartgrid.database.ObjectMapperManager.getMapper;
 import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
@@ -77,7 +76,8 @@ public class DbWriter {
 	public static <T extends Readings> void insertReadings(T device) {
 		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS)) {
-			ObjectMapper objM = getMapper();
+			// This will be refactored anyways
+			ObjectMapper objM = new ObjectMapper();
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
 			reading.setInt(2, device.getId());
