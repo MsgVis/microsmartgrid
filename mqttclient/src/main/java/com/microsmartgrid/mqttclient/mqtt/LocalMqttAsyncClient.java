@@ -1,4 +1,4 @@
-package com.microsmartgrid.database.mqtt;
+package com.microsmartgrid.mqttclient.mqtt;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +15,7 @@ public class LocalMqttAsyncClient {
 	public void init(String serverURI) {
 		try {
 			logger.info("Setting up Client...");
-			mqtt_client = new MqttAsyncClient(serverURI, "com-microsmartgrid-database");
+			mqtt_client = new MqttAsyncClient(serverURI, "com-microsmartgrid-mqttclient");
 			mqtt_client.setCallback(new LocalMqttCallback());
 			logger.info("Setup successful.");
 		} catch (MqttException e) {

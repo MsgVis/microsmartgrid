@@ -1,4 +1,4 @@
-package com.microsmartgrid.database.mqtt;
+package com.microsmartgrid.mqttclient.mqtt;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

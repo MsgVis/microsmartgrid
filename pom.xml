@@ -52,6 +52,7 @@
 		<module>eurekaserver</module>
 		<module>database</module>
 		<module>view</module>
+		<module>mqttclient</module>
 	</modules>
 
 	<build>

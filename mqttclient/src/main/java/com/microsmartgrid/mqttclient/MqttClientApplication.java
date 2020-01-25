@@ -1,21 +1,32 @@
-package com.microsmartgrid.database;
+package com.microsmartgrid.mqttclient;
 
-
-import com.microsmartgrid.database.mqtt.LocalMqttAsyncClient;
+import com.microsmartgrid.mqttclient.mqtt.LocalMqttAsyncClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-public class Database {
-	private static final Logger logger = LogManager.getLogger(Database.class);
+@SpringBootApplication
+@EnableDiscoveryClient
+public class MqttClientApplication implements CommandLineRunner {
+	private static final Logger logger = LogManager.getLogger(MqttClientApplication.class);
+
 	private static String msg_serverURI;
 	private static String mqtt_topic;
 	private static String mqtt_timeout;
 
-	/**
-	 * @param args - first: jdbc database url, second: database username, third: database password,
-	 *             fourth: serverURI, fifth: topic, sixth: timeout
-	 */
 	public static void main(String[] args) {
+		SpringApplication.run(MqttClientApplication.class, args);
+	}
+
+
+	/**
+	 * @param args - : first: serverURI, second: topic, third: timeout
+	 */
+	@Override
+	public void run(String... args) throws Exception {
 		if (args.length < 1 || args[0].isEmpty()) msg_serverURI = "tcp://192.168.121.172";
 		else msg_serverURI = args[0];
 		if (args.length < 2 || args[1].isBlank()) mqtt_topic = "#";
@@ -33,6 +44,5 @@ public class Database {
 		mqtt_client.init(msg_serverURI);
 		mqtt_client.connect(Integer.parseInt(mqtt_timeout));
 		mqtt_client.standardSubscribe(mqtt_topic);
-
 	}
 }
