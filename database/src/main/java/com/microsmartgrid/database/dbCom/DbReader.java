@@ -133,8 +133,9 @@ public class DbReader {
 
 	/**
 	 * Queries the database for the last reading from each device
- 	 * @param start if there is no reading newer than start, nothing will be given back for this device
-	 * @param end readings will be older or as old as end
+	 *
+	 * @param start if there is no reading newer than start, nothing will be given back for this device
+	 * @param end   readings will be older or as old as end
 	 * @return a list of readings, one for each device
 	 */
 	@GetMapping("/flow")
@@ -151,17 +152,18 @@ public class DbReader {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", agg);
 		queryInfo.put("interval", step);
-		if (agg.equals("avg")) {
-			return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
-		} else if (agg.equals("std")) {
-			return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
-		} else if (agg.equals("min")) {
-			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
-		} else if (agg.equals("max")) {
-			return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
-		} else {
-			logger.warn("Aggregate function " + agg + " is currently not supported");
-			return null;
+		switch (agg) {
+			case "avg":
+				return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
+			case "std":
+				return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
+			case "min":
+				return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
+			case "max":
+				return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
+			default:
+				logger.warn("Aggregate function " + agg + " is currently not supported");
+				return new ArrayList<>();
 		}
 	}
 
