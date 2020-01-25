@@ -141,9 +141,18 @@ public class DbReader {
 	@GetMapping("/flow")
 	@ResponseBody
 	public static List<Readings> queryFlow(@RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end) {
+		List<AdditionalDeviceInformation> infos = queryDeviceList();
+		List<Readings> readings = new ArrayList<>();
+
 		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "last");
-		return generalReadingQuery(0, start, end, null, QUERY_READINGS_LAST, queryInfo);
+		queryInfo.put("aggregate", "flow");
+
+		for (AdditionalDeviceInformation i : infos) {
+			List<Readings> r = generalReadingQuery(i.getId(), start, end, null, QUERY_READINGS, queryInfo);
+			readings.addAll(r);
+		}
+
+		return readings;
 	}
 
 	@GetMapping("/readings")
@@ -181,9 +190,7 @@ public class DbReader {
 	private static List<Readings> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
 		List<Readings> readings = new ArrayList<>();
 		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
-		if (step == null && meta != null) {
-			DYNAMIC_QUERY += QUERY_READINGS_FLOW;
-		} else if (step != null) {
+		if (step != null) {
 			DYNAMIC_QUERY += QUERY_READINGS_BUCKET;
 		} else {
 			DYNAMIC_QUERY += QUERY_READINGS_TIME;
@@ -212,7 +219,8 @@ public class DbReader {
 			DYNAMIC_QUERY = removeFromEnd(DYNAMIC_QUERY, " WHERE");
 		}
 
-		if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
+		if (step == null && meta != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_FLOW;
+		else if (step != null) DYNAMIC_QUERY += QUERY_READINGS_GROUP_BUCKET;
 		else DYNAMIC_QUERY += GROUP_BY_ID;
 		DYNAMIC_QUERY += ";";
 
