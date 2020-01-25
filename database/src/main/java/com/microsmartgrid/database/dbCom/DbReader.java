@@ -131,6 +131,12 @@ public class DbReader {
 		return info;
 	}
 
+	/**
+	 * Queries the database for the last reading from each device
+ 	 * @param start if there is no reading newer than start, nothing will be given back for this device
+	 * @param end readings will be older or as old as end
+	 * @return a list of readings, one for each device
+	 */
 	@GetMapping("/flow")
 	@ResponseBody
 	public static List<Readings> queryFlow(@RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end) {
