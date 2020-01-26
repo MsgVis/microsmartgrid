@@ -47,7 +47,12 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.2.9</version>
 		</dependency>
-		<!-- Hibernate - in-memory database -->
+		<!-- Hibernate - Object Relational Model -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- h2 - in-memory database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

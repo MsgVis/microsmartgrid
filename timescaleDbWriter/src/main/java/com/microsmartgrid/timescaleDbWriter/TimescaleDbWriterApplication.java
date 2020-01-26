@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsmartgrid.database.HelperFunctions;
 import com.microsmartgrid.database.dbCom.DatabaseConfig;
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
-import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
+import com.microsmartgrid.database.model.AbstractDevice;
+import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
+import com.microsmartgrid.database.model.DeviceInformation;
+import com.microsmartgrid.database.repositories.DaiSmartGrid.ReadingsRepository;
+import com.microsmartgrid.database.repositories.DeviceInformationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
 @SpringBootApplication
@@ -35,83 +36,13 @@ public class TimescaleDbWriterApplication {
 
 	@Autowired
 	private ReadingClient dbReader;
-
-	@FeignClient("timescaleDbReader")
-	interface ReadingClient {
-		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
-		List<AdditionalDeviceInformation> queryDeviceList();
-		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
-		AdditionalDeviceInformation queryDevices(@RequestParam("id") int id);
-		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
-		AdditionalDeviceInformation queryDevices(@RequestParam("name") String name);
-	}
+	@Autowired
+	private DeviceInformationRepository deviceInfoRepository;
+	@Autowired
+	private ReadingsRepository readingsRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TimescaleDbWriterApplication.class, args);
-	}
-
-	@PostMapping("/")
-	public void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, IllegalArgumentException {
-		// Get class mapping
-		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
-		AbstractDevice device;
-		try {
-			// create object
-			device = HelperFunctions.deserializeJson(json, topic, cls);
-		} catch (JsonProcessingException e) {
-			logger.error("Couldn't construct instance from topic " + topic);
-			throw new RuntimeException(e);
-		}
-
-		// check for existing deviceInformation
-		AdditionalDeviceInformation deviceInfo = dbReader.queryDevices(topic);
-		if (deviceInfo == null) {
-			// create new DeviceInformation to the corresponding device and save topic to 'name'
-			deviceInfo = new AdditionalDeviceInformation(topic);
-			deviceInfo.setId(insertDeviceInfo(deviceInfo));
-			logger.info("Created new device information object for name " + deviceInfo.getName() +
-				" with the generated id " + deviceInfo.getId());
-		}
-		device.setId(deviceInfo.getId());
-
-		logger.info("Writing " + device.toString() + " to database.");
-		if (device instanceof Readings) {
-			// write entry to database
-			insertReadings((Readings) device);
-		} else {
-			logger.warn("Database commands for the class " + device.getClass() + " haven't been implemented yet");
-		}
-	}
-
-	/**
-	 * Insert AdditionalDeviceInformation object into database
-	 *
-	 * @param deviceInfo
-	 */
-	public int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
-		int generatedId = 0;
-		try (Connection conn = new DatabaseConfig().getConnection();
-			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES, Statement.RETURN_GENERATED_KEYS);) {
-
-			info.setString(1, deviceInfo.getName());
-			info.setString(2, deviceInfo.getDescription());
-			info.setString(3, deviceInfo.getType() == null ? null : deviceInfo.getType().name());
-			info.setString(4, deviceInfo.getSubtype() == null ? null : deviceInfo.getSubtype().name());
-			info.setArray(5, conn.createArrayOf("INTEGER", deviceInfo.getChildren()));
-
-			if (info.executeUpdate() > 0) {
-				ResultSet rs = info.getGeneratedKeys();
-				rs.next();
-				generatedId = rs.getInt(1);
-			} else {
-				throw new SQLIntegrityConstraintViolationException("Couldn't create new id for deviceInformattion with name " + deviceInfo.getName());
-			}
-
-		} catch (SQLException e) {
-			logger.warn("Couldn't commit deviceInformation with name " + deviceInfo.getName() + " to database.");
-			e.printStackTrace();
-		}
-		return generatedId;
 	}
 
 	/**
@@ -126,7 +57,7 @@ public class TimescaleDbWriterApplication {
 			ObjectMapper objM = new ObjectMapper();
 
 			reading.setTimestamp(1, Timestamp.from(device.getTimestamp()));
-			reading.setInt(2, device.getId());
+			reading.setInt(2, device.getDeviceInformation().getId());
 			// SQLType 1 = float
 			int f = Types.FLOAT;
 			reading.setObject(3, device.getActive_energy_A_minus(), f);
@@ -160,7 +91,7 @@ public class TimescaleDbWriterApplication {
 
 		} catch (SQLException e) {
 			logger.warn("Couldn't commit reading connected to device with id " +
-				(device.getId() > 0 ? device.getId() : "none (no device information set yet)") + " to database.");
+				(device.getDeviceInformation().getId() > 0 ? device.getDeviceInformation().getId() : "none (no device information set yet)") + " to database.");
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {
 			logger.warn("Couldn't create json from meta information map.");
@@ -168,6 +99,57 @@ public class TimescaleDbWriterApplication {
 		}
 	}
 
+	/**
+	 * Insert AdditionalDeviceInformation object into database
+	 *
+	 * @param deviceInfo
+	 */
+	public DeviceInformation insertDeviceInfo(DeviceInformation deviceInfo) {
+		return deviceInfoRepository.save(deviceInfo);
+	}
 
+	@PostMapping("/")
+	public void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, IllegalArgumentException {
+		// Get class mapping
+		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
+		AbstractDevice device;
+		try {
+			// create object
+			device = HelperFunctions.deserializeJson(json, topic, cls);
+		} catch (JsonProcessingException e) {
+			logger.error("Couldn't construct instance from topic " + topic);
+			throw new RuntimeException(e);
+		}
 
+		// check for existing deviceInformation
+		DeviceInformation deviceInfo = deviceInfoRepository.findByName(topic).orElse(null);
+		if (deviceInfo == null) {
+			// create new DeviceInformation to the corresponding device and save topic to 'name'
+			deviceInfo = new DeviceInformation(topic);
+			deviceInfo.setId(insertDeviceInfo(deviceInfo).getId());
+			logger.info("Created new device information object for name " + deviceInfo.getName() +
+				" with the generated id " + deviceInfo.getId());
+		}
+		device.setDeviceInformation(deviceInfo);
+
+		logger.info("Writing " + device.toString() + " to database.");
+		if (device instanceof Readings) {
+			// write entry to database
+			insertReadings((Readings) device);
+		} else {
+			logger.warn("Database commands for the class " + device.getClass() + " haven't been implemented yet");
+		}
+	}
+
+	@FeignClient("timescaleDbReader")
+	interface ReadingClient {
+		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
+		List<DeviceInformation> queryDeviceList();
+
+		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
+		DeviceInformation queryDevices(@RequestParam("id") int id);
+
+		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
+		DeviceInformation queryDevices(@RequestParam("name") String name);
+	}
 }

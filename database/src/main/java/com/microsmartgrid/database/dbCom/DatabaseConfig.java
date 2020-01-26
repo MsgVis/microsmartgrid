@@ -1,24 +1,22 @@
 package com.microsmartgrid.database.dbCom;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Configuration
 public class DatabaseConfig {
 
-	@Value("${spring.datasource.url}")
-	private String url;
-	@Value("${spring.datasource.password}")
-	private String password;
-	@Value("${spring.datasource.username}")
-	private String username;
+	@Autowired
+	private DataSource dataSource;
 
 	public DatabaseConfig() {
 	}
 
 	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url, username, password);
+		return dataSource.getConnection();
 	}
 }
