@@ -1,6 +1,6 @@
-package com.microsmartgrid.database.dbDataStructures.shellies;
+package com.microsmartgrid.database.model.shellies;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.model.AbstractDevice;
 
 public class shellyplug extends AbstractDevice {
 

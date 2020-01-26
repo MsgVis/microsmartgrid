@@ -1,4 +1,4 @@
-package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
+package com.microsmartgrid.database.model.DaiSmartGrid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

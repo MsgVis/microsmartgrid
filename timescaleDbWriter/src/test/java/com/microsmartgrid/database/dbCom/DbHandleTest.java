@@ -1,7 +1,7 @@
 package com.microsmartgrid.database.dbCom;
 
-import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
-import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Battery;
+import com.microsmartgrid.database.model.DaiSmartGrid.Battery;
+import com.microsmartgrid.database.model.DeviceInformation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -38,11 +38,11 @@ public class DbHandleTest {
 	@FeignClient("timescaleDbReader")
 	interface ReadingClient {
 		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
-		public List<AdditionalDeviceInformation> queryDeviceList();
+		public List<DeviceInformation> queryDeviceList();
 		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
-		public AdditionalDeviceInformation queryDevices(@RequestParam("id") int id);
+		public DeviceInformation queryDevices(@RequestParam("id") int id);
 		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
-		public AdditionalDeviceInformation queryDevices(@RequestParam("name") String name);
+		public DeviceInformation queryDevices(@RequestParam("name") String name);
 	}
 
 	@AfterEach
@@ -53,7 +53,6 @@ public class DbHandleTest {
 	@Test
 	@Order(1)
 	public void testInsertReadings() throws SQLException {
-		// TODO hier wird gar nichts getested? Fehlermeldungen
 		execute(CREATE_READINGS_TABLE);
 
 		Battery bat = new Battery((float) 0.0);
@@ -66,13 +65,13 @@ public class DbHandleTest {
 	public void testInsertDevicesInfo() throws SQLException {
 		execute(CREATE_DEVICE_TABLE);
 
-		AdditionalDeviceInformation info = new AdditionalDeviceInformation("topic");
-		info.setType(AdditionalDeviceInformation.Type.CONSUMER);
-		info.setSubtype(AdditionalDeviceInformation.Subtype.BATTERY);
-		info.setChildren(new Integer[]{1, 2});
+		DeviceInformation info = new DeviceInformation("topic");
+		info.setType(DeviceInformation.Type.CONSUMER);
+		info.setSubtype(DeviceInformation.Subtype.BATTERY);
+		info.setChildren(List.of(1, 2));
 		insertDeviceInfo(info);
 
-		AdditionalDeviceInformation queried_info = dbReader.queryDevices("topic");
+		DeviceInformation queried_info = dbReader.queryDevices("topic");
 		assertEquals("topic", queried_info.getName());
 	}
 }

@@ -2,8 +2,8 @@ package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-import com.microsmartgrid.database.dbDataStructures.Device;
+import com.microsmartgrid.database.model.AbstractDevice;
+import com.microsmartgrid.database.model.Device;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

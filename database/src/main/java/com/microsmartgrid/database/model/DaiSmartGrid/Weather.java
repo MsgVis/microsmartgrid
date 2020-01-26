@@ -1,6 +1,6 @@
-package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
+package com.microsmartgrid.database.model.DaiSmartGrid;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.model.AbstractDevice;
 
 public class Weather extends AbstractDevice {
 

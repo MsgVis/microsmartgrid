@@ -1,7 +1,16 @@
-package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
+package com.microsmartgrid.database.model.DaiSmartGrid;
 
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
+import com.microsmartgrid.database.model.AbstractDevice;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+
+/**
+ * Standardized Implementation of all meters. Saved to a table in the database.
+ */
+@Entity(name = "readings")
+@Table(name = "readings")
 public abstract class Readings extends AbstractDevice {
 
 	//inherent values
