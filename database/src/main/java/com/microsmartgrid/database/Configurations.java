@@ -1,4 +1,4 @@
-package com.microsmartgrid.mqttclient;
+package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.logging.log4j.LogManager;

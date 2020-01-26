@@ -1,9 +1,9 @@
 package com.microsmartgrid.mqttclient.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microsmartgrid.database.HelperFunctions;
 import com.microsmartgrid.database.dbCom.DbWriter;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
-import com.microsmartgrid.mqttclient.HelperFunctions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
