@@ -1,4 +1,4 @@
-package com.microsmartgrid.mqttclient;
+package com.microsmartgrid.database;
 
 import com.microsmartgrid.database.dbCom.DatabaseConfig;
 import org.junit.jupiter.api.Test;

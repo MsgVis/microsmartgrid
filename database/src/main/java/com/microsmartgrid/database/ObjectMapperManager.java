@@ -1,4 +1,4 @@
-package com.microsmartgrid.mqttclient;
+package com.microsmartgrid.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
