@@ -2,6 +2,7 @@ package com.microsmartgrid.database.model.DaiSmartGrid;
 
 import com.microsmartgrid.database.model.AbstractDevice;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,33 +14,56 @@ import javax.persistence.Table;
 @Table(name = "readings")
 public abstract class Readings extends AbstractDevice {
 
-	//inherent values
-	private Float
-		current_I_avg,
-		current_I1,
-		current_I2,
-		current_I3,
-		voltage_U_avg,
-		voltage_U1,
-		voltage_U2,
-		voltage_U3,
-		active_energy_A_plus,
-		active_energy_A_minus,
-		active_power_P_total,
-		active_power_P1,
-		active_power_P2,
-		active_power_P3,
-		reactive_energy_R_plus,
-		reactive_energy_R_minus,
-		reactive_power_Q_total,
-		reactive_power_Q1,
-		reactive_power_Q2,
-		reactive_power_Q3,
-		apparent_power_S_total,
-		apparent_power_S1,
-		apparent_power_S2,
-		apparent_power_S3,
-		frequency_grid;
+	@Column(name = "i_avg")
+	private Float current_I_avg;
+	@Column(name = "i_r")
+	private Float current_I1;
+	@Column(name = "i_s")
+	private Float current_I2;
+	@Column(name = "i_t")
+	private Float current_I3;
+	@Column(name = "u_avg")
+	private Float voltage_U_avg;
+	@Column(name = "u_r")
+	private Float voltage_U1;
+	@Column(name = "u_s")
+	private Float voltage_U2;
+	@Column(name = "u_t")
+	private Float voltage_U3;
+	@Column(name = "a_plus")
+	private Float active_energy_A_plus;
+	@Column(name = "a_minus")
+	private Float active_energy_A_minus;
+	@Column(name = "p_total")
+	private Float active_power_P_total;
+	@Column(name = "p_r")
+	private Float active_power_P1;
+	@Column(name = "p_s")
+	private Float active_power_P2;
+	@Column(name = "p_t")
+	private Float active_power_P3;
+	@Column(name = "r_plus")
+	private Float reactive_energy_R_plus;
+	@Column(name = "r_minus")
+	private Float reactive_energy_R_minus;
+	@Column(name = "q_total")
+	private Float reactive_power_Q_total;
+	@Column(name = "q_r")
+	private Float reactive_power_Q1;
+	@Column(name = "q_s")
+	private Float reactive_power_Q2;
+	@Column(name = "q_t")
+	private Float reactive_power_Q3;
+	@Column(name = "s_total")
+	private Float apparent_power_S_total;
+	@Column(name = "s_r")
+	private Float apparent_power_S1;
+	@Column(name = "s_s")
+	private Float apparent_power_S2;
+	@Column(name = "s_t")
+	private Float apparent_power_S3;
+	@Column(name = "f")
+	private Float frequency_grid;
 
 	protected Readings() {
 		super();
