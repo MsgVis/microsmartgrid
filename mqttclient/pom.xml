@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.microsmartgrid</groupId>
 	<artifactId>mqttclient</artifactId>
-	<version>${project.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>mqttclient</name>
 	<description>Connects to a mqtt broker and accepts incoming jsons that are mapped to our system.</description>
 
