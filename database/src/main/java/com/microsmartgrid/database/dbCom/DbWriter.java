@@ -7,6 +7,8 @@ import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.*;
 
@@ -14,9 +16,11 @@ import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
+@RestController
 public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
 
+	@RequestMapping("/")
 	public static <T extends AbstractDevice> void writeDeviceToDatabase(String topic, T device) {
 		logger.debug("Querying for device with topic " + topic);
 		AdditionalDeviceInformation deviceInfo = queryDevices(topic);
