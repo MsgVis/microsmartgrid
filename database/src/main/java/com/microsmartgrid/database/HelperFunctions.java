@@ -53,7 +53,7 @@ public class HelperFunctions {
 		return cls;
 	}
 
-	public static <T extends AbstractDevice> AbstractDevice deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException {
+	public static <T extends AbstractDevice> AbstractDevice deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException, IllegalArgumentException {
 		ObjectMapper objMapper = ObjectMapperManager.getMapper();
 
 		T device;
@@ -64,8 +64,8 @@ public class HelperFunctions {
 			device = objMapper.readValue(json, cls);
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes
-			logger.warn("Input is not a json.");
-			return null;
+			logger.warn("Input is not a json object.");
+			throw new IllegalArgumentException("Input is not a json object.");
 		}
 
 		return device;
