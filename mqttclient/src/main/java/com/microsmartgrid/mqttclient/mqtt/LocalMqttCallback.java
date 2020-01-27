@@ -11,13 +11,14 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @EnableFeignClients
 @RestController
 public class LocalMqttCallback implements MqttCallback {
 
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
+
 	@Autowired
 	DatabaseWriter databaseWriter;
 
@@ -43,7 +44,7 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@FeignClient("database")
 	interface DatabaseWriter {
-		@RequestMapping(value = "/", method = GET)
+		@RequestMapping(value = "/", method = POST)
 		void writeDeviceToDatabase(String topic, String json);
 	}
 }
