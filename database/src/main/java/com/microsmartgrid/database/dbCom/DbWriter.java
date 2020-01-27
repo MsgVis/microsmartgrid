@@ -2,54 +2,20 @@ package com.microsmartgrid.database.dbCom;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsmartgrid.database.HelperFunctions;
-import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.sql.*;
 
-import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
 @RestController
 public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
-
-	@RequestMapping("/")
-	public static void writeDeviceToDatabase(String topic, String json) throws IOException, IllegalArgumentException {
-		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
-		AbstractDevice device;
-		try {
-			device = HelperFunctions.deserializeJson(json, topic, cls);
-		} catch (JsonProcessingException e) {
-			logger.error("Couldn't construct instance from topic " + topic);
-			throw new RuntimeException(e);
-		}
-
-		AdditionalDeviceInformation deviceInfo = queryDevices(topic);
-		if (deviceInfo == null) {
-			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'
-			deviceInfo = new AdditionalDeviceInformation(topic);
-			deviceInfo.setId(insertDeviceInfo(deviceInfo));
-			logger.info("Created new device information object for name " + deviceInfo.getName() +
-				" with the generated id " + deviceInfo.getId());
-		}
-		device.setId(deviceInfo.getId());
-
-		logger.info("Writing " + device.toString() + " to database.");
-		if (device instanceof Readings) {
-			insertReadings((Readings) device);
-		} else {
-			logger.warn("Database commands for the class " + device.getClass() + " haven't been implemented yet");
-		}
-	}
 
 	/**
 	 * Insert AdditionalDeviceInformation object into database
