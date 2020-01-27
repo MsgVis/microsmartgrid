@@ -9,10 +9,15 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
 public class LocalMqttCallback implements MqttCallback {
+
+	@Autowired
+	private DbWriter dbWriter;
+
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
 
 	@Override
@@ -26,7 +31,7 @@ public class LocalMqttCallback implements MqttCallback {
 		try {
 			AbstractDevice device = HelperFunctions.deserializeJson(mqttMessage.toString(), topic_name, cls);
 			if (device == null) return;
-			DbWriter.writeDeviceToDatabase(topic_name, device);
+			this.dbWriter.writeDeviceToDatabase(topic_name, device);
 		} catch (JsonProcessingException e) {
 			logger.error("Couldn't construct instance from topic " + topic_name);
 			logger.error(e);
