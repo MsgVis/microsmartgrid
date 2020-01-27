@@ -2,6 +2,7 @@ package com.microsmartgrid.database.dbCom;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsmartgrid.database.HelperFunctions;
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.sql.*;
 
 import static com.microsmartgrid.database.dbCom.DbReader.queryDevices;
@@ -21,8 +23,16 @@ public class DbWriter {
 	private static final Logger logger = LogManager.getLogger(DbWriter.class);
 
 	@RequestMapping("/")
-	public static <T extends AbstractDevice> void writeDeviceToDatabase(String topic, T device) {
-		logger.debug("Querying for device with topic " + topic);
+	public static void writeDeviceToDatabase(String topic, String json) throws IOException, IllegalArgumentException {
+		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
+		AbstractDevice device;
+		try {
+			device = HelperFunctions.deserializeJson(json, topic, cls);
+		} catch (JsonProcessingException e) {
+			logger.error("Couldn't construct instance from topic " + topic);
+			throw new RuntimeException(e);
+		}
+
 		AdditionalDeviceInformation deviceInfo = queryDevices(topic);
 		if (deviceInfo == null) {
 			// create new additionalDeviceInformation to the corresponding device and save topic to 'name'
