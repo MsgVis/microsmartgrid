@@ -1,21 +1,77 @@
-package com.microsmartgrid.database.dbCom;
+package com.microsmartgrid.timescaleDbWriter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsmartgrid.database.HelperFunctions;
+import com.microsmartgrid.database.dbCom.DatabaseConfig;
+import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import com.microsmartgrid.database.dbDataStructures.DaiSmartGrid.Readings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.sql.*;
+import java.util.List;
 
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_DEVICES;
 import static com.microsmartgrid.database.dbCom.SqlCommands.INSERT_READINGS;
 
-@RestController
-public class DbWriter {
-	private static final Logger logger = LogManager.getLogger(DbWriter.class);
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+public class TimescaleDbWriterApplication {
+	private static final Logger logger = LogManager.getLogger(TimescaleDbWriterApplication.class);
+
+	@Autowired
+	private static ReadingClient dbReader;
+
+	public static void main(String[] args) {
+		SpringApplication.run(TimescaleDbWriterApplication.class, args);
+	}
+
+	@PostMapping("/")
+	public static void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, IllegalArgumentException {
+		// Get class mapping
+		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
+		AbstractDevice device;
+		try {
+			// create object
+			device = HelperFunctions.deserializeJson(json, topic, cls);
+		} catch (JsonProcessingException e) {
+			logger.error("Couldn't construct instance from topic " + topic);
+			throw new RuntimeException(e);
+		}
+
+		// check for existing deviceInformation
+		AdditionalDeviceInformation deviceInfo = dbReader.queryDevices(topic);
+		if (deviceInfo == null) {
+			// create new DeviceInformation to the corresponding device and save topic to 'name'
+			deviceInfo = new AdditionalDeviceInformation(topic);
+			deviceInfo.setId(insertDeviceInfo(deviceInfo));
+			logger.info("Created new device information object for name " + deviceInfo.getName() +
+				" with the generated id " + deviceInfo.getId());
+		}
+		device.setId(deviceInfo.getId());
+
+		logger.info("Writing " + device.toString() + " to database.");
+		if (device instanceof Readings) {
+			// write entry to database
+			insertReadings((Readings) device);
+		} else {
+			logger.warn("Database commands for the class " + device.getClass() + " haven't been implemented yet");
+		}
+	}
 
 	/**
 	 * Insert AdditionalDeviceInformation object into database
@@ -101,4 +157,18 @@ public class DbWriter {
 			e.printStackTrace();
 		}
 	}
+
+	@FeignClient("timescaleDbReader")
+	interface ReadingClient {
+		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
+		public List<AdditionalDeviceInformation> queryDeviceList();
+
+		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
+		public AdditionalDeviceInformation queryDevices(@RequestParam("id") int id);
+
+		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
+		public AdditionalDeviceInformation queryDevices(@RequestParam("name") String name);
+	}
+
+
 }
