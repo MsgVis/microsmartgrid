@@ -19,7 +19,7 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 public class DbReader {
 
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
-	
+
 	/**
 	 * Query for all devices
 	 *
