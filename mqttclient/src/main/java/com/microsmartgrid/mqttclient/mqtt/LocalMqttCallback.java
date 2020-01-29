@@ -8,10 +8,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import java.io.IOException;
 
 @EnableFeignClients
 @RestController
@@ -20,7 +19,7 @@ public class LocalMqttCallback implements MqttCallback {
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
 
 	@Autowired
-	DatabaseWriter databaseWriter;
+	private WritingClient databaseWriter;
 
 	@Override
 	public void connectionLost(Throwable cause) {
@@ -42,9 +41,10 @@ public class LocalMqttCallback implements MqttCallback {
 		System.exit(42); //<- if anyone ever lands here the person sure knows the answer to everything
 	}
 
-	@FeignClient("database")
-	interface DatabaseWriter {
-		@RequestMapping(value = "/", method = POST)
-		void writeDeviceToDatabase(String topic, String json);
+	@FeignClient("timescaleDbWriter")
+	interface WritingClient {
+		@RequestMapping(path = "/", method = RequestMethod.POST)
+		@ExceptionHandler({IOException.class})
+		void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException;
 	}
 }
