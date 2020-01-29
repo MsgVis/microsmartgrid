@@ -11,7 +11,7 @@ import java.io.IOException;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TimescaleDbWriterController {
 
-	@RequestMapping(method = RequestMethod.GET)
+	@PostMapping()
 	@ExceptionHandler({IOException.class})
 	public void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException {
 		new TimescaleDbWriterApplication().writeDeviceToDatabase(topic, json);

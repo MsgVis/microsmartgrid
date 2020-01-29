@@ -148,8 +148,5 @@ public class TimescaleDbWriterApplication {
 
 		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
 		DeviceInformation queryDevices(@RequestParam("id") int id);
-
-		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
-		DeviceInformation queryDevices(@RequestParam("name") String name);
 	}
 }
