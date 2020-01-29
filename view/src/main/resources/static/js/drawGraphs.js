@@ -264,13 +264,14 @@ function parseTimeSVG(dataBaseIds){
 		})
 	}
 
+
 }
 
 function plotTimeSeries(data, plotItem){
 
 	// Delete old chart
 	d3.selectAll("#historySVG > *").remove();
-	d3.selectAll(".form-group > *").remove();
+	//d3.selectAll(".form-group > *").remove();
 
 	// Setting Window Parameter
 	let margin = {top: 0, right: 30, bottom: 200, left: 100};
