@@ -229,7 +229,7 @@ public class DbReader {
 
 			int i = 1;
 			if (step != null) {
-				stmt.setInt(i++, Integer.parseInt(step));
+				stmt.setString(i++, step);
 			}
 			if (id > 0) {
 				stmt.setInt(i++, id);
