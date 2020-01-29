@@ -14,6 +14,7 @@ public class TimescaleDbWriterController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ExceptionHandler({IOException.class})
 	public void writeDeviceToDatabase(@RequestParam("topic") String topic,@RequestParam("json") String json) throws IOException {
-		TimescaleDbWriterApplication.writeDeviceToDatabase(topic, json);
+		TimescaleDbWriterApplication writer = new TimescaleDbWriterApplication();
+		writer.writeDeviceToDatabase(topic, json);
 	}
 }
