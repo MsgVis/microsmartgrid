@@ -190,6 +190,7 @@ public class DbReader {
 	private static List<Readings> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
 		List<Readings> readings = new ArrayList<>();
 		String DYNAMIC_QUERY = QUERY_READINGS_SELECT_START;
+		if (step == null && meta == null) DYNAMIC_QUERY += QUERY_META;
 		if (step != null) {
 			DYNAMIC_QUERY += QUERY_READINGS_BUCKET;
 		} else {
