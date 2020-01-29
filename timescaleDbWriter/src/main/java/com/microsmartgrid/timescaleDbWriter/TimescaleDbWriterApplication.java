@@ -34,7 +34,7 @@ public class TimescaleDbWriterApplication {
 	private static final Logger logger = LogManager.getLogger(TimescaleDbWriterApplication.class);
 
 	@Autowired
-	private static ReadingClient dbReader;
+	private ReadingClient dbReader;
 
 	@FeignClient("timescaleDbReader")
 	interface ReadingClient {
@@ -51,7 +51,7 @@ public class TimescaleDbWriterApplication {
 	}
 
 	@PostMapping("/")
-	public static void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, IllegalArgumentException {
+	public void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, IllegalArgumentException {
 		// Get class mapping
 		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
 		AbstractDevice device;
@@ -88,7 +88,7 @@ public class TimescaleDbWriterApplication {
 	 *
 	 * @param deviceInfo
 	 */
-	public static int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
+	public int insertDeviceInfo(AdditionalDeviceInformation deviceInfo) {
 		int generatedId = 0;
 		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement info = conn.prepareStatement(INSERT_DEVICES, Statement.RETURN_GENERATED_KEYS);) {
@@ -119,7 +119,7 @@ public class TimescaleDbWriterApplication {
 	 *
 	 * @param device
 	 */
-	public static <T extends Readings> void insertReadings(T device) {
+	public <T extends Readings> void insertReadings(T device) {
 		try (Connection conn = new DatabaseConfig().getConnection();
 			 PreparedStatement reading = conn.prepareStatement(INSERT_READINGS)) {
 			// This will be refactored anyways
