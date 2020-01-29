@@ -139,7 +139,6 @@ public class DbReader {
 	 * @return a list of readings, one for each device
 	 */
 	@GetMapping("/flow")
-	@ResponseBody
 	public static List<Readings> queryFlow(@RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end) {
 		List<AdditionalDeviceInformation> infos = queryDeviceList();
 		List<Readings> readings = new ArrayList<>();
@@ -155,25 +154,84 @@ public class DbReader {
 		return readings;
 	}
 
-	@GetMapping("/readings")
-	@ResponseBody
-	public static List<Readings> queryAgg(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step, @RequestParam("agg") String agg) {
+
+	/**
+	 * Queries the database for all readings from one device within an interval.
+	 * Readings will be aggregated over some smaller interval and the average returned.
+	 *
+	 * @param id    device id
+	 * @param start start of interval
+	 * @param end   end of interval
+	 * @param step  aggregate interval
+	 * @return list of readings objects
+	 */
+	@GetMapping("/readings/avg")
+	public static List<Readings> queryAvg(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", agg);
+		queryInfo.put("aggregate", "avg");
 		queryInfo.put("interval", step);
-		switch (agg) {
-			case "avg":
-				return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
-			case "std":
-				return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
-			case "min":
-				return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
-			case "max":
-				return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
-			default:
-				logger.warn("Aggregate function " + agg + " is currently not supported");
-				return new ArrayList<>();
-		}
+
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_AVERAGES, queryInfo);
+	}
+
+
+	/**
+	 * Queries the database for all readings from one device within an interval.
+	 * Readings will be aggregated over some smaller interval and the standard deviation returned.
+	 *
+	 * @param id    device id
+	 * @param start start of interval
+	 * @param end   end of interval
+	 * @param step  aggregate interval
+	 * @return list of readings objects
+	 */
+	@GetMapping("/readings/std")
+	public static List<Readings> queryStd(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", "std");
+		queryInfo.put("interval", step);
+
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_STDDEV, queryInfo);
+	}
+
+
+	/**
+	 * Queries the database for all readings from one device within an interval.
+	 * Readings will be aggregated over some smaller interval and the minimum returned.
+	 *
+	 * @param id    device id
+	 * @param start start of interval
+	 * @param end   end of interval
+	 * @param step  aggregate interval
+	 * @return list of readings objects
+	 */
+	@GetMapping("/readings/min")
+	public static List<Readings> queryMin(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", "min");
+		queryInfo.put("interval", step);
+
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_MIN, queryInfo);
+	}
+
+
+	/**
+	 * Queries the database for all readings from one device within an interval.
+	 * Readings will be aggregated over some smaller interval and the maximum returned.
+	 *
+	 * @param id    device id
+	 * @param start start of interval
+	 * @param end   end of interval
+	 * @param step  aggregate interval
+	 * @return list of readings objects
+	 */
+	@GetMapping("/readings/max")
+	public static List<Readings> queryMax(@RequestParam("id") int id, @RequestParam("start") Timestamp start, @RequestParam("end") Timestamp end, @RequestParam("step") String step) {
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", "max");
+		queryInfo.put("interval", step);
+
+		return generalReadingQuery(id, start, end, step, QUERY_READINGS_MAX, queryInfo);
 	}
 
 	public static List<Readings> queryReading(int id, Timestamp start, Timestamp end, String step) {
@@ -183,9 +241,10 @@ public class DbReader {
 	public static List<Readings> queryMultiple(int id, Timestamp start, Timestamp end, String step, boolean standard, boolean avg) {
 		List<Readings> results = new ArrayList<>();
 		if (standard) results.addAll(queryReading(id, start, end, step));
-		if (avg) results.addAll(queryAgg(id, start, end, step, "avg"));
+		if (avg) results.addAll(queryAvg(id, start, end, step));
 		return results;
 	}
+
 
 	private static List<Readings> generalReadingQuery(int id, Timestamp start, Timestamp end, String step, String QUERY_FUNCTION, HashMap<String, Object> meta) {
 		List<Readings> readings = new ArrayList<>();
