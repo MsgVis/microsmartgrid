@@ -27,7 +27,7 @@ public class LocalMqttCallback implements MqttCallback {
 	}
 
 	@Override
-	public void messageArrived(String topic_name, MqttMessage mqttMessage) {
+	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
 		this.databaseWriter.writeDeviceToDatabase(topic_name, mqttMessage.toString());
 	}
 
