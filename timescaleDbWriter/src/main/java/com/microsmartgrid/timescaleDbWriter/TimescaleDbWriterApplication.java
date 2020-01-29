@@ -36,6 +36,16 @@ public class TimescaleDbWriterApplication {
 	@Autowired
 	private static ReadingClient dbReader;
 
+	@FeignClient("timescaleDbReader")
+	interface ReadingClient {
+		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
+		List<AdditionalDeviceInformation> queryDeviceList();
+		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
+		AdditionalDeviceInformation queryDevices(@RequestParam("id") int id);
+		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
+		AdditionalDeviceInformation queryDevices(@RequestParam("name") String name);
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(TimescaleDbWriterApplication.class, args);
 	}
@@ -158,17 +168,6 @@ public class TimescaleDbWriterApplication {
 		}
 	}
 
-	@FeignClient("timescaleDbReader")
-	interface ReadingClient {
-		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
-		public List<AdditionalDeviceInformation> queryDeviceList();
-
-		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
-		public AdditionalDeviceInformation queryDevices(@RequestParam("id") int id);
-
-		@RequestMapping(path = "/deviceByName", method = RequestMethod.GET)
-		public AdditionalDeviceInformation queryDevices(@RequestParam("name") String name);
-	}
 
 
 }

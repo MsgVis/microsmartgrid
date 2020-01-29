@@ -69,12 +69,12 @@ services:
                 max-size: "10m"
                 max-file: "10"
 
-    timescaleDbReader:
+    timescaledb-reader:
         build: ./timescaleDbReader
         network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-        image: timescaleDbReader:latest
+        image: timescaledb-reader:latest
         restart: always
         depends_on:
             configserver:
@@ -88,19 +88,19 @@ services:
                 max-size: "10m"
                 max-file: "10"
 
-    timescaleDbWriter:
+    timescaledb-writer:
         build: ./timescaleDbWriter
         network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-        image: timescaleDbWriter:latest
+        image: timescaledb-writer:latest
         restart: always
         depends_on:
             configserver:
                 condition: service_healthy
             eurekaserver:
                 condition: service_healthy
-            timescaleDbReader:
+            timescaledb-reader:
               condition: service_healthy
         ports:
             - 4721:4721
@@ -121,7 +121,7 @@ services:
                 condition: service_healthy
             eurekaserver:
                 condition: service_healthy
-            timescaleDbWriter:
+            timescaledb-writer:
               condition: service_healthy
         ports:
             - 1883:1883
