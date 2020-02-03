@@ -29,22 +29,16 @@ public class TimescaleDbReaderApplication {
 		SpringApplication.run(TimescaleDbReaderApplication.class, args);
 	}
 
-	/**
-	 * Query devices table
-	 *
-	 * @param id Internally generated id of the device
-	 * @return device with input id or null if none could be found
-	 */
-	@GetMapping("/device")
+	@GetMapping("/deviceById")
 	public DeviceInformation queryDevices(int id) throws NotFoundException {
 		return deviceInfoRepository.findById(id).orElseThrow(() -> new NotFoundException("The device with id " + id + " doesn't exist."));
 	}
 
-	/**
-	 * Query for all devices
-	 *
-	 * @return A list of all registered devices
-	 */
+	@GetMapping("/deviceByName")
+	public DeviceInformation queryDevices(String name) {
+		return deviceInfoRepository.findByName(name).orElse(null);
+	}
+
 	@GetMapping("/deviceList")
 	public List<DeviceInformation> queryDeviceList() {
 		return deviceInfoRepository.findAll();
