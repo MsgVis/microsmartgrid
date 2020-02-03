@@ -22,7 +22,7 @@ public class HelperFunctions {
 	public static Class<? extends AbstractDevice> getClassFromIdentifier(final String name) throws IOException {
 		Class<? extends AbstractDevice> cls;
 		String class_name;
-		final String package_start = "com.microsmartgrid.database.dbDataStructures.";
+		final String package_start = "com.microsmartgrid.database.model.";
 
 		try {
 			ArrayList<LinkedHashMap<String, String>> classMaps = Configurations.retrieveClassMap();
@@ -34,11 +34,10 @@ public class HelperFunctions {
 		} catch (NoSuchElementException e) {
 			// No associated class for the name in ClassMaps.yml
 			logger.warn(name + " could not be mapped to a class defined in ClassMap.yml;\n" +
-				"Defaulting to a standard class in order to group information in json.");
+				"Defaulting to a standard class in order to save information in json.");
 			// use default class to save fields in 'meta_information'
 			class_name = package_start + "Device";
 		}
-
 
 		try {
 			cls = Class.forName(class_name).asSubclass(AbstractDevice.class);
@@ -53,7 +52,7 @@ public class HelperFunctions {
 		return cls;
 	}
 
-	public static <T extends AbstractDevice> AbstractDevice deserializeJson(String json, String topic, Class<T> cls) throws JsonProcessingException, IllegalArgumentException {
+	public static <T extends AbstractDevice> AbstractDevice deserializeJson(String json, Class<T> cls) throws JsonProcessingException, IllegalArgumentException {
 		ObjectMapper objMapper = ObjectMapperManager.getMapper();
 
 		T device;
