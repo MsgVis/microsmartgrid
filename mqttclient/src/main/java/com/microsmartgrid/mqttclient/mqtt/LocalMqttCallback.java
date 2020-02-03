@@ -28,7 +28,7 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
-		this.databaseWriter.writeDeviceToDatabase(topic_name, mqttMessage.toString());
+		this.databaseWriter.writeReadingToDatabase(topic_name, mqttMessage.toString());
 	}
 
 	@Override
@@ -45,6 +45,6 @@ public class LocalMqttCallback implements MqttCallback {
 	interface WritingClient {
 		@RequestMapping(path = "/", method = RequestMethod.POST)
 		@ExceptionHandler({IOException.class})
-		void writeDeviceToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException;
+		void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException;
 	}
 }
