@@ -1,6 +1,6 @@
-package com.microsmartgrid.database.services;
+package com.microsmartgrid.database.service;
 
-import com.microsmartgrid.database.repositories.DeviceInformationRepository;
+import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

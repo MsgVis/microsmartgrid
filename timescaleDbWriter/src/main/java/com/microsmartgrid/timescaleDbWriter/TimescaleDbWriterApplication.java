@@ -5,21 +5,25 @@ import com.microsmartgrid.database.HelperFunctions;
 import com.microsmartgrid.database.model.AbstractDevice;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
-import com.microsmartgrid.database.repositories.DaiSmartGrid.ReadingsRepository;
-import com.microsmartgrid.database.repositories.DeviceInformationRepository;
+import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
+import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.microsmartgrid.database"})
+@EntityScan("com.microsmartgrid.database.model")
+@EnableJpaRepositories(basePackages = {"com.microsmartgrid.database"})
 @EnableDiscoveryClient
 public class TimescaleDbWriterApplication {
 	private static final Logger logger = LogManager.getLogger(TimescaleDbWriterApplication.class);
