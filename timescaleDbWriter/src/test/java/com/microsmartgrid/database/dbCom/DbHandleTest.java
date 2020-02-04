@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.SQLException;
 import java.util.List;
-
-import static com.microsmartgrid.database.dbCom.DbHandle.execute;
 
 @SpringBootTest
 @EnableDiscoveryClient
@@ -25,17 +22,16 @@ public class DbHandleTest {
 	ReadingClient dbReader;
 
 	@AfterEach
-	public void cleanUp() throws SQLException {
-		execute("DROP ALL OBJECTS;");
+	public void cleanUp() {
 	}
 
 	@FeignClient("timescaleDbWriter")
 	interface ReadingClient {
 		@RequestMapping(path = "/deviceList", method = RequestMethod.GET)
-		public List<DeviceInformation> queryDeviceList();
+		List<DeviceInformation> queryDeviceList();
 
 		@RequestMapping(path = "/deviceById", method = RequestMethod.GET)
-		public DeviceInformation queryDevices(@RequestParam("id") int id);
+		DeviceInformation queryDevices(@RequestParam("id") int id);
 	}
 }
 

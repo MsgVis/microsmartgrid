@@ -24,7 +24,7 @@ class MqttClientApplicationTests {
 	}
 
 	@Test
-	public void testMainRoutine() {
-		MqttClientApplication.main(new String[]{"tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice"});
+	public void testMainRoutine() throws Exception {
+		new MqttClientApplication().run("tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice");
 	}
 }
