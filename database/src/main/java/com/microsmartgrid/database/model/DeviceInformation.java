@@ -12,7 +12,6 @@ import java.util.List;
 public class DeviceInformation {
 
 	@Id
-	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	/*
@@ -26,8 +25,10 @@ public class DeviceInformation {
 	@ElementCollection
 	private List<Integer> children;
 	@Column(name = "type")
+	@Enumerated
 	private Type type;
 	@Column(name = "subtype")
+	@Enumerated
 	private Subtype subtype;
 
 	protected DeviceInformation() {
