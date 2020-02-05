@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static com.microsmartgrid.database.dbCom.SqlCommands.*;
+import static com.microsmartgrid.database.SqlCommands.*;
 
 @Repository
 public interface ReadingsRepository extends JpaRepository<Readings, DeviceInformation> {
