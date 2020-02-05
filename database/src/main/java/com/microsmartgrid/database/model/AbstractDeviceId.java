@@ -5,5 +5,5 @@ import java.time.Instant;
 
 class AbstractDeviceId implements Serializable {
 	DeviceInformation deviceInformation;
-	Instant timestamp;
+	Instant time;
 }

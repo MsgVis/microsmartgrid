@@ -32,7 +32,7 @@ public abstract class AbstractDevice implements Serializable {
 
 	@Id
 	@Column(name = "time", nullable = false)
-	private Instant timestamp;
+	private Instant time;
 
 	// Not a typo, saves as json. For jsonb replace 'jsonb' in 'columnDefinition.
 	@Type(type = "jsonb")
@@ -43,8 +43,8 @@ public abstract class AbstractDevice implements Serializable {
 	protected AbstractDevice() {
 	}
 
-	public AbstractDevice(Instant timestamp, Map<String, Object> metaInformation) {
-		this.timestamp = timestamp;
+	public AbstractDevice(Instant time, Map<String, Object> metaInformation) {
+		this.time = time;
 		this.metaInformation = metaInformation;
 	}
 
@@ -56,12 +56,12 @@ public abstract class AbstractDevice implements Serializable {
 		this.deviceInformation = deviceInformation;
 	}
 
-	public Instant getTimestamp() {
-		return timestamp;
+	public Instant getTime() {
+		return time;
 	}
 
-	public void setTimestamp(Instant timestamp) {
-		this.timestamp = timestamp;
+	public void setTime(Instant timestamp) {
+		this.time = timestamp;
 	}
 
 	public Map<String, Object> getMetaInformation() {
