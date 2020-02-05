@@ -1,12 +1,19 @@
 package com.microsmartgrid.database.service.DaiSmartGrid;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microsmartgrid.database.HelperFunctions;
+import com.microsmartgrid.database.model.AbstractDevice;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
+import javassist.NotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.Period;
 import java.util.ArrayList;
@@ -15,6 +22,7 @@ import java.util.List;
 
 @Service
 public class ReadingsService {
+	private static final Logger logger = LogManager.getLogger(ReadingsService.class);
 
 	@Autowired
 	private DeviceInformationRepository deviceInfoRepository;
@@ -86,5 +94,38 @@ public class ReadingsService {
 
 	public List<Readings> getReadings(int id, Period since, Period until) {
 		return repository.findAll(id, Instant.now().minus(since), Instant.now().minus(until));
+	}
+
+	public Readings insertReading(String topic, String json) throws IOException, NotFoundException {
+		// Get class mapping
+		Class<? extends AbstractDevice> cls = HelperFunctions.getClassFromIdentifier(topic);
+		AbstractDevice device;
+		try {
+			// create object
+			device = HelperFunctions.deserializeJson(json, cls);
+		} catch (JsonProcessingException e) {
+			logger.error("Couldn't construct instance from topic " + topic);
+			throw new RuntimeException(e);
+		}
+
+		// check for existing deviceInformation
+		DeviceInformation deviceInfo = deviceInfoRepository.findByName(topic).orElse(null);
+		if (deviceInfo == null) {
+			// create new DeviceInformation to the corresponding device and save topic to 'name'
+
+			// flush since we would like to get the generated id
+			deviceInfo = deviceInfoRepository.saveAndFlush(new DeviceInformation(topic));
+			logger.info("Created new device information object for name " + deviceInfo.getName() +
+				" with the generated id " + deviceInfo.getId());
+		}
+		device.setDeviceInformation(deviceInfo);
+
+		logger.info("Writing " + device.toString() + " to database.");
+		if (device instanceof Readings) {
+			// write entry to database
+			return repository.save((Readings) device);
+		} else {
+			throw new NotFoundException("The database table for the class " + device.getClass() + " hasn't been implemented yet.");
+		}
 	}
 }
