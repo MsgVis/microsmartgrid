@@ -81,8 +81,6 @@ services:
                 condition: service_healthy
             eurekaserver:
                 condition: service_healthy
-            timescaledb-reader:
-              condition: service_healthy
         ports:
             - 4721:4721
         logging:
@@ -103,7 +101,7 @@ services:
             eurekaserver:
                 condition: service_healthy
             timescaledb-writer:
-              condition: service_healthy
+                condition: service_healthy
         ports:
             - 1883:1883
         logging:
