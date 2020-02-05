@@ -16,20 +16,20 @@ import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 @Repository
 public interface ReadingsRepository extends JpaRepository<Readings, DeviceInformation> {
 
-	Optional<Readings> findFirstByDevice_IdAndTimeBeforeOrderByTimeDesc(DeviceInformation id, Instant cutoff);
+	Optional<Readings> findFirstByDeviceInformationAndTimeBeforeOrderByTimeDesc(DeviceInformation id, Instant cutoff);
 
-	@Query(QUERY_READINGS_AVERAGES)
+	@Query(value = QUERY_READINGS_AVERAGES, nativeQuery = true)
 	List<Readings> findAllAvg(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until, @Param("step") String step);
 
-	@Query(QUERY_READINGS_STDDEV)
+	@Query(value = QUERY_READINGS_STDDEV, nativeQuery = true)
 	List<Readings> findAllStd(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until, @Param("step") String step);
 
-	@Query(QUERY_READINGS_MIN)
+	@Query(value = QUERY_READINGS_MIN, nativeQuery = true)
 	List<Readings> findAllMin(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until, @Param("step") String step);
 
-	@Query(QUERY_READINGS_MAX)
+	@Query(value = QUERY_READINGS_MAX, nativeQuery = true)
 	List<Readings> findAllMax(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until, @Param("step") String step);
 
-	@Query(QUERY_READINGS)
+	@Query(value = QUERY_READINGS, nativeQuery = true)
 	List<Readings> findAll(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until);
 }

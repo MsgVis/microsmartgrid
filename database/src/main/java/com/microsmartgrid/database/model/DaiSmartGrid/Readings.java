@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-
 /**
  * Standardized Implementation of all meters. Saved to a table in the database.
  */
