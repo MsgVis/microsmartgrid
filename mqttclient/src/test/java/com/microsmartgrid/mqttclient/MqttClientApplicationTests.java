@@ -1,30 +1,21 @@
 package com.microsmartgrid.mqttclient;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.net.SocketTimeoutException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 class MqttClientApplicationTests {
 
-	@Test
-	@Disabled("Takes too long")
-	public void validateSocketTimeout() {
-		// Positive test to make sure timout value doesn't affect it
-		MqttClientApplication.main(new String[]{"tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice", "5"});
-		// Incorrect endpoint
-		RuntimeException e = assertThrows(RuntimeException.class, () -> MqttClientApplication.main(new String[]{"tcp://iot.eclipse.org:1883", "bbc/subtitles/notice", "5"}));
-		// Wrapped in RuntimeException -> MqttException -> SocketTimeoutException
-		assertEquals(SocketTimeoutException.class, e.getCause().getCause().getClass());
-	}
+	@Autowired
+	private CommandLineRunner clr;
 
 	@Test
 	public void testMainRoutine() throws Exception {
-		new MqttClientApplication().run("tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice");
+		this.clr.run("tcp://mqtt.eclipse.org:1883", "bbc/subtitles/notice");
 	}
 }
