@@ -1,9 +1,8 @@
 package com.microsmartgrid.timescaleDbReader.controller;
 
 import com.microsmartgrid.database.model.DeviceInformation;
-import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
-import com.microsmartgrid.database.service.DeviceInformationService;
+import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
 import com.microsmartgrid.timescaleDbReader.TimescaleDbReaderApplication;
 import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +27,7 @@ public class TimescaleDbReaderController {
 	@Autowired
 	private DeviceInformationRepository deviceInfoRepository;
 	@Autowired
-	private DeviceInformationService deviceInfoService;
-	@Autowired
-	private ReadingsRepository readingsRepository;
+	private ReadingsService readingsService;
 
 	/**
 	 * Query for all devices

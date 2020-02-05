@@ -9,8 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.microsmartgrid.database.model")
 @EnableJpaRepositories(basePackages = {"com.microsmartgrid.database"})
 public class TimescaleDbReaderApplication {
-
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(TimescaleDbReaderApplication.class, args);
 	}
