@@ -48,6 +48,8 @@
 		<module>eurekaserver</module>
 		<module>database</module>
 		<module>view</module>
+		<module>timescaleDbReader</module>
+		<module>timescaleDbWriter</module>
 		<module>mqttclient</module>
 	</modules>
 

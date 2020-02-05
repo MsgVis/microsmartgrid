@@ -1,11 +1,12 @@
-package com.microsmartgrid.database.dbCom;
+package com.microsmartgrid.timescaleDbReader;
 
+import com.microsmartgrid.database.dbCom.DatabaseConfig;
 import com.microsmartgrid.database.dbDataStructures.AdditionalDeviceInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,19 +14,20 @@ import java.util.List;
 
 import static com.microsmartgrid.database.dbCom.SqlCommands.*;
 
-//TODO Access noch richtig einstellen. Momentan kann jeder darauf zugreifen.
-@CrossOrigin(origins = "*", allowedHeaders = "*")
-@RestController
-public class DbReader {
+@SpringBootApplication
+@EnableDiscoveryClient
+public class TimescaleDbReaderApplication {
+	private static final Logger logger = LogManager.getLogger(TimescaleDbReaderApplication.class);
 
-	private static final Logger logger = LogManager.getLogger(DbReader.class);
+	public static void main(String[] args) {
+		SpringApplication.run(TimescaleDbReaderApplication.class, args);
+	}
 
 	/**
 	 * Query for all devices
 	 *
 	 * @return A list of all registered devices
 	 */
-	@GetMapping("/deviceList")
 	public static List<AdditionalDeviceInformation> queryDeviceList() {
 		List<AdditionalDeviceInformation> infos = new ArrayList<>();
 		try (Connection conn = new DatabaseConfig().getConnection();
@@ -82,7 +84,6 @@ public class DbReader {
 	 * @param id Internally generated id of the device
 	 * @return device with input id or null if none could be found
 	 */
-	@GetMapping("/device")
 	public static AdditionalDeviceInformation queryDevices(int id) {
 		AdditionalDeviceInformation info = null;
 		try (Connection conn = new DatabaseConfig().getConnection();
