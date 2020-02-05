@@ -7,3 +7,9 @@ spring:
             fail-fast: true
             password: ${CONFIG_SERVICE_PASSWORD}
             username: user
+
+logging:
+    level:
+        com.netflix.discovery: 'INFO'
+        org.springframework.cloud: 'DEBUG'
+        org.springframework.security: 'INFO'
