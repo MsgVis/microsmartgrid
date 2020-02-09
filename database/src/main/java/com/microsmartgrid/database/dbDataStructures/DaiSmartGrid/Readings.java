@@ -2,9 +2,7 @@ package com.microsmartgrid.database.dbDataStructures.DaiSmartGrid;
 
 import com.microsmartgrid.database.dbDataStructures.AbstractDevice;
 
-import java.time.Instant;
-
-public class Readings extends AbstractDevice {
+public abstract class Readings extends AbstractDevice {
 
 	//inherent values
 	private Float
@@ -36,11 +34,6 @@ public class Readings extends AbstractDevice {
 
 	protected Readings() {
 		super();
-	}
-
-	public Readings(int device_id, Instant time) {
-		setId(device_id);
-		setTimestamp(time);
 	}
 
 	public Float getCurrent_I_avg() {
