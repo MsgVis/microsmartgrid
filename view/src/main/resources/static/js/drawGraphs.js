@@ -1,6 +1,61 @@
-// ----------------------These are all functions for the History Graph-----------------------
-// This draws the Topology Graph using d3
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------Global Javascript stuff and initilizing of other functions-----------------------
+function init() {
+	this.chartTopologyDiv = document.getElementById("liveSVGCard");
 
+	this.databaseEntryDictionary = {
+		"active_energy_A_minus" : "Zählerstand Wirkenergie A-",
+		"active_energy_A_plus" : "Zählerstand Wirkenergie A+",
+		"active_power_P1" : "Wirkleistung Phase 1",
+		"active_power_P2" : "Wirkleistung Phase 2",
+		"active_power_P3" : "Wirkleistung Phase 3",
+		"active_power_P_total" : "Wirkleistung Gesamt",
+		"apparent_power_S1" : "Scheinleistung Phase 1",
+		"apparent_power_S2" : "Scheinleistung Phase 2",
+		"apparent_power_S3" : "Scheinleistung Phase 3",
+		"apparent_power_S_total" : "Scheinleistung Gesamt",
+		"current_I1" : "Strom Phase 1",
+		"current_I2" : "Strom Phase 2",
+		"current_I3" : "Strom Phase 3",
+		"current_I_avg" : "Strom Durchschnitt",
+		"frequency_grid" : "Netzfrequenz",
+		"reactive_energy_R_minus" : "Zählerstand Blindenergie R-",
+		"reactive_energy_R_plus" : "Zählerstand Blindenergie R+",
+		"reactive_power_Q1" : "Blindenergie Phase 1",
+		"reactive_power_Q2" : "Blindenergie Phase 2",
+		"reactive_power_Q3" : "Blindenergie Phase 3",
+		"reactive_power_Q_total" : "Blindenergie Gesamt",
+		"voltage_U1" : "Spannung Phase 1",
+		"voltage_U2" : "Spannung Phase 2",
+		"voltage_U3" : "Spannung Phase 3",
+		"voltage_U_avg" : "Spannung Durchschnitt",
+	}
+
+	document.addEventListener("DOMContentLoaded", onLoadFunction);
+
+	function onLoadFunction(e) {
+//do the magic you want
+		plotTopology();// if you want to trigger resize function immediately, call it
+
+		window.addEventListener("resize", plotTopology);
+	}
+
+	setTimeout(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+		}, 500
+	);
+
+
+	$('.close-icon').on('click', function () {
+		$('liveSVGCard').fadeOut();
+	})
+}
+
+init();
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------Handlers for Loading Data from database--------------------------------
 function getMeterData(id) {
 	var url = "http://localhost:4711/readings?id="+id+"&start=2000-01-01+00:00:00&end=2030-01-01+00:00:00&step=1";
 	return $.ajax({
@@ -24,11 +79,17 @@ function getDeviceInfo(id) {
 }
 
 
-function drawGraphs() {
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------------------Graph Plotting--------------------------------------------
 
-document.addEventListener("DOMContentLoaded", function(event) {
+// --------------------------------------Topology--------------------------------------------
+//// Main plotting function
+function plotTopology(){
 
-		d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
+	// Delete old chart
+	d3.selectAll("#liveSVG > *").remove();
+
+	d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
 			this.typeDictionary = {
 				"POWERGRID": "Power Grid",
 				"LIGHT": "Light",
@@ -51,15 +112,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				"CP": "carPlug.png"
 			};
 
-			let width = 700;
-			let height = 700;
-
-			let circleRadius = 18;
-			let nodeDistanceX = 45;
-			let padding = 10;
 
 
-			const root = this.tree(data, width, height/15);
+
+			// Extract the width and height that was computed by CSS.
+			//let padding = 20;
+			let width = this.chartTopologyDiv.clientWidth;
+			let height = $(window).height()/1.5;
+
+
+			let circleRadius = width/50;
+			let nodeDistanceX =  width/20;
+
+
+			const root = this.tree(data, width, nodeDistanceX);
 
 			let x0 = Infinity;
 			let x1 = -x0;
@@ -73,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			let svg = d3.select("#liveSVG")
 				.attr("viewbox", [0, 0, width, x1 - x0 + root.dx * 2])
 				.attr("width", width)
-				.attr("height", height);
+				.attr("height", x1 - x0 + root.dx * 2);
 
 			// Makes <g> dom element, that is around the graph for style elements
 			const g = svg.append("g")
@@ -155,7 +221,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 				})
 				.on("click", function (d) {
-					parseTimeSVG(d);
+					prepareForPlotting(d);
+					//$(window).scrollTop(0);
 				});
 
 			node.append("circle")
@@ -169,19 +236,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.attr("xlink:href", function (d) {
 					return "icons/" + iconLibrary[d.data.subtype];
 				})
-				.attr("x", "-12px")
-				.attr("y", "-12px")
-				.attr("width", "24px")
-				.attr("height", "24px")
+				.attr("x", -(circleRadius*1.2)/2)
+				.attr("y", -(circleRadius*1.2)/2)
+				.attr("width", circleRadius*1.2)
+				.attr("height", circleRadius*1.2)
 				.style("fill", "#ffffff");
 		})
-	})
-
-
-
 }
+
+//// Help functions
+// This calculates and creates the tree object (with nodes positions) from a json object
+function tree(data, width, nodeDistanceX){
+	const root = d3.hierarchy(data);
+	// Set initial position of root node
+	root.dx = nodeDistanceX;
+	root.dy = width / (root.height + 1);
+	return d3.tree().nodeSize([nodeDistanceX, root.dy])(root);
+}
+
 // This sets the colors for the node subtypes.
-// TODO: Eventuell ins JSON übertragen. Sollte Configurierbar sein.
 function setNodeColor(d){
     var color;
     if(d.data.type === "POWERGRID"){
@@ -199,71 +272,79 @@ function setNodeColor(d){
 	}
     return color;
 }
-// This calculates and creates the tree object (with nodes positions) from a json object
-function tree(data, width, nodeDistanceX){
-	const root = d3.hierarchy(data);
-	// Set initial position of root node
-	root.dx = nodeDistanceX;
-	root.dy = width / (root.height + 1);
-	return d3.tree().nodeSize([nodeDistanceX, root.dy])(root);
-}
-////////////////////////////////////////////////////////////////////////////////////////
 
 
-// ----------------------These are all functions for the History Graph-----------------------
-// This draws the Time Graph using d3
-function parseTimeSVG(dataBaseIds){
+// ----------------------------------------Time Series Graph-----------------------------------------
+//// Main plotting functions
+function prepareForPlotting(dataBaseIds){
 
 	let id = dataBaseIds.data.id;
 	this.deviceData = dataBaseIds.data;
 
     // Delete old chart
-	d3.selectAll("#historySVG > *").remove();
+	d3.selectAll("#historySVGRow > *").remove();
 	d3.selectAll(".form-group > *").remove();
 	if(id != 0) {
-		getMeterData(id).then(function (deviceData) {
+		getMeterData(id).then(function (data) {
 
-			var data = deviceData
+			/// Create html card
+			d3.select("#historySVGRow")
+				.insert("div", "#historySVGRow")
+				.attr("class","card")
+				.attr("id","historySVGCard")
+				.insert("div", ".card")
+				.attr("class","card-block")
+				.insert("div", ".card-block")
+				.attr("class","col-md-5")
+				.attr("id","cardBlockDef")
+				.insert("svg", ".cardBlockDef")
+				.attr("id","historySVG");
+
+
+
+
+
 			plotTimeSeries(data,  Object.keys(data[0]).sort()[0])
-
-			///// Create Options:
-			// Handler for dropdown value change
-			var dropdownChange = function() {
-				var newMeterValue = d3.select(this).property('value');
-				plotTimeSeries(data, newMeterValue);
-			};
-
-			// Get names of Meter Values
-			var meterValueNames = Object.keys(data[0]).sort();
-			meterValueNames.splice(meterValueNames.indexOf('id'), 1); //remove id
-			meterValueNames.splice(meterValueNames.indexOf('timestamp'), 1);
-			meterValueNames.splice(meterValueNames.indexOf('metaInformation'), 1);
-
-			var dropdown = d3.select(".form-group")
-				.insert("label", ".form-group")
-				.attr("for","meterValues_"+dataBaseIds)
-				.text("Select Meter Value:")
-				.insert("select", ".form-group")
-				.attr("id","meterValues_"+dataBaseIds)
-				.on("change", dropdownChange)
-				.attr("class","form-control");
-
-			dropdown.selectAll("option")
-				.data(meterValueNames)
-				.enter().append("option")
-				.attr("value", function (d) { return d; })
-				.text(function (d) {
-					return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-				});
-
-
-
-
+			drawDropDownMenu(data)
 
 
 		})
 	}
 
+}
+
+function drawDropDownMenu(data){
+
+	databaseEntryDictionary = this.databaseEntryDictionary;
+	///// Create Options:
+	// Handler for dropdown value change
+	var dropdownChange = function() {
+		var newMeterValue = d3.select(this).property('value');
+		plotTimeSeries(data, newMeterValue);
+	};
+
+	// Get names of Meter Values
+	var meterValueNames = Object.keys(data[0]).sort();
+	meterValueNames.splice(meterValueNames.indexOf('id'), 1); //remove id
+	meterValueNames.splice(meterValueNames.indexOf('timestamp'), 1);
+	meterValueNames.splice(meterValueNames.indexOf('metaInformation'), 1);
+
+	var dropdown = d3.select(".form-group")
+		.insert("label", ".form-group")
+		.attr("for","meterValues_"+ this.dataBaseIds)
+		.text("Meter Value:")
+		.insert("select", ".form-group")
+		.attr("id","meterValues_"+ this.dataBaseIds)
+		.on("change", dropdownChange)
+		.attr("class","form-control");
+
+	dropdown.selectAll("option")
+		.data(meterValueNames)
+		.enter().append("option")
+		.attr("value", function (d) { return d; })
+		.text(function (d) {
+			return databaseEntryDictionary[d];
+		});
 
 }
 
@@ -271,20 +352,21 @@ function plotTimeSeries(data, plotItem){
 
 	// Delete old chart
 	d3.selectAll("#historySVG > *").remove();
-	//d3.selectAll(".form-group > *").remove();
 
 	// Setting Window Parameter
-	let margin = {top: 0, right: 30, bottom: 200, left: 100};
-	let width = 700 - margin.left - margin.right;
-	let height = 700 - margin.top - margin.bottom;
+
+	let chartTimeDiv = document.getElementById("historySVGCard");
+	let width = chartTimeDiv.clientWidth;
+	let height = $(window).height()/2.2;
+	let margin = {top: height/10, right: width/10, bottom: height/10, left: width/10};
 
 	// Attaching svg to dom
 	let svg = d3.select("#historySVG")
-		.attr("width", width + margin.left + margin.right)
+		.attr("width", width - margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.append("g")
 		.attr("transform",
-			"translate(" + margin.left + "," + margin.right + ")");
+			"translate(" + margin.left + "," + margin.top + ")");
 
 	// Check that data is not empty
 	if (!data[0]) {
@@ -329,67 +411,30 @@ function plotTimeSeries(data, plotItem){
 			})
 		)
 
-	// // Add Name
-	// d3.select(".form-group")
-	// 	.insert("text", ".form-group")
-	// 	.attr("x", (width / 2))
-	// 	.attr("y", height + 50)
-	// 	.attr("text-anchor", "middle")
-	// 	.style("font-size", "16px")
-	// 	.style("font-weight", "bold")
-	// 	.text(typeDictionary[this.deviceData.subtype] +": "+ this.deviceData.databaseId);
 
-}
-
-
-
-var shownHistoryDbIds = [];
-function parseHistorySVGHelper(d){
-	if(shownHistoryDbIds.includes(d.data.databaseId)){ //already shown -> remove from graph
-		shownHistoryDbIds.splice(shownHistoryDbIds.indexOf(d.data.databaseId), 1);
-	} else { //not shown -> add to graph
-		shownHistoryDbIds.push(d.data.databaseId);
+	var target = $("#data")
+	if (target.length) {
+		$('html, body').animate({
+			scrollTop: (target.offset().top - 56)
+		}, 1000, "easeInOutExpo");
+		return false;
 	}
-	parseTimeSVG(shownHistoryDbIds);
-}
-////////////////////////////////////////////////////////////////////////////////////////
 
-function getHistoryData(databaseId){
-	console.log(databaseId);
-	switch(databaseId){
-		case "PPG":
-			return [{
-				"id": "PPG",
-				"time": d3.timeParse("%s")("1573407925"),
-				"value": "100"
-			}, {
-				"id": "PPG",
-				"time": d3.timeParse("%s")("1573417925"),
-				"value": "105"
-			}, {
-				"id": "PPG",
-				"time":d3.timeParse("%s")("1573427925"),
-				"value": "120"
-			}];
-			break;
-		case "KA2013":
-			return [{
-				"id": "KA2013",
-				"time": d3.timeParse("%s")("1573407925"),
-				"value": "100"
-			}, {
-				"id": "KA2013",
-				"time": d3.timeParse("%s")("1573417925"),
-				"value": "105"
-			}, {
-				"id": "KA2013",
-				"time":d3.timeParse("%s")("1573427925"),
-				"value": "20"
-			}];
-			break;
+	scrollToPage("#data");
+
+}
+
+//// Help functions
+//// Scroll to timeseries after click on topology node
+function scrollToPage(targetID){
+	var target = $(targetID)
+	if (target.length) {
+		$('html, body').animate({
+			scrollTop: (target.offset().top - 56)
+		}, 1000, "easeInOutExpo");
+		return false;
 	}
 }
-////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -397,12 +442,5 @@ function getHistoryData(databaseId){
 
 
 
-
-
-drawGraphs();
-setTimeout( function() {
-		$('[data-toggle="tooltip"]').tooltip();
-	}, 500
-);
 
 
