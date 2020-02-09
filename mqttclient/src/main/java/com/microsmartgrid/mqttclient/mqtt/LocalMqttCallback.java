@@ -1,19 +1,17 @@
 package com.microsmartgrid.mqttclient.mqtt;
 
+import com.microsmartgrid.mqttclient.WritingClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@EnableFeignClients
-@RestController
+@Component
 public class LocalMqttCallback implements MqttCallback {
 
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
@@ -39,12 +37,5 @@ public class LocalMqttCallback implements MqttCallback {
 		logger.fatal("No, seriously... This MQTT client is not intended to" +
 			"broadcast. Please use another client to publish messages. Aborting.");
 		System.exit(42); //<- if anyone ever lands here the person sure knows the answer to everything
-	}
-
-	@FeignClient("timescaleDbWriter")
-	interface WritingClient {
-		@RequestMapping(path = "/", method = RequestMethod.POST)
-		@ExceptionHandler({IOException.class})
-		void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException;
 	}
 }
