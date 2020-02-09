@@ -32,9 +32,9 @@ public class TimescaleDbWriterController {
 	}
 
 
-	@PostMapping("/reading")
+	@GetMapping("/reading")
 	@ExceptionHandler({IOException.class})
-	public void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestParam("json") String json) throws IOException, NotFoundException {
+	public void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestBody String json) throws IOException, NotFoundException {
 		readingsService.insertReading(topic, json);
 	}
 }

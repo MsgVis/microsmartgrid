@@ -1,23 +1,17 @@
 package com.microsmartgrid.mqttclient.mqtt;
 
-import com.microsmartgrid.mqttclient.WritingClient;
+import com.microsmartgrid.mqttclient.WritingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class LocalMqttCallback implements MqttCallback {
 
 	private static final Logger logger = LogManager.getLogger(LocalMqttCallback.class);
-
-	@Autowired
-	private WritingClient databaseWriter;
 
 	@Override
 	public void connectionLost(Throwable cause) {
@@ -26,7 +20,7 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
-		this.databaseWriter.writeReadingToDatabase(topic_name, mqttMessage.toString());
+		WritingService.getDataBaseWriter().writeReadingToDatabase(topic_name, mqttMessage.toString());
 	}
 
 	@Override
