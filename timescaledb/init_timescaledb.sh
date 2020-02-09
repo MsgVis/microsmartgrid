@@ -2,10 +2,12 @@
 
 set -e
 
-psql -v ON_ERROR_STOP=1 --username "msg" --dbname "msg" <<-EOSQL
-    CREATE USER docker;
-    CREATE DATABASE docker;
-    GRANT ALL PRIVILEGES ON DATABASE docker TO docker;
+psql -v ON_ERROR_STOP=1 <<-EOSQL
+    CREATE USER "user" WITH PASSWORD 'pass';
+    CREATE DATABASE "db-name" WITH OWNER "user";
+    GRANT ALL PRIVILEGES ON DATABASE "db-name" TO "user";
+
+    \c db-name
 	CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 	CREATE TABLE devices (

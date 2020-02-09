@@ -1,5 +1,5 @@
 FROM timescale/timescaledb:latest-pg11
 
-COPY ./init_timescaledb.sh /usr/local/bin
+ADD init_timescaledb.sh /docker-entrypoint-initdb.d/init-user-db.sh
 
 EXPOSE 5432
