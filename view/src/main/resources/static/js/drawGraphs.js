@@ -1,56 +1,128 @@
-// ----------------------These are all functions for the History Graph-----------------------
-// This draws the Topology Graph using d3
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------Global Javascript stuff and initilizing of other functions-----------------------
+function init() {
+	this.chartTopologyDiv = document.getElementById("liveSVGCard");
+
+	this.databaseEntryDictionary = {
+		"active_energy_A_minus" : "Zählerstand Wirkenergie A-",
+		"active_energy_A_plus" : "Zählerstand Wirkenergie A+",
+		"active_power_P1" : "Wirkleistung Phase 1",
+		"active_power_P2" : "Wirkleistung Phase 2",
+		"active_power_P3" : "Wirkleistung Phase 3",
+		"active_power_P_total" : "Wirkleistung Gesamt",
+		"apparent_power_S1" : "Scheinleistung Phase 1",
+		"apparent_power_S2" : "Scheinleistung Phase 2",
+		"apparent_power_S3" : "Scheinleistung Phase 3",
+		"apparent_power_S_total" : "Scheinleistung Gesamt",
+		"current_I1" : "Strom Phase 1",
+		"current_I2" : "Strom Phase 2",
+		"current_I3" : "Strom Phase 3",
+		"current_I_avg" : "Strom Durchschnitt",
+		"frequency_grid" : "Netzfrequenz",
+		"reactive_energy_R_minus" : "Zählerstand Blindenergie R-",
+		"reactive_energy_R_plus" : "Zählerstand Blindenergie R+",
+		"reactive_power_Q1" : "Blindenergie Phase 1",
+		"reactive_power_Q2" : "Blindenergie Phase 2",
+		"reactive_power_Q3" : "Blindenergie Phase 3",
+		"reactive_power_Q_total" : "Blindenergie Gesamt",
+		"voltage_U1" : "Spannung Phase 1",
+		"voltage_U2" : "Spannung Phase 2",
+		"voltage_U3" : "Spannung Phase 3",
+		"voltage_U_avg" : "Spannung Durchschnitt",
+	}
+
+	document.addEventListener("DOMContentLoaded", onLoadFunction);
+
+	function onLoadFunction(e) {
+//do the magic you want
+		plotTopology();// if you want to trigger resize function immediately, call it
+
+		window.addEventListener("resize", plotTopology);
+	}
+
+	setTimeout(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+		}, 500
+	);
 
 
+	$('.close-icon').on('click', function () {
+		$('liveSVGCard').fadeOut();
+	})
+}
 
-function drawGraphs() {
-	$.get("http://localhost:4711/dummyCall", {}, function(results){
-		alert(results);
-		//alert($(results).find("div.scores").html()); // show "scores" div in results
+init();
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------Handlers for Loading Data from database--------------------------------
+function getMeterData(id) {
+	var url = "http://localhost:4711/readings?id="+id+"&start=2000-01-01+00:00:00&end=2030-01-01+00:00:00&step=1";
+	return $.ajax({
+		url:url,
+		type: "GET",
+		error: function(){
+			console.log('Error ${error}');
+		}
 	});
+}
 
-	// var myData = "";
-	// $.ajax({
-	//
-	// 	url: 'http://localhost:4711/dummyCall',
-	// 	data: myData,
-	// 	type: 'GET',
-	// 	crossDomain: true,
-	// 	dataType: 'jsonp',
-	// 	success: function() { alert("Success"); },
-	// 	error: function() { alert('Failed!'); }
-	// });
-
-document.addEventListener("DOMContentLoaded", function(event) {
+function getDeviceInfo(id) {
+	var url = "http://localhost:4711/device?id="+id;
+	return $.ajax({
+		url:url,
+		type: "GET",
+		error: function(){
+			console.log('Error ${error}');
+		}
+	});
+}
 
 
-		d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
-			let typeDictionary = {
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------------------Graph Plotting--------------------------------------------
+
+// --------------------------------------Topology--------------------------------------------
+//// Main plotting function
+function plotTopology(){
+
+	// Delete old chart
+	d3.selectAll("#liveSVG > *").remove();
+
+	d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
+			this.typeDictionary = {
 				"POWERGRID": "Power Grid",
 				"LIGHT": "Light",
 				"SOLARPANEL": "Solar Panel",
 				"ELECTRICMETER": "Electric Meter",
 				"WINDMILL": "Windmill",
 				"CHARGINGSTATION": "Charging Station",
-				"BATTERY": "Battery"
+				"BATTERY": "Battery",
+				"CP": "Charging Point"
 			};
 
-			let iconLibrary = {
+			this.iconLibrary = {
 				"POWERGRID": "powerGrid.png",
 				"LIGHT": "light.png",
 				"SOLARPANEL": "solarPanel.png",
 				"ELECTRICMETER": "electricMeter.png",
 				"WINDMILL": "windmill.png",
 				"CHARGINGSTATION": "chargingStation.png",
-				"BATTERY": "battery.png"
+				"BATTERY": "battery.png",
+				"CP": "carPlug.png"
 			};
 
-			let width = 1000;
-			let height = 1000;
 
-			let circleRadius = 18;
-			let nodeDistanceX = 45;
-			let padding = 10;
+
+
+			// Extract the width and height that was computed by CSS.
+			//let padding = 20;
+			let width = this.chartTopologyDiv.clientWidth;
+			let height = $(window).height()/1.5;
+
+
+			let circleRadius = width/50;
+			let nodeDistanceX =  width/20;
 
 
 			const root = this.tree(data, width, nodeDistanceX);
@@ -67,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			let svg = d3.select("#liveSVG")
 				.attr("viewbox", [0, 0, width, x1 - x0 + root.dx * 2])
 				.attr("width", width)
-				.attr("height", height);
+				.attr("height", x1 - x0 + root.dx * 2);
 
 			// Makes <g> dom element, that is around the graph for style elements
 			const g = svg.append("g")
@@ -149,7 +221,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 				})
 				.on("click", function (d) {
-					parseHistorySVGHelper(d);
+					prepareForPlotting(d);
+					//$(window).scrollTop(0);
 				});
 
 			node.append("circle")
@@ -163,19 +236,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.attr("xlink:href", function (d) {
 					return "icons/" + iconLibrary[d.data.subtype];
 				})
-				.attr("x", "-12px")
-				.attr("y", "-12px")
-				.attr("width", "24px")
-				.attr("height", "24px")
+				.attr("x", -(circleRadius*1.2)/2)
+				.attr("y", -(circleRadius*1.2)/2)
+				.attr("width", circleRadius*1.2)
+				.attr("height", circleRadius*1.2)
 				.style("fill", "#ffffff");
 		})
-	})
-
-
-
 }
+
+//// Help functions
+// This calculates and creates the tree object (with nodes positions) from a json object
+function tree(data, width, nodeDistanceX){
+	const root = d3.hierarchy(data);
+	// Set initial position of root node
+	root.dx = nodeDistanceX;
+	root.dy = width / (root.height + 1);
+	return d3.tree().nodeSize([nodeDistanceX, root.dy])(root);
+}
+
 // This sets the colors for the node subtypes.
-// TODO: Eventuell ins JSON übertragen. Sollte Configurierbar sein.
 function setNodeColor(d){
     var color;
     if(d.data.type === "POWERGRID"){
@@ -188,253 +267,174 @@ function setNodeColor(d){
 		color = "#558dca";
     }else if(d.data.type === "STORAGE"){
         color = "#b8dce6";
-    }
+    }else{
+		color = "#c2c5cc";
+	}
     return color;
 }
-// This calculates and creates the tree object (with nodes positions) from a json object
-function tree(data, width, nodeDistanceX){
-	const root = d3.hierarchy(data);
-	// Set initial position of root node
-	root.dx = nodeDistanceX;
-	root.dy = width / (root.height + 1);
-	return d3.tree().nodeSize([nodeDistanceX, root.dy])(root);
+
+
+// ----------------------------------------Time Series Graph-----------------------------------------
+//// Main plotting functions
+function prepareForPlotting(dataBaseIds){
+
+	let id = dataBaseIds.data.id;
+	this.deviceData = dataBaseIds.data;
+
+    // Delete old chart
+	d3.selectAll("#historySVGRow > *").remove();
+	d3.selectAll(".form-group > *").remove();
+	if(id != 0) {
+		getMeterData(id).then(function (data) {
+
+			/// Create html card
+			d3.select("#historySVGRow")
+				.insert("div", "#historySVGRow")
+				.attr("class","card")
+				.attr("id","historySVGCard")
+				.insert("div", ".card")
+				.attr("class","card-block")
+				.insert("div", ".card-block")
+				.attr("class","col-md-5")
+				.attr("id","cardBlockDef")
+				.insert("svg", ".cardBlockDef")
+				.attr("id","historySVG");
+
+
+
+
+
+			plotTimeSeries(data,  Object.keys(data[0]).sort()[0])
+			drawDropDownMenu(data)
+
+
+		})
+	}
+
 }
-////////////////////////////////////////////////////////////////////////////////////////
 
+function drawDropDownMenu(data){
 
-// ----------------------These are all functions for the History Graph-----------------------
-// This draws the History Graph using d3
-function parseHistorySVG(dataBaseIds){
+	databaseEntryDictionary = this.databaseEntryDictionary;
+	///// Create Options:
+	// Handler for dropdown value change
+	var dropdownChange = function() {
+		var newMeterValue = d3.select(this).property('value');
+		plotTimeSeries(data, newMeterValue);
+	};
 
-	let margin = {top: 10, right: 30, bottom: 50, left: 100};
-	let width = 1000 - margin.left - margin.right;
-	let height = 500 - margin.top - margin.bottom;
+	// Get names of Meter Values
+	var meterValueNames = Object.keys(data[0]).sort();
+	meterValueNames.splice(meterValueNames.indexOf('id'), 1); //remove id
+	meterValueNames.splice(meterValueNames.indexOf('timestamp'), 1);
+	meterValueNames.splice(meterValueNames.indexOf('metaInformation'), 1);
 
+	var dropdown = d3.select(".form-group")
+		.insert("label", ".form-group")
+		.attr("for","meterValues_"+ this.dataBaseIds)
+		.text("Meter Value:")
+		.insert("select", ".form-group")
+		.attr("id","meterValues_"+ this.dataBaseIds)
+		.on("change", dropdownChange)
+		.attr("class","form-control");
+
+	dropdown.selectAll("option")
+		.data(meterValueNames)
+		.enter().append("option")
+		.attr("value", function (d) { return d; })
+		.text(function (d) {
+			return databaseEntryDictionary[d];
+		});
+
+}
+
+function plotTimeSeries(data, plotItem){
+
+	// Delete old chart
+	d3.selectAll("#historySVG > *").remove();
+
+	// Setting Window Parameter
+
+	let chartTimeDiv = document.getElementById("historySVGCard");
+	let width = chartTimeDiv.clientWidth;
+	let height = $(window).height()/2.2;
+	let margin = {top: height/10, right: width/10, bottom: height/10, left: width/10};
+
+	// Attaching svg to dom
 	let svg = d3.select("#historySVG")
-		.attr("width", width + margin.left + margin.right)
+		.attr("width", width - margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.append("g")
 		.attr("transform",
-			"translate(" + margin.left + "," + margin.right + ")");
+			"translate(" + margin.left + "," + margin.top + ")");
 
-	if(dataBaseIds.length == 0){ return; }
-	let data = dataBaseIds.map(x => getHistoryData(x));
-	if(!data[0]){ return; }
-	let sumstat = d3.nest()
-		.key(function(d){ return d.id })
-		.entries(data.flat());
-	console.log(sumstat);
+	// Check that data is not empty
+	if (!data[0]) {
+		return;
+	}
 
+	// Add X axis --> it is a date format
 	let x = d3.scaleTime()
-		.domain(d3.extent(data, function(d){
-			return (d["time"]);
+		.domain(d3.extent(data, function (d) {
+			var time = new Date(d["timestamp"]);
+			return (time);
 		}))
 		.range([0, width]);
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
 		.call(d3.axisBottom(x));
 
+	// Add Y axis
 	let y = d3.scaleLinear()
-		.domain([0, d3.max(data, function(d){
-			return +d["value"];
+		.domain([d3.min(data, function (d) {
+			return +d[plotItem];
+		}), d3.max(data, function (d) {
+			return +d[plotItem];
 		})])
 		.range([height, 0]);
 	svg.append("g")
 		.call(d3.axisLeft(y));
 
-	let res = sumstat.map(function(d){ return d.key });
-	let color = d3.scaleOrdinal()
-		.domain(res)
-		.range(["#FF0000"]);
-
-	svg.selectAll(".line")
-		.data(sumstat)
-		.enter()
-		.append("path")
-		.datum(sumstat)
+	// Add the line
+	svg.append("path")
+		.datum(data)
 		.attr("fill", "none")
-		.attr("stroke", function(d){ return color(d.key) })
+		.attr("stroke", "steelblue")
 		.attr("stroke-width", 1.5)
-		.attr("d", function(d) {
-			console.log(d);
-			d3.line()
-				.x(function (d) { return x((d["time"])) })
-				.y(function (d) { return y(d["value"]) })
-		});
-}
-var shownHistoryDbIds = [];
-function parseHistorySVGHelper(d){
-	if(shownHistoryDbIds.includes(d.data.databaseId)){ //already shown -> remove from graph
-		shownHistoryDbIds.splice(shownHistoryDbIds.indexOf(d.data.databaseId), 1);
-	} else { //not shown -> add to graph
-		shownHistoryDbIds.push(d.data.databaseId);
+		.attr("d", d3.line()
+			.x(function (d) {
+				var time = new Date(d["timestamp"]);
+				return x((time));
+			})
+			.y(function (d) {
+				return y(d[plotItem])
+			})
+		)
+
+
+	var target = $("#data")
+	if (target.length) {
+		$('html, body').animate({
+			scrollTop: (target.offset().top - 56)
+		}, 1000, "easeInOutExpo");
+		return false;
 	}
-	parseHistorySVG(shownHistoryDbIds);
-}
-////////////////////////////////////////////////////////////////////////////////////////
 
-// ----------------------These functions contain old JSON Objects-----------------------
-function getData(){
-	let text = {
-		"id": "0",
-		"type": "powerGrid",
-		"subtype": "powerGrid",
-		"databaseId": "PPG",
-		"depth": 0,
-		"icon": "powerGrid.png",
-		"children": [{
-			"id": "1",
-			"type": "consumer",
-			"subtype": "light",
-			"databaseId": "KA2013",
-			"depth": "1",
-			"icon": "light.png",
-			"children": []
-		}, {
-			"id": "2",
-			"type": "producer",
-			"subtype": "solarPanel",
-			"databaseId": "sunfun",
-			"depth": "1",
-			"icon": "solarPanel.png",
-			"children": []
-		}, {
-			"id": "3",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "Pald201",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "4",
-				"type": "consumer",
-				"subtype": "chargingStation",
-				"databaseId": "loader42",
-				"depth": "2",
-				"icon": "chargingStation.png",
-				"children": []
-			}, {
-				"id": "5",
-				"type": "consumer",
-				"subtype": "chargingStation",
-				"databaseId": "charger42",
-				"depth": "2",
-				"icon": "chargingStation.png",
-				"children": []
-			}]
-		}, {
-			"id": "6",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "JASD0213",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "7",
-				"type": "storage",
-				"subtype": "battery",
-				"databaseId": "battery123",
-				"depth": "2",
-				"icon": "battery.png",
-				"children": []
-			}]
-		}, {
-			"id": "8",
-			"type": "producer",
-			"subtype": "windmill",
-			"databaseId": "Cloudy202",
-			"depth": "1",
-			"icon": "windmill.png",
-			"children": []
-		}, {
-			"id": "9",
-			"type": "producer",
-			"subtype": "solarPanel",
-			"databaseId": "sunnyDay3",
-			"depth": "1",
-			"icon": "solarPanel.png",
-			"children": []
-		}, {
-			"id": "10",
-			"type": "electricMeter",
-			"subtype": "electricMeter",
-			"databaseId": "ILikeCounting",
-			"depth": "1",
-			"icon": "electricMeter.png",
-			"children": [{
-				"id": "11",
-				"type": "electricMeter",
-				"subtype": "electricMeter",
-				"databaseId": "1plus1is2",
-				"depth": "2",
-				"icon": "electricMeter.png",
-				"children": [{
-					"id": "12",
-					"type": "producer",
-					"subtype": "windmill",
-					"databaseId": "spinningAround",
-					"depth": "3",
-					"icon": "windmill.png",
-					"children": []
-				}, {
-					"id": "13",
-					"type": "storage",
-					"subtype": "battery",
-					"databaseId": "batman",
-					"depth": "3",
-					"icon": "battery.png",
-					"children": []
-				}]
-			}, {
-				"id": "14",
-				"type": "producer",
-				"subtype": "solarPanel",
-				"databaseId": "sunnysun",
-				"depth": "2",
-				"icon": "solarPanel.png",
-				"children": []
-			}]
-		}]
-	};
+	scrollToPage("#data");
 
-	return text;
 }
-function getHistoryData(databaseId){
-	console.log(databaseId);
-	switch(databaseId){
-		case "PPG":
-			return [{
-				"id": "PPG",
-				"time": d3.timeParse("%s")("1573407925"),
-				"value": "100"
-			}, {
-				"id": "PPG",
-				"time": d3.timeParse("%s")("1573417925"),
-				"value": "105"
-			}, {
-				"id": "PPG",
-				"time":d3.timeParse("%s")("1573427925"),
-				"value": "120"
-			}];
-			break;
-		case "KA2013":
-			return [{
-				"id": "KA2013",
-				"time": d3.timeParse("%s")("1573407925"),
-				"value": "100"
-			}, {
-				"id": "KA2013",
-				"time": d3.timeParse("%s")("1573417925"),
-				"value": "105"
-			}, {
-				"id": "KA2013",
-				"time":d3.timeParse("%s")("1573427925"),
-				"value": "20"
-			}];
-			break;
+
+//// Help functions
+//// Scroll to timeseries after click on topology node
+function scrollToPage(targetID){
+	var target = $(targetID)
+	if (target.length) {
+		$('html, body').animate({
+			scrollTop: (target.offset().top - 56)
+		}, 1000, "easeInOutExpo");
+		return false;
 	}
 }
-////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -442,12 +442,5 @@ function getHistoryData(databaseId){
 
 
 
-
-
-drawGraphs();
-setTimeout( function() {
-		$('[data-toggle="tooltip"]').tooltip();
-	}, 500
-);
 
 

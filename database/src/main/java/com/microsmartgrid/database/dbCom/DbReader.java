@@ -25,10 +25,6 @@ public class DbReader {
 	private static final Logger logger = LogManager.getLogger(DbReader.class);
 
 
-	@GetMapping("/dummyCall")
-	public static String dummyString() throws IOException {
-		return "{\"var\": \"Hallo schöner Mensch!\" }";//ObjectMapperManager.getMapper().readValue(new File("./dummy_topology.json"), String.class);
-	}
 
 	/**''
 	 * Query for all devices
