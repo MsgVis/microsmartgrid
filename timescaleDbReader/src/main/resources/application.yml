@@ -1,15 +1,14 @@
 spring:
     datasource:
-        url: "jdbc:postgresql://localhost:5432/<db-name>"
-        username: "<user>"
-        password: "<pass>"
-        driverClassName: "org.postgresql.Driver"
+        url: "jdbc:postgresql://localhost:5432/db-name"
+        username: "user"
+        password: "pass"
 
     jpa:
         properties:
             hibernate:
-                dialect: "org.hibernate.dialect.PostgreSQL95Dialect"
-                ddl-auto: "validate"
+                dialect: org.hibernate.dialect.PostgreSQL95Dialect
+                ddl-auto: none
 eureka:
     client:
         serviceUrl:
