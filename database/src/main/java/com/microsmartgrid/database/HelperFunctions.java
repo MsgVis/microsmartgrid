@@ -63,7 +63,7 @@ public class HelperFunctions {
 		} else {
 			// TODO: figure out a way to handle jsonArrays and single attributes
 			log.warn("Input is not a json object.");
-			throw new IllegalArgumentException("Input is not a json object.");
+			return null;
 		}
 
 		return device;

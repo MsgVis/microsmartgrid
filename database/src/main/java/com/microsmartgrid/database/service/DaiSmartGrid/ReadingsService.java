@@ -95,6 +95,7 @@ public class ReadingsService {
 		try {
 			// create object
 			device = HelperFunctions.deserializeJson(json, cls);
+			if (device == null) return null;
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
