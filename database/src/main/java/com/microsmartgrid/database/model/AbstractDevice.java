@@ -30,11 +30,12 @@ public abstract class AbstractDevice implements Serializable {
 
 	@Id
 	@ManyToOne
+	@JoinColumn(name = "device_id")
 	private DeviceInformation deviceInformation;
 
 	@Id
 	@Column(name = "time", nullable = false)
-	private Instant time;
+	private Instant timestamp;
 
 	// Not a typo, saves as json. For jsonb replace 'jsonb' in 'columnDefinition.
 	@Type(type = "jsonb")

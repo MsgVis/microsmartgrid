@@ -37,7 +37,7 @@ public class ReadingsService {
 		}
 
 		for (DeviceInformation id : devices) {
-			repository.findFirstByDeviceInformationAndTimeBeforeOrderByTimeDesc(id, Instant.now().minus(cutoff)).ifPresent(readings::add);
+			repository.findFirstByDeviceInformationAndTimestampBeforeOrderByTimestampDesc(id, Instant.now().minus(cutoff)).ifPresent(readings::add);
 		}
 
 		return readings;

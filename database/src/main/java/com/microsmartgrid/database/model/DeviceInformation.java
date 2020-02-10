@@ -23,7 +23,8 @@ import java.io.Serializable;
 public class DeviceInformation implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
+	@SequenceGenerator(name = "id_sequence", sequenceName = "devices_id_seq", allocationSize = 1)
 	private int id;
 	/*
 	In the case of MQTT, this should be the topic
