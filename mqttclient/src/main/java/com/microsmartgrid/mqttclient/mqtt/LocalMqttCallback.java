@@ -20,7 +20,12 @@ public class LocalMqttCallback implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
-		WritingService.getDataBaseWriter().writeReadingToDatabase(topic_name, mqttMessage.toString());
+		try {
+			WritingService.getDataBaseWriter().writeReadingToDatabase(topic_name, new TextNode(mqttMessage.toString()));
+		} catch (Exception e) {
+			// log and continue running
+			log.warn(e);
+		}
 	}
 
 	@Override

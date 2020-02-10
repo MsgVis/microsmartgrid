@@ -1,5 +1,6 @@
 package com.microsmartgrid.timescaleDbWriter.controller;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
@@ -32,9 +33,10 @@ public class TimescaleDbWriterController {
 	}
 
 
-	@GetMapping("/reading")
+	@PostMapping("/reading")
 	@ExceptionHandler({IOException.class})
-	public void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestBody String json) throws IOException, NotFoundException {
-		readingsService.insertReading(topic, json);
+	public void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestBody TextNode json) throws IOException, NotFoundException {
+
+		readingsService.insertReading(topic, json.asText());
 	}
 }
