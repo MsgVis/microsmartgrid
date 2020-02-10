@@ -18,6 +18,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Log4j2
@@ -49,9 +50,7 @@ public class ReadingsService {
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllAvg(id, Instant.now().minus(since), Instant.now().minus(until), step);
-		readings.forEach(r -> {
-			r.setMetaInformation(queryInfo);
-		});
+		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
@@ -61,9 +60,7 @@ public class ReadingsService {
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllStd(id, Instant.now().minus(since), Instant.now().minus(until), step);
-		readings.forEach(r -> {
-			r.setMetaInformation(queryInfo);
-		});
+		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
@@ -73,9 +70,7 @@ public class ReadingsService {
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllMin(id, Instant.now().minus(since), Instant.now().minus(until), step);
-		readings.forEach(r -> {
-			r.setMetaInformation(queryInfo);
-		});
+		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
@@ -85,9 +80,7 @@ public class ReadingsService {
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllMax(id, Instant.now().minus(since), Instant.now().minus(until), step);
-		readings.forEach(r -> {
-			r.setMetaInformation(queryInfo);
-		});
+		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
@@ -103,21 +96,19 @@ public class ReadingsService {
 			// create object
 			device = HelperFunctions.deserializeJson(json, cls);
 		} catch (JsonProcessingException e) {
-			logger.error("Couldn't construct instance from topic " + topic);
 			throw new RuntimeException(e);
 		}
 
+		AtomicReference<DeviceInformation> deviceInfo = new AtomicReference<>();
 		// check for existing deviceInformation
-		DeviceInformation deviceInfo = deviceInfoRepository.findByName(topic).orElse(null);
-		if (deviceInfo == null) {
+		deviceInfoRepository.findByName(topic).ifPresentOrElse(deviceInfo::set, () -> {
 			// create new DeviceInformation to the corresponding device and save topic to 'name'
-
 			// flush since we would like to get the generated id
-			deviceInfo = deviceInfoRepository.saveAndFlush(new DeviceInformation(topic));
-			logger.info("Created new device information object for name " + deviceInfo.getName() +
-				" with the generated id " + deviceInfo.getId());
-		}
-		device.setDeviceInformation(deviceInfo);
+			deviceInfo.set(deviceInfoRepository.saveAndFlush(new DeviceInformation(topic)));
+			log.info("Created new device information object for name " + deviceInfo.get().getName() +
+				" with the generated id " + deviceInfo.get().getId());
+		});
+		device.setDeviceInformation(deviceInfo.get());
 
 		if (device instanceof Readings) {
 			// write entry to database
