@@ -1,15 +1,19 @@
 spring:
     datasource:
-        url: "jdbc:postgresql://localhost:5432/db-name"
-        username: "user"
-        password: "pass"
-        driverClassName: "org.postgresql.Driver"
+        url: "jdbc:postgresql://localhost:5432/msg"
+        username: "msg"
+        password: "msg"
 
     jpa:
         properties:
             hibernate:
-                dialect: "org.hibernate.dialect.PostgreSQL95Dialect"
-                ddl-auto: "validate"
+                dialect: org.hibernate.dialect.PostgreSQL95Dialect
+                ddl-auto: validate
+                physical_naming_strategy: com.vladmihalcea.hibernate.type.util.CamelCaseToSnakeCaseNamingStrategy
+        generate-ddl: true
+        show-sql: true
+
+
 eureka:
     client:
         serviceUrl:
