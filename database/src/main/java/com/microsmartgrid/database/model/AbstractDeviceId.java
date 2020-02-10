@@ -1,9 +1,14 @@
 package com.microsmartgrid.database.model;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.io.Serializable;
 import java.time.Instant;
 
-class AbstractDeviceId implements Serializable {
-	DeviceInformation deviceInformation;
-	Instant time;
+@Data
+@EqualsAndHashCode
+public class AbstractDeviceId implements Serializable {
+	int deviceInformation;
+	Instant timestamp;
 }

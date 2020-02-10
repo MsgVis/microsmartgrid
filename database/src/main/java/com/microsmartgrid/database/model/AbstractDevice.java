@@ -3,6 +3,7 @@ package com.microsmartgrid.database.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -23,6 +24,7 @@ import java.util.Map;
 	@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @MappedSuperclass
+@Data
 @IdClass(AbstractDeviceId.class)
 public abstract class AbstractDevice implements Serializable {
 
@@ -40,35 +42,4 @@ public abstract class AbstractDevice implements Serializable {
 	@JsonAnySetter
 	private Map<String, Object> metaInformation = new HashMap<>();
 
-	protected AbstractDevice() {
-	}
-
-	public AbstractDevice(Instant time, Map<String, Object> metaInformation) {
-		this.time = time;
-		this.metaInformation = metaInformation;
-	}
-
-	public DeviceInformation getDeviceInformation() {
-		return deviceInformation;
-	}
-
-	public void setDeviceInformation(DeviceInformation deviceInformation) {
-		this.deviceInformation = deviceInformation;
-	}
-
-	public Instant getTime() {
-		return time;
-	}
-
-	public void setTime(Instant timestamp) {
-		this.time = timestamp;
-	}
-
-	public Map<String, Object> getMetaInformation() {
-		return metaInformation;
-	}
-
-	public void setMetaInformation(Map<String, Object> metaInformation) {
-		this.metaInformation = metaInformation;
-	}
 }
