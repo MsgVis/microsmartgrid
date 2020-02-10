@@ -3,10 +3,7 @@ package com.microsmartgrid.timescaleDbReader.controller;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
-import com.microsmartgrid.timescaleDbReader.TimescaleDbReaderApplication;
 import javassist.NotFoundException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +17,6 @@ import java.util.List;
 // TODO: Access noch richtig einstellen. Momentan kann jeder darauf zugreifen.
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TimescaleDbReaderController {
-	private static final Logger logger = LogManager.getLogger(TimescaleDbReaderApplication.class);
 
 	@Autowired
 	private DeviceInformationRepository deviceInfoRepository;

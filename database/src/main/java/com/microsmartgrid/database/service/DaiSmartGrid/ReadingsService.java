@@ -8,8 +8,7 @@ import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import javassist.NotFoundException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@Log4j2
 public class ReadingsService {
-	private static final Logger logger = LogManager.getLogger(ReadingsService.class);
 
 	@Autowired
 	private DeviceInformationRepository deviceInfoRepository;
@@ -120,7 +119,6 @@ public class ReadingsService {
 		}
 		device.setDeviceInformation(deviceInfo);
 
-		logger.info("Writing " + device.toString() + " to database.");
 		if (device instanceof Readings) {
 			// write entry to database
 			return repository.save((Readings) device);

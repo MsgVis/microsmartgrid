@@ -1,12 +1,10 @@
 package com.microsmartgrid.mqttclient.mqtt;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.eclipse.paho.client.mqttv3.*;
 
-
+@Log4j2
 public class LocalMqttAsyncClient {
-	private static final Logger logger = LogManager.getLogger(LocalMqttAsyncClient.class);
 	private static MqttAsyncClient mqtt_client = null;
 
 	public LocalMqttAsyncClient() {
@@ -14,12 +12,12 @@ public class LocalMqttAsyncClient {
 
 	public void init(String serverURI) {
 		try {
-			logger.info("Setting up Client...");
+			log.info("Setting up Client...");
 			mqtt_client = new MqttAsyncClient(serverURI, "com-microsmartgrid-mqttclient");
 			mqtt_client.setCallback(new LocalMqttCallback());
-			logger.info("Setup successful.");
+			log.info("Setup successful.");
 		} catch (MqttException e) {
-			logger.fatal("Mqtt Client could not be started.\n"
+			log.fatal("Mqtt Client could not be started.\n"
 				+ "Reason: " + e.toString() + ", " + e.getCause() + "\n"
 				+ "Details: " + e.getMessage() + "\n"
 				+ "Aborting.");
@@ -32,7 +30,7 @@ public class LocalMqttAsyncClient {
 			throw new NullPointerException("mqtt client must be initialised before it can be connected.");
 		}
 		if (mqtt_client.isConnected()) {
-			logger.info("Client already connected to " + mqtt_client.getCurrentServerURI());
+			log.info("Client already connected to " + mqtt_client.getCurrentServerURI());
 			return;
 		}
 		MqttConnectOptions options = new MqttConnectOptions();
@@ -40,14 +38,14 @@ public class LocalMqttAsyncClient {
 		options.setAutomaticReconnect(true);
 		options.setCleanSession(true);
 		try {
-			logger.info("Connecting to server. Waiting for completion...");
+			log.info("Connecting to server. Waiting for completion...");
 			IMqttToken con_token = mqtt_client.connect(options);
 			con_token.waitForCompletion();
-			logger.info("Connection successful.");
+			log.info("Connection successful.");
 		} catch (MqttSecurityException e) {
-			logger.error(e.toString() + "occurred, due to " + e.getCause());
+			log.error(e.toString() + "occurred, due to " + e.getCause());
 		} catch (MqttException e) {
-			logger.error("Was unable to connect to server.");
+			log.error("Was unable to connect to server.");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -60,12 +58,12 @@ public class LocalMqttAsyncClient {
 				" can be performed.");
 		}
 		try {
-			logger.info("Subscribing to \"" + topic + "\" at QoS 0. Waiting for subscription to finish.");
+			log.info("Subscribing to \"" + topic + "\" at QoS 0. Waiting for subscription to finish.");
 			IMqttToken sub_Token = mqtt_client.subscribe(topic, 0, null, null);
 			sub_Token.waitForCompletion();
-			logger.info("Subscription successful.");
+			log.info("Subscription successful.");
 		} catch (MqttException e) {
-			logger.error("Subscription failed. Aborting.");
+			log.error("Subscription failed. Aborting.");
 			e.printStackTrace();
 			System.exit(e.getReasonCode());
 		}
@@ -77,15 +75,15 @@ public class LocalMqttAsyncClient {
 
 	public void disconnect() {
 		if (!mqtt_client.isConnected()) {
-			logger.info("Client was not connected.");
+			log.info("Client was not connected.");
 		}
 		try {
 			mqtt_client.disconnect();
 		} catch (MqttException e) {
-			logger.error("Disconnection failed.");
-			logger.error(e.getCause());
+			log.error("Disconnection failed.");
+			log.error(e.getCause());
 			e.printStackTrace();
-			logger.error("Continuing without disconnection.");
+			log.error("Continuing without disconnection.");
 		}
 	}
 }
