@@ -89,6 +89,7 @@
 			<artifactId>jackson-dataformat-yaml</artifactId>
 			<version>2.10.1</version>
 		</dependency>
+		<!-- Spring - extendable java framework -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-test</artifactId>

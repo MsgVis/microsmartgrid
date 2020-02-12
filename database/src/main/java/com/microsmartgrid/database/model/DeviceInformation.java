@@ -26,15 +26,13 @@ public class DeviceInformation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
 	@SequenceGenerator(name = "id_sequence", sequenceName = "devices_id_seq", allocationSize = 1)
 	private int id;
-	/*
-	In the case of MQTT, this should be the topic
+	/**
+	 * In the case of MQTT, this should be the topic
 	 */
 	private String name;
 	private String description;
 	@org.hibernate.annotations.Type(type = "int-array")
-	@Column(
-		columnDefinition = "integer[]"
-	)
+	@Column(columnDefinition = "integer[]")
 	private int[] children;
 	@Enumerated
 	private Type type;

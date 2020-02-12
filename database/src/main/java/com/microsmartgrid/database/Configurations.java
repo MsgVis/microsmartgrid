@@ -20,7 +20,6 @@ public class Configurations {
 			});
 		} catch (IOException e) {
 			log.error("Couldn't read from ClassMap.yml configuration file!");
-			e.printStackTrace();
 			throw new IOException(e);
 		} finally {
 			classMapFile.close();
