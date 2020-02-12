@@ -41,6 +41,8 @@ services:
         depends_on:
             configserver:
                 condition: service_healthy
+            eurekaserver:
+                condition: service_healthy
         ports:
             - 8080:8080
         logging:
@@ -48,18 +50,60 @@ services:
                 max-size: "10m"
                 max-file: "10"
 
-    database:
-        build: ./database
+    timescaledb-reader:
+        build: ./timescaleDbReader
         network_mode: "host"
         environment:
             CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-        image: database:latest
+        image: timescaledb-reader:latest
         restart: always
         depends_on:
             configserver:
                 condition: service_healthy
+            eurekaserver:
+                condition: service_healthy
         ports:
-            - 4711:4711
+            - 4720:4720
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    timescaledb-writer:
+        build: ./timescaleDbWriter
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: timescaledb-writer:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+            eurekaserver:
+                condition: service_healthy
+        ports:
+            - 4721:4721
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "10"
+
+    mqttclient:
+        build: ./mqttclient
+        network_mode: "host"
+        environment:
+            CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+        image: mqttclient:latest
+        restart: always
+        depends_on:
+            configserver:
+                condition: service_healthy
+            eurekaserver:
+                condition: service_healthy
+            timescaledb-writer:
+                condition: service_healthy
+        ports:
+            - 1883:1883
         logging:
             options:
                 max-size: "10m"

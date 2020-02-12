@@ -1,4 +1,0 @@
-server:
-    servlet:
-        context-path: /database
-    port: 4711

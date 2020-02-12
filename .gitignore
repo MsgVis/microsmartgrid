@@ -1,10 +1,10 @@
 # Compiled class file
 *.class
 
-# Log file
+# Log files
 *.log
 paho*/
-com-microsmartgrid-database-*/
+com-microsmartgrid-mqttclient-*/
 
 # BlueJ files
 *.ctxt
@@ -24,10 +24,10 @@ com-microsmartgrid-database-*/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-#config files
+# config files
 **.iml
 
-#binaries
+# binaries
 **/target
 test.mv.db
 test.trace.db
@@ -63,7 +63,5 @@ build/
 ### VS Code ###
 .vscode/
 
-##Not sure where these come from#
+# Mac
 *.DS_Store
-# This has to be at the bottom for it to work???
-database/src/main/resources/config/db-config.properties

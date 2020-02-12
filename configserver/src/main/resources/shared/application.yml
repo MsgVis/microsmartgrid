@@ -1,6 +1,8 @@
 logging:
     level:
-        org.springframework.security: INFO
+        com.netflix.discovery: 'INFO'
+        org.springframework.cloud: 'DEBUG'
+        org.springframework.security: 'INFO'
 
 eureka:
     instance:
