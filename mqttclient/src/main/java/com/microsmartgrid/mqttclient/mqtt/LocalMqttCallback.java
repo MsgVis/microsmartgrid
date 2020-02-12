@@ -2,6 +2,8 @@ package com.microsmartgrid.mqttclient.mqtt;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.microsmartgrid.mqttclient.WritingService;
+import feign.FeignException;
+import javassist.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -20,9 +22,9 @@ public class LocalMqttCallback implements MqttCallback {
 	@Override
 	public void messageArrived(String topic_name, MqttMessage mqttMessage) throws IOException {
 		try {
-			WritingService.getDataBaseWriter().writeReadingToDatabase(topic_name, new TextNode(mqttMessage.toString()));
-		} catch (Exception e) {
-			// log and continue running
+			WritingService.getDataBaseWriter().writeDeviceToDatabase(topic_name, new TextNode(mqttMessage.toString()));
+		} catch (NotFoundException | FeignException e) {
+			// If a message caused an internal server error, skip it
 			log.warn(e);
 		}
 	}

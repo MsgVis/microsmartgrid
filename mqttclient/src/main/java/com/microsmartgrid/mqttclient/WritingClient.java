@@ -1,6 +1,7 @@
 package com.microsmartgrid.mqttclient;
 
 import com.fasterxml.jackson.databind.node.TextNode;
+import javassist.NotFoundException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,6 @@ import java.io.IOException;
 public interface WritingClient {
 
 	@PostMapping("/reading")
-	@ExceptionHandler({IOException.class})
-	void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestBody TextNode json) throws IOException;
+	@ExceptionHandler({IOException.class, NotFoundException.class})
+	void writeDeviceToDatabase(@RequestParam("name") String topic, @RequestBody TextNode json) throws IOException, NotFoundException;
 }

@@ -1,9 +1,10 @@
 package com.microsmartgrid.timescaleDbWriter.controller;
 
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.microsmartgrid.database.model.AbstractDevice;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
-import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
+import com.microsmartgrid.database.service.AbstractDeviceService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class TimescaleDbWriterController {
 	@Autowired
 	private DeviceInformationRepository deviceInfoRepository;
 	@Autowired
-	private ReadingsService readingsService;
+	private AbstractDeviceService abstractDeviceService;
 
 	/**
 	 * Save or update DeviceInformation to a Device
@@ -33,10 +34,17 @@ public class TimescaleDbWriterController {
 	}
 
 
+	/**
+	 * Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.
+	 *
+	 * @param name unique name to assign the DeviceInformation object
+	 * @param json json to save
+	 * @throws IOException       if the ClassMap.yml file can't be read
+	 * @throws NotFoundException if the assigned database table hasn't been created
+	 */
 	@PostMapping("/reading")
-	@ExceptionHandler({IOException.class})
-	public void writeReadingToDatabase(@RequestParam("topic") String topic, @RequestBody TextNode json) throws IOException, NotFoundException {
-
-		readingsService.insertReading(topic, json.asText());
+	@ExceptionHandler({IOException.class, NotFoundException.class})
+	public <T extends AbstractDevice> T writeDeviceToDatabase(@RequestParam("name") String name, @RequestBody TextNode json) throws IOException, NotFoundException {
+		return abstractDeviceService.insertDevice(name, json.asText());
 	}
 }
