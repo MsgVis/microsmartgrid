@@ -119,7 +119,7 @@ public class TimescaleDbReaderController {
 	@GetMapping("/readings")
 	public List<Readings> queryReading(@RequestParam(value = "id", required = false) int id,
 									   @RequestParam(value = "since", required = false) Period since,
-									   @RequestParam(value = "until", required = false) Period until,) {
+									   @RequestParam(value = "until", required = false) Period until) {
 		return readingsService.getReadings(id, since, until);
 	}
 
