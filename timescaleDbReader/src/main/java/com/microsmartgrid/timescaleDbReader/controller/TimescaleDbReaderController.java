@@ -38,11 +38,11 @@ public class TimescaleDbReaderController {
 
 	/**
 	 * Queries the database for all readings from one device within an interval.
-	 * Readings will be aggregated over some smaller interval and the average returned.
+	 * Readings will be aggregated over 'step' and the average is returned.
 	 *
 	 * @param id    Optional. Device id.
-	 * @param since Optional. Relative period from now. Start of interval.
-	 * @param until Optional. Relative period from now. End of interval.
+	 * @param since Optional. Relative period since now. Start of interval.
+	 * @param until Optional. Relative period since now. End of interval.
 	 * @param step  aggregate interval
 	 * @return list of readings objects
 	 */
@@ -53,11 +53,11 @@ public class TimescaleDbReaderController {
 
 	/**
 	 * Queries the database for all readings from one device within an interval.
-	 * Readings will be aggregated over some smaller interval and the standard deviation returned.
+	 * Readings will be aggregated over 'step' and the standard deviation is returned.
 	 *
 	 * @param id    Optional. Device id.
-	 * @param since Optional. Relative period from now. Start of interval.
-	 * @param until Optional. Relative period from now. End of interval.
+	 * @param since Optional. Relative period since now. Start of interval.
+	 * @param until Optional. Relative period since now. End of interval.
 	 * @param step  aggregate interval
 	 * @return list of readings objects
 	 */
@@ -68,7 +68,7 @@ public class TimescaleDbReaderController {
 
 	/**
 	 * Queries the database for all readings from one device within an interval.
-	 * Readings will be aggregated over some smaller interval and the minimum returned.
+	 * Readings will be aggregated over 'step' and the minimum is returned.
 	 *
 	 * @param id    Optional. Device id.
 	 * @param since Optional. Relative period from now. Start of interval.
@@ -83,7 +83,7 @@ public class TimescaleDbReaderController {
 
 	/**
 	 * Queries the database for all readings from one device within an interval.
-	 * Readings will be aggregated over some smaller interval and the maximum returned.
+	 * Readings will be aggregated over 'step' and the maximum is returned.
 	 *
 	 * @param id    Optional. Device id.
 	 * @param since Optional. Relative period from now. Start of interval.
@@ -97,6 +97,8 @@ public class TimescaleDbReaderController {
 	}
 
 	/**
+	 * Queries the database for all readings from one device within an interval.
+	 *
 	 * @param id    Optional. Device id.
 	 * @param since Optional. Relative period from now. Start of interval.
 	 * @param until Optional. Relative period from now. End of interval.
@@ -118,16 +120,22 @@ public class TimescaleDbReaderController {
 	}
 
 	/**
-	 * Query devices table
+	 * Query devices table by id.
 	 *
 	 * @param id Internally generated id of the device
-	 * @return device with input id
+	 * @return device
 	 */
 	@GetMapping("/deviceById")
 	public DeviceInformation queryDevices(@RequestParam("id") int id) throws NotFoundException {
 		return deviceInfoRepository.findById(id).orElseThrow(() -> new NotFoundException("The device with id " + id + " doesn't exist."));
 	}
 
+	/**
+	 * Queries devices table by name. Mostly used internally, before a reading can be assigned an id.
+	 *
+	 * @param name Externally provided name for a reading
+	 * @return device
+	 */
 	@GetMapping("/deviceByName")
 	public DeviceInformation queryDevices(String name) {
 		return deviceInfoRepository.findByName(name).orElse(null);
