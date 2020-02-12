@@ -14,10 +14,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @Log4j2
 public class MqttClientApplication implements CommandLineRunner {
 
-	private static String msg_serverURI;
-	private static String mqtt_topic;
-	private static String mqtt_timeout;
-
 	public static void main(String[] args) {
 		SpringApplication.run(MqttClientApplication.class, args);
 	}
@@ -27,13 +23,23 @@ public class MqttClientApplication implements CommandLineRunner {
 	 * @param args - : first: serverURI, second: topic, third: timeout
 	 */
 	@Override
-	public void run(String... args) throws Exception {
-		if (args.length < 1 || args[0].isEmpty()) msg_serverURI = "tcp://192.168.121.172";
-		else msg_serverURI = args[0];
-		if (args.length < 2 || args[1].isBlank()) mqtt_topic = "#";
-		else mqtt_topic = args[1];
+	public void run(String... args) {
+		String msg_serverURI;
+		if (args.length < 1 || args[0].isEmpty()) {
+			msg_serverURI = "tcp://192.168.121.172";
+		} else {
+			msg_serverURI = args[0];
+		}
+
+		String mqtt_topic;
+		if (args.length < 2 || args[1].isBlank()) {
+			mqtt_topic = "#";
+		} else {
+			mqtt_topic = args[1];
+		}
+
+		String mqtt_timeout;
 		if (args.length < 3 || args[2].isBlank()) {
-			log.info("No connection timeout was specified. Connecting with timeout 30 seconds.");
 			mqtt_timeout = "30";
 		} else {
 			mqtt_timeout = args[2];
