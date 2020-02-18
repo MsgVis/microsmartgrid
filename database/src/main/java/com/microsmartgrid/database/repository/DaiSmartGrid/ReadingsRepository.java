@@ -16,7 +16,7 @@ import static com.microsmartgrid.database.SqlCommands.*;
 @Repository
 public interface ReadingsRepository extends JpaRepository<Readings, DeviceInformation> {
 
-	Optional<Readings> findFirstByDeviceInformationAndTimestampBeforeOrderByTimestampDesc(DeviceInformation id, Instant cutoff);
+	Optional<Readings> findFirstByDeviceInformationAndTimestampAfterOrderByTimestampDesc(DeviceInformation id, Instant cutoff);
 
 	@Query(value = QUERY_READINGS_AVERAGES, nativeQuery = true)
 	List<Readings> findAllAvg(@Param("id") int id, @Param("since") Instant since, @Param("until") Instant until, @Param("step") String step);

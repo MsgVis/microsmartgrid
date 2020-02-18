@@ -24,12 +24,12 @@ public class ReadingsService {
 	@Autowired
 	private ReadingsRepository repository;
 
-	public List<Readings> getLatestReadings(Optional<Period> cutoff) {
+	public List<Readings> getLatestReadings(Optional<Duration> cutoff) {
 		List<DeviceInformation> devices = deviceInfoRepository.findAll();
 		List<Readings> readings = new ArrayList<>();
 
 		for (DeviceInformation id : devices) {
-			repository.findFirstByDeviceInformationAndTimestampBeforeOrderByTimestampDesc(id, Instant.now().minus(cutoff.orElse(Period.ofDays(3))))
+			repository.findFirstByDeviceInformationAndTimestampAfterOrderByTimestampDesc(id, Instant.now().minus(cutoff.orElse(Duration.ofDays(3))))
 				.ifPresent(readings::add);
 		}
 

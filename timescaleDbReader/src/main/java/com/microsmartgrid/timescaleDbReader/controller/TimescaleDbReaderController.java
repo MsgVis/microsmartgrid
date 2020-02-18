@@ -33,7 +33,7 @@ public class TimescaleDbReaderController {
 	 * @return a list of readings, one for each active device
 	 */
 	@GetMapping("/latest")
-	public List<Readings> queryFlow(@RequestParam("cutoff") Optional<Period> cutoff) {
+	public List<Readings> queryFlow(@RequestParam("cutoff") Optional<Duration> cutoff) {
 		return readingsService.getLatestReadings(cutoff);
 	}
 
