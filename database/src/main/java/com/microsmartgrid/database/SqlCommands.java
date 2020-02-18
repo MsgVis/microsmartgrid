@@ -2,39 +2,12 @@ package com.microsmartgrid.database;
 
 public abstract class SqlCommands {
 
-	public static final String QUERY_READINGS = "SELECT device_id," +
-		" time," +
-		" a_minus," +
-		" a_plus," +
-		" r_minus," +
-		" r_plus," +
-		" p_total," +
-		" p_r," +
-		" p_s," +
-		" p_t," +
-		" q_total," +
-		" q_r," +
-		" q_s," +
-		" q_t," +
-		" s_total," +
-		" s_r," +
-		" s_s," +
-		" s_t," +
-		" i_avg," +
-		" i_r," +
-		" i_s," +
-		" i_t," +
-		" u_avg," +
-		" u_r," +
-		" u_s," +
-		" u_t," +
-		" f," +
-		" meta" +
+	public static final String QUERY_READINGS = "SELECT *" +
 		" FROM readings" +
-		" WHERE (:id IS NULL OR device_id = :id)" +
-		" AND (:since IS NULL OR time >= :since)" +
-		" AND (:until IS NULL OR time < :until)" +
-		" GROUP BY device_id ";
+		" WHERE (:id = 0 OR device_id = :id)" +
+		" AND (:since = to_timestamp(0) OR time >= :since)" +
+		" AND (:until = to_timestamp(0) OR time <= :until)" +
+		" GROUP BY time, device_id ORDER BY time DESC";
 	public static final String QUERY_READINGS_AVERAGES = "SELECT device_id," +
 		" time_bucket(cast(:step AS interval), time) AS bucket," +
 		" avg(a_minus) AS a_minus," +
@@ -63,9 +36,9 @@ public abstract class SqlCommands {
 		" avg(u_t) AS u_t," +
 		" avg(f) as f" +
 		" FROM readings" +
-		" WHERE (:id IS NULL OR device_id = :id)" +
-		" AND (:since IS NULL OR time >= :since)" +
-		" AND (:until IS NULL OR time < :until)" +
+		" WHERE (:id = 0 OR device_id = :id)" +
+		" AND (:since = to_timestamp(0) OR time >= :since)" +
+		" AND (:until = to_timestamp(0) OR time < :until)" +
 		" GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_STDDEV = "SELECT device_id," +
 		" time_bucket(cast(:step AS interval), time) AS bucket," +
@@ -95,9 +68,9 @@ public abstract class SqlCommands {
 		" stddev_pop(u_t) AS u_t," +
 		" stddev_pop(f) as f" +
 		" FROM readings" +
-		" WHERE (:id IS NULL OR device_id = :id)" +
-		" AND (:since IS NULL OR time >= :since)" +
-		" AND (:until IS NULL OR time < :until)" +
+		" WHERE (:id = 0 OR device_id = :id)" +
+		" AND (:since = to_timestamp(0) OR time >= :since)" +
+		" AND (:until = to_timestamp(0) OR time < :until)" +
 		" GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_MIN = "SELECT device_id," +
 		" time_bucket(cast(:step AS interval), time) AS bucket," +
@@ -127,12 +100,12 @@ public abstract class SqlCommands {
 		" min(u_t) AS u_t," +
 		" min(f) as f" +
 		" FROM readings" +
-		" WHERE (:id IS NULL OR device_id = :id)" +
-		" AND (:since IS NULL OR time >= :since)" +
-		" AND (:until IS NULL OR time < :until)" +
+		" WHERE (:id = 0 OR device_id = :id)" +
+		" AND (:since = to_timestamp(0) OR time >= :since)" +
+		" AND (:until = to_timestamp(0) OR time < :until)" +
 		" GROUP BY bucket, device_id ORDER BY bucket ASC";
 	public static final String QUERY_READINGS_MAX = "SELECT device_id," +
-		" time_bucket(cast(:step AS interval), time) AS bucket," +
+		" time_bucket(cast(:step AS interval), time) AS time," +
 		" max(a_minus) AS a_minus," +
 		" max(a_plus) AS a_plus," +
 		" max(r_minus) AS r_minus," +
@@ -159,10 +132,10 @@ public abstract class SqlCommands {
 		" max(u_t) AS u_t," +
 		" max(f) as f" +
 		" FROM readings" +
-		" WHERE (:id IS NULL OR device_id = :id)" +
-		" AND (:since IS NULL OR time >= :since)" +
-		" AND (:until IS NULL OR time < :until)" +
-		" GROUP BY bucket, device_id ORDER BY bucket ASC";
+		" WHERE (:id = 0 OR device_id = :id)" +
+		" AND (:since = to_timestamp(0) OR time >= :since)" +
+		" AND (:until = to_timestamp(0) OR time < :until)" +
+		" GROUP BY time, device_id ORDER BY time ASC";
 
 	public static final String CREATE_DEVICE_TABLE =
 		"CREATE TABLE devices (" +
