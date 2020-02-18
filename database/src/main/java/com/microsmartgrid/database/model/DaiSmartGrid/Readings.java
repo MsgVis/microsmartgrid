@@ -19,83 +19,83 @@ public class Readings extends AbstractDevice implements Serializable {
 
 	// current
 	@JsonProperty("I_avg")
-	private Float iAvg;
+	private Float i_avg;
 	@JsonAlias({"current_I1"})
 	@JsonProperty("I_r")
-	private Float iR;
+	private Float i_r;
 	@JsonAlias({"current_I2"})
 	@JsonProperty("I_s")
-	private Float iS;
+	private Float i_s;
 	@JsonAlias({"current_I3"})
 	@JsonProperty("I_t")
-	private Float iT;
+	private Float i_t;
 
 	// voltage
 	@JsonProperty("U_avg")
-	private Float uAvg;
+	private Float u_avg;
 	@JsonAlias({"voltage_U1"})
 	@JsonProperty("U_r")
-	private Float uR;
+	private Float u_r;
 	@JsonAlias({"voltage_U2"})
 	@JsonProperty("U_s")
-	private Float uS;
+	private Float u_s;
 	@JsonAlias({"voltage_U3"})
 	@JsonProperty("U_t")
-	private Float uT;
+	private Float u_t;
 
 	// active energy
 	@JsonAlias({"active_energy_A_plus"})
 	@JsonProperty("A_plus")
-	private Float aPlus;
+	private Float a_plus;
 	@JsonAlias({"active_energy_A_minus"})
 	@JsonProperty("A_minus")
-	private Float aMinus;
+	private Float a_minus;
 
 	// active power
 	@JsonAlias({"active_power_total"})
 	@JsonProperty("P_total")
-	private Float pTotal;
+	private Float p_total;
 	@JsonAlias({"active_power_P1"})
 	@JsonProperty("P_r")
-	private Float pR;
+	private Float p_r;
 	@JsonAlias({"active_power_P2"})
 	@JsonProperty("P_s")
-	private Float pS;
+	private Float p_s;
 	@JsonAlias({"active_power_P3"})
 	@JsonProperty("P_t")
-	private Float pT;
+	private Float p_t;
 
 	// reactive energy
 	@JsonAlias({"reactive_energy_A_plus"})
 	@JsonProperty("R_plus")
-	private Float rPlus;
+	private Float r_plus;
 	@JsonAlias({"reactive_energy_A_minus"})
 	@JsonProperty("R_minus")
-	private Float rMinus;
+	private Float r_minus;
 
 	// reactive power
 	@JsonAlias({"reactive_power_total"})
 	@JsonProperty("Q_total")
-	private Float qTotal;
+	private Float q_total;
 	@JsonAlias({"reactive_power_Q1"})
 	@JsonProperty("Q_r")
-	private Float qR;
+	private Float q_r;
 	@JsonAlias({"reactive_power_Q2"})
 	@JsonProperty("Q_s")
-	private Float qS;
+	private Float q_s;
 	@JsonAlias({"reactive_power_Q3"})
 	@JsonProperty("Q_t")
-	private Float qT;
+	private Float q_t;
 
 	// apparent power
 	@JsonProperty("S_total")
-	private Float sTotal;
+	private Float s_total;
 	@JsonProperty("S_r")
-	private Float sR;
+	private Float s_r;
 	@JsonProperty("S_s")
-	private Float sS;
+	private Float s_s;
 	@JsonProperty("S_t")
-	private Float sT;
+	private Float s_t;
 
 	@JsonAlias({"frequency_Mgrid", "frequency_Grid"})
 	private Float f;
