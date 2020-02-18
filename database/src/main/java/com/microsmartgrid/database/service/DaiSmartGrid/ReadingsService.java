@@ -36,66 +36,66 @@ public class ReadingsService {
 		return readings;
 	}
 
-	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<Period> since, Optional<Period> until, String step) {
+	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "avg");
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllAvg(id.orElse(0),
-			since.map(s -> Instant.now().minus(s)).orElse(Instant.EPOCH),
-			until.map(u -> Instant.now().minus(u)).orElse(Instant.EPOCH),
-			step);
+			since.map(Duration::toString).orElse(""),
+			until.map(Duration::toString).orElse(""),
+			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<Period> since, Optional<Period> until, String step) {
+	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "std");
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllStd(id.orElse(0),
-			since.map(s -> Instant.now().minus(s)).orElse(Instant.EPOCH),
-			until.map(u -> Instant.now().minus(u)).orElse(Instant.EPOCH),
-			step);
+			since.map(Duration::toString).orElse(""),
+			until.map(Duration::toString).orElse(""),
+			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<Period> since, Optional<Period> until, String step) {
+	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "min");
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllMin(id.orElse(0),
-			since.map(s -> Instant.now().minus(s)).orElse(Instant.EPOCH),
-			until.map(u -> Instant.now().minus(u)).orElse(Instant.EPOCH),
-			step);
+			since.map(Duration::toString).orElse(""),
+			until.map(Duration::toString).orElse(""),
+			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<Period> since, Optional<Period> until, String step) {
+	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "max");
 		queryInfo.put("interval", step);
 
 		List<Readings> readings = repository.findAllMax(id.orElse(0),
-			since.map(s -> Instant.now().minus(s)).orElse(Instant.EPOCH),
-			until.map(u -> Instant.now().minus(u)).orElse(Instant.EPOCH),
-			step);
+			since.map(Duration::toString).orElse(""),
+			until.map(Duration::toString).orElse(""),
+			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getReadings(Optional<Integer> id, Optional<Period> since, Optional<Period> until) {
+	public List<Readings> getReadings(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until) {
 		return repository.findAll(id.orElse(0),
-			since.map(s -> Instant.now().minus(s)).orElse(Instant.EPOCH),
-			until.map(u -> Instant.now().minus(u)).orElse(Instant.EPOCH));
+			since.map(Duration::toString).orElse(""),
+			until.map(Duration::toString).orElse(""));
 	}
 
 }

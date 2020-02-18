@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Period;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,9 +49,9 @@ public class TimescaleDbReaderController {
 	 */
 	@GetMapping("/readings/avg")
 	public List<Readings> queryAvg(@RequestParam("id") Optional<Integer> id,
-								   @RequestParam("since") Optional<Period> since,
-								   @RequestParam("until") Optional<Period> until,
-								   @RequestParam("step") String step) {
+								   @RequestParam("since") Optional<Duration> since,
+								   @RequestParam("until") Optional<Duration> until,
+								   @RequestParam("step") Duration step) {
 		return readingsService.getAverageAggregate(id, since, until, step);
 	}
 
@@ -67,9 +67,9 @@ public class TimescaleDbReaderController {
 	 */
 	@GetMapping("/readings/std")
 	public List<Readings> queryStd(@RequestParam("id") Optional<Integer> id,
-								   @RequestParam("since") Optional<Period> since,
-								   @RequestParam("until") Optional<Period> until,
-								   @RequestParam("step") String step) {
+								   @RequestParam("since") Optional<Duration> since,
+								   @RequestParam("until") Optional<Duration> until,
+								   @RequestParam("step") Duration step) {
 		return readingsService.getStandardDeviationAggregate(id, since, until, step);
 	}
 
@@ -85,9 +85,9 @@ public class TimescaleDbReaderController {
 	 */
 	@GetMapping("/readings/min")
 	public List<Readings> queryMin(@RequestParam("id") Optional<Integer> id,
-								   @RequestParam("since") Optional<Period> since,
-								   @RequestParam("until") Optional<Period> until,
-								   @RequestParam("step") String step) {
+								   @RequestParam("since") Optional<Duration> since,
+								   @RequestParam("until") Optional<Duration> until,
+								   @RequestParam("step") Duration step) {
 		return readingsService.getMinAggregate(id, since, until, step);
 	}
 
@@ -103,9 +103,9 @@ public class TimescaleDbReaderController {
 	 */
 	@GetMapping("/readings/max")
 	public List<Readings> queryMax(@RequestParam("id") Optional<Integer> id,
-								   @RequestParam("since") Optional<Period> since,
-								   @RequestParam("until") Optional<Period> until,
-								   @RequestParam("step") String step) {
+								   @RequestParam("since") Optional<Duration> since,
+								   @RequestParam("until") Optional<Duration> until,
+								   @RequestParam("step") Duration step) {
 		return readingsService.getMaxAggregate(id, since, until, step);
 	}
 
@@ -119,8 +119,8 @@ public class TimescaleDbReaderController {
 	 */
 	@GetMapping("/readings")
 	public List<Readings> queryReading(@RequestParam("id") Optional<Integer> id,
-									   @RequestParam("since") Optional<Period> since,
-									   @RequestParam("until") Optional<Period> until) {
+									   @RequestParam("since") Optional<Duration> since,
+									   @RequestParam("until") Optional<Duration> until) {
 		return readingsService.getReadings(id, since, until);
 	}
 

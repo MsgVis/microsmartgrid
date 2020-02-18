@@ -5,11 +5,11 @@ public abstract class SqlCommands {
 	public static final String QUERY_READINGS = "SELECT *" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = to_timestamp(0) OR time >= :since)" +
-		" AND (:until = to_timestamp(0) OR time <= :until)" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
 		" GROUP BY time, device_id ORDER BY time DESC";
 	public static final String QUERY_READINGS_AVERAGES = "SELECT device_id," +
-		" time_bucket(cast(:step AS interval), time) AS bucket," +
+		" time_bucket(CAST(:step AS interval), time) AS time," +
 		" avg(a_minus) AS a_minus," +
 		" avg(a_plus) AS a_plus," +
 		" avg(r_minus) AS r_minus," +
@@ -37,11 +37,11 @@ public abstract class SqlCommands {
 		" avg(f) as f" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = to_timestamp(0) OR time >= :since)" +
-		" AND (:until = to_timestamp(0) OR time < :until)" +
-		" GROUP BY bucket, device_id ORDER BY bucket ASC";
+		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_STDDEV = "SELECT device_id," +
-		" time_bucket(cast(:step AS interval), time) AS bucket," +
+		" time_bucket(CAST(:step AS interval), time) AS time," +
 		" stddev_pop(a_minus) AS a_minus," +
 		" stddev_pop(a_plus) AS a_plus," +
 		" stddev_pop(r_minus) AS r_minus," +
@@ -69,11 +69,11 @@ public abstract class SqlCommands {
 		" stddev_pop(f) as f" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = to_timestamp(0) OR time >= :since)" +
-		" AND (:until = to_timestamp(0) OR time < :until)" +
-		" GROUP BY bucket, device_id ORDER BY bucket ASC";
+		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_MIN = "SELECT device_id," +
-		" time_bucket(cast(:step AS interval), time) AS bucket," +
+		" time_bucket(CAST(:step AS interval), time) AS time," +
 		" min(a_minus) AS a_minus," +
 		" min(a_plus) AS a_plus," +
 		" min(r_minus) AS r_minus," +
@@ -101,11 +101,11 @@ public abstract class SqlCommands {
 		" min(f) as f" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = to_timestamp(0) OR time >= :since)" +
-		" AND (:until = to_timestamp(0) OR time < :until)" +
-		" GROUP BY bucket, device_id ORDER BY bucket ASC";
+		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_MAX = "SELECT device_id," +
-		" time_bucket(cast(:step AS interval), time) AS time," +
+		" time_bucket(CAST(:step AS interval), time) AS time," +
 		" max(a_minus) AS a_minus," +
 		" max(a_plus) AS a_plus," +
 		" max(r_minus) AS r_minus," +
@@ -133,48 +133,7 @@ public abstract class SqlCommands {
 		" max(f) as f" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = to_timestamp(0) OR time >= :since)" +
-		" AND (:until = to_timestamp(0) OR time < :until)" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
 		" GROUP BY time, device_id ORDER BY time ASC";
-
-	public static final String CREATE_DEVICE_TABLE =
-		"CREATE TABLE devices (" +
-			"id INTEGER auto_increment," +
-			"name TEXT," +
-			"description TEXT," +
-			"type TEXT," +
-			"subtype TEXT," +
-			"children ARRAY" +
-			");";
-
-	public static final String CREATE_READINGS_TABLE = "CREATE TABLE readings (" +
-		"time TIMESTAMP," +
-		"device_id INTEGER," +
-		"a_minus REAL," +
-		"a_plus REAL," +
-		"r_minus REAL," +
-		"r_plus REAL," +
-		"p_total REAL," +
-		"p_r REAL," +
-		"p_s REAL," +
-		"p_t REAL," +
-		"q_total REAL," +
-		"q_r REAL," +
-		"q_s REAL," +
-		"q_t REAL," +
-		"s_total REAL," +
-		"s_r REAL," +
-		"s_s REAL," +
-		"s_t REAL," +
-		"i_avg REAL," +
-		"i_r REAL," +
-		"i_s REAL," +
-		"i_t REAL," +
-		"u_avg REAL," +
-		"u_r REAL," +
-		"u_s REAL," +
-		"u_t REAL," +
-		"f REAL," +
-		"meta JSON" +
-		");";
 }
