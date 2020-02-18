@@ -5,6 +5,7 @@ import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TimescaleDbReaderController.class)
 public class TimescaleDbReaderControllerTests {
 
+	DeviceInformation device1 = new DeviceInformation();
+	DeviceInformation device2 = new DeviceInformation();
+	DeviceInformation device3 = new DeviceInformation();
+	List<DeviceInformation> devices;
+
 	@MockBean
 	private DeviceInformationRepository deviceRepo;
 
@@ -38,16 +44,20 @@ public class TimescaleDbReaderControllerTests {
 	@Autowired
 	private ObjectMapper objM;
 
+	@BeforeAll
+	public void init() {
+		this.device1.setId(1);
+		this.device1.setName("SomeTestName1");
+		this.device2.setId(2);
+		this.device2.setName("SomeTestName2");
+		this.device3.setId(2);
+		this.device3.setName("SomeTestName3");
+
+		this.devices = Arrays.asList(device1, device2, device3);
+	}
+
 	@Test
 	public void testDeviceList() throws Exception {
-		DeviceInformation device1 = new DeviceInformation();
-		device1.setId(1);
-		device1.setName("SomeTestName1");
-		DeviceInformation device2 = new DeviceInformation();
-		device2.setId(2);
-		device2.setName("SomeTestName2");
-
-		List<DeviceInformation> devices = Arrays.asList(device1, device2);
 		when(deviceRepo.findAll()).thenReturn(devices);
 
 		mvc.perform(get("/deviceList"))
