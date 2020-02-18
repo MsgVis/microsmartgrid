@@ -7,7 +7,7 @@
 		<artifactId>microsmartgrid</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.microsmartgrid</groupId>
+
 	<artifactId>mqttclient</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>mqttclient</name>
@@ -42,6 +42,13 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
+		<!-- Database - core data structures and functions -->
+		<dependency>
+			<groupId>com.microsmartgrid.database</groupId>
+			<artifactId>database</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!-- tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -53,10 +60,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- h2 - in-memory database -->
 		<dependency>
-			<groupId>com.microsmartgrid.database</groupId>
-			<artifactId>database</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 		</dependency>
 	</dependencies>
 
