@@ -34,7 +34,8 @@ public abstract class SqlCommands {
 		" avg(u_r) AS u_r," +
 		" avg(u_s) AS u_s," +
 		" avg(u_t) AS u_t," +
-		" avg(f) as f" +
+		" avg(f) as f," +
+		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
 		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
@@ -66,7 +67,8 @@ public abstract class SqlCommands {
 		" stddev_pop(u_r) AS u_r," +
 		" stddev_pop(u_s) AS u_s," +
 		" stddev_pop(u_t) AS u_t," +
-		" stddev_pop(f) as f" +
+		" stddev_pop(f) as f," +
+		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
 		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
@@ -98,7 +100,8 @@ public abstract class SqlCommands {
 		" min(u_r) AS u_r," +
 		" min(u_s) AS u_s," +
 		" min(u_t) AS u_t," +
-		" min(f) as f" +
+		" min(f) as f," +
+		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
 		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
@@ -130,7 +133,8 @@ public abstract class SqlCommands {
 		" max(u_r) AS u_r," +
 		" max(u_s) AS u_s," +
 		" max(u_t) AS u_t," +
-		" max(f) as f" +
+		" max(f) as f," +
+		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
 		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
