@@ -57,7 +57,7 @@ init();
 ////////////////////////////////////////////////////////////////////////////////////////
 // ----------------------Handlers for Loading Data from database--------------------------------
 function getMeterData(id) {
-	var url = "http://localhost:4711/readings?id=" + id;
+	var url = "http://localhost:4720/readings?id=" + id;
 	return $.ajax({
 		url: url,
 		type: "GET",
@@ -68,7 +68,7 @@ function getMeterData(id) {
 }
 
 function getDeviceInfo(id) {
-	var url = "http://localhost:4711/deviceById?id=" + id;
+	var url = "http://localhost:4720/deviceById?id=" + id;
 	return $.ajax({
 		url: url,
 		type: "GET",
