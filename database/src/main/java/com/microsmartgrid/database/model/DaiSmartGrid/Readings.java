@@ -97,7 +97,8 @@ public class Readings extends AbstractDevice implements Serializable {
 	@JsonProperty("S_t")
 	private Float s_t;
 
-	@JsonAlias({"frequency_Mgrid", "frequency_Grid"})
+	@JsonAlias({"f", "frequency_Mgrid", "frequency_Grid"})
+	@JsonProperty("Frequency")
 	private Float f;
 
 	public Readings() {
