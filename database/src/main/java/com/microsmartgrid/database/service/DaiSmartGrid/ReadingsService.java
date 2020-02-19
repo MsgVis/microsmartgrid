@@ -8,8 +8,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ReadingsService {
 	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "avg");
-		queryInfo.put("interval", step);
+		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findAllAvg(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
@@ -53,7 +53,7 @@ public class ReadingsService {
 	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "std");
-		queryInfo.put("interval", step);
+		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findAllStd(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
@@ -67,7 +67,7 @@ public class ReadingsService {
 	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "min");
-		queryInfo.put("interval", step);
+		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findAllMin(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
@@ -81,7 +81,7 @@ public class ReadingsService {
 	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "max");
-		queryInfo.put("interval", step);
+		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findAllMax(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
