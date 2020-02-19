@@ -17,6 +17,15 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class Readings extends AbstractDevice implements Serializable {
 
+	/**
+	 * Use java name for database column name or annotate @Column(name="").
+	 * Use @JsonProperty for the desired output json field name (defaults from java name).
+	 * Use @JsonAlias for any variations of the same field in input json.
+	 */
+	@JsonAlias({"f", "frequency_Mgrid", "frequency_Grid"})
+	@JsonProperty("Frequency")
+	private Float f;
+
 	// current
 	@JsonProperty("I_avg")
 	private Float i_avg;
@@ -96,10 +105,6 @@ public class Readings extends AbstractDevice implements Serializable {
 	private Float s_s;
 	@JsonProperty("S_t")
 	private Float s_t;
-
-	@JsonAlias({"f", "frequency_Mgrid", "frequency_Grid"})
-	@JsonProperty("Frequency")
-	private Float f;
 
 	public Readings() {
 		super();
