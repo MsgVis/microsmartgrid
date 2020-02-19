@@ -26,10 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TimescaleDbReaderController.class)
 public class TimescaleDbReaderControllerTests {
 
-	DeviceInformation device1 = new DeviceInformation();
-	DeviceInformation device2 = new DeviceInformation();
-	DeviceInformation device3 = new DeviceInformation();
-	List<DeviceInformation> devices;
+	static DeviceInformation device1 = new DeviceInformation();
+	static DeviceInformation device2 = new DeviceInformation();
+	static DeviceInformation device3 = new DeviceInformation();
+	static List<DeviceInformation> devices;
 
 	@MockBean
 	private DeviceInformationRepository deviceRepo;
@@ -45,15 +45,15 @@ public class TimescaleDbReaderControllerTests {
 	private ObjectMapper objM;
 
 	@BeforeAll
-	public void init() {
-		this.device1.setId(1);
-		this.device1.setName("SomeTestName1");
-		this.device2.setId(2);
-		this.device2.setName("SomeTestName2");
-		this.device3.setId(2);
-		this.device3.setName("SomeTestName3");
+	static void init() {
+		device1.setId(1);
+		device1.setName("SomeTestName1");
+		device2.setId(2);
+		device2.setName("SomeTestName2");
+		device3.setId(2);
+		device3.setName("SomeTestName3");
 
-		this.devices = Arrays.asList(device1, device2, device3);
+		devices = Arrays.asList(device1, device2, device3);
 	}
 
 	@Test
@@ -66,6 +66,11 @@ public class TimescaleDbReaderControllerTests {
 				assertThat((List<?>) objM.readValue(mvcResult.getResponse().getContentAsString(),
 					objM.getTypeFactory().constructCollectionType(List.class, DeviceInformation.class))).isEqualTo(devices)
 			);
+	}
+
+	@Test
+	public void testDevicesById() {
+		//when(deviceRepo.findAllById(anyInt())).thenReturn(devices.get(anyInt()));
 	}
 
 
