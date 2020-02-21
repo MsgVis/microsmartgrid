@@ -4,12 +4,13 @@ import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 import java.util.List;
@@ -141,8 +142,9 @@ public class TimescaleDbReaderController {
 	 * @return device
 	 */
 	@GetMapping("/deviceById")
-	public DeviceInformation queryDevices(@RequestParam("id") Integer id) throws NotFoundException {
-		return deviceInfoRepository.findById(id).orElseThrow(() -> new NotFoundException("The device with id " + id + " doesn't exist."));
+	public DeviceInformation queryDevices(@RequestParam("id") Integer id) {
+		return deviceInfoRepository.findById(id).orElseThrow(() ->
+			new ResponseStatusException(HttpStatus.NOT_FOUND, "The device with id " + id + " doesn't exist."));
 	}
 
 	/**
