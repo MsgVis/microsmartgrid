@@ -19,17 +19,17 @@ public interface ReadingsRepository extends JpaRepository<Readings, DeviceInform
 	Optional<Readings> findFirstByDeviceInformationAndTimestampAfterOrderByTimestampDesc(DeviceInformation id, Instant cutoff);
 
 	@Query(value = QUERY_READINGS_AVERAGES, nativeQuery = true)
-	List<Readings> findAllAvg(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	List<Readings> findReadingsAvg(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
 
 	@Query(value = QUERY_READINGS_STDDEV, nativeQuery = true)
-	List<Readings> findAllStd(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	List<Readings> findReadingsStd(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
 
 	@Query(value = QUERY_READINGS_MIN, nativeQuery = true)
-	List<Readings> findAllMin(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	List<Readings> findReadingsMin(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
 
 	@Query(value = QUERY_READINGS_MAX, nativeQuery = true)
-	List<Readings> findAllMax(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	List<Readings> findReadingsMax(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
 
 	@Query(value = QUERY_READINGS, nativeQuery = true)
-	List<Readings> findAll(@Param("id") int id, @Param("since") String since, @Param("until") String until);
+	List<Readings> findReadings(@Param("id") int id, @Param("since") String since, @Param("until") String until);
 }

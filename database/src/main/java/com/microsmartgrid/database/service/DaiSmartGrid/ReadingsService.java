@@ -41,7 +41,7 @@ public class ReadingsService {
 		queryInfo.put("aggregate", "avg");
 		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findAllAvg(id.orElse(0),
+		List<Readings> readings = repository.findReadingsAvg(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
 			until.map(Duration::toString).orElse(""),
 			step.toString());
@@ -55,7 +55,7 @@ public class ReadingsService {
 		queryInfo.put("aggregate", "std");
 		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findAllStd(id.orElse(0),
+		List<Readings> readings = repository.findReadingsStd(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
 			until.map(Duration::toString).orElse(""),
 			step.toString());
@@ -69,7 +69,7 @@ public class ReadingsService {
 		queryInfo.put("aggregate", "min");
 		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findAllMin(id.orElse(0),
+		List<Readings> readings = repository.findReadingsMin(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
 			until.map(Duration::toString).orElse(""),
 			step.toString());
@@ -83,7 +83,7 @@ public class ReadingsService {
 		queryInfo.put("aggregate", "max");
 		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findAllMax(id.orElse(0),
+		List<Readings> readings = repository.findReadingsMax(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
 			until.map(Duration::toString).orElse(""),
 			step.toString());
@@ -93,7 +93,7 @@ public class ReadingsService {
 	}
 
 	public List<Readings> getReadings(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until) {
-		return repository.findAll(id.orElse(0),
+		return repository.findReadings(id.orElse(0),
 			since.map(Duration::toString).orElse(""),
 			until.map(Duration::toString).orElse(""));
 	}
