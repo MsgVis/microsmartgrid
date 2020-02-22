@@ -12,6 +12,7 @@
 	<version>${project.parent.version}</version>
 	<name>timescaleDbWriter</name>
 	<description>Exposes Writing functionality to the timeseries database.</description>
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>1.11</java.version>

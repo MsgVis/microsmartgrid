@@ -12,6 +12,7 @@
 	<version>${project.parent.version}</version>
 	<name>timescaleDbReader</name>
 	<description>Exposes Reading and Aggregating functionality.</description>
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>1.11</java.version>

@@ -13,7 +13,7 @@
 	<artifactId>eurekaserver</artifactId>
 	<groupId>com.microsmartgrid.eurekaserver</groupId>
 	<name>eurekaserver</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>11</java.version>

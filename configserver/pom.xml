@@ -13,7 +13,7 @@
 	<artifactId>configserver</artifactId>
 	<groupId>com.microsmartgrid.configserver</groupId>
 	<name>configserver</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
