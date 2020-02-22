@@ -71,7 +71,7 @@ public class TimescaleDbReaderControllerTests {
 
 	@Test
 	public void testDevicesByIdPositive() throws Exception {
-		when(deviceRepo.findById(anyInt())).thenAnswer(i -> Optional.of(devices.get((Integer) i.getArguments()[0])));
+		when(deviceRepo.findById(anyInt())).thenAnswer(i -> Optional.of(devices.get(i.getArgument(0))));
 
 		mvc.perform(get("/deviceById").param("id", "0"))
 			.andExpect(status().isOk())
