@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -12,7 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @EnableFeignClients
 @Log4j2
-public class MqttClientApplication implements CommandLineRunner {
+public class MqttClientApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MqttClientApplication.class, args);
