@@ -14,19 +14,17 @@ fi
 # For everything else (or if above failed), just use generic identifier
 [ "$DISTRO" == "" ] && export DISTRO=$UNAME
 unset UNAME
-#TODO correct writing
-if [ "$DISTRO" != "UBUNTU" ]; then
+if [ ! "$DISTRO" == "Ubuntu" ]; then
     echo "This deployment method works on Ubuntu only. Please change your distribution. Aborting..."
     exit 1
 fi
 
-apt update && apt install tomcat8 maven openjdk-11-jdk
+apt update && apt install tomcat8 maven openjdk-11-jdk -y
 
 printf "=================\r\nConfiguring Tomcat\r\n=================\r\n"
 
-rm /etc/tomcat8/server.xml
-touch /etc/tomcat8/server.xml
-/etc/tomcat8/server.xml <<-EOCONF
+touch ./server.xml
+cat <<EOCONF >./server.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Server port="8005" shutdown="SHUTDOWN">
 	  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
@@ -97,6 +95,10 @@ touch /etc/tomcat8/server.xml
 	</Service>
 </Server>
 EOCONF
+
+rm /etc/tomcat8/server.xml
+mv ./server.xml /etc/tomcat8/server.xml
+chown tomcat8 /etc/tomcat8/server.xml
 
 printf "=================\r\nRestarting Tomcat service\r\n=================\r\n"
 
