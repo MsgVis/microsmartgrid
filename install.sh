@@ -1,37 +1,32 @@
 #!/bin/sh
 
-#UNAME=$(uname | tr "[:upper:]" "[:lower:]")
+UNAME=$(uname | tr "[:upper:]" "[:lower:]")
 # If Linux, try to determine specific distribution
-#if [ "$UNAME" == "linux" ]; then
-#    # If available, use LSB to identify distribution
-#    if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
-#        export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
-#    # Otherwise, use release info file
-#    else
-#        export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
-#    fi
-#fi
-# For everything else (or if above failed), just use generic identifier
-#[ "$DISTRO" == "" ] && export DISTRO=$UNAME
-#unset UNAME
-
-if command -v apt >/dev/null 2>&1
-then
-	apt update && apt install tomcat8 maven openjdk-11-jdk
-elif command -v yay >/dev/null 2>&1
-then
-	yay -Syu tomcat8 maven jdk11-openjdk
-elif command -v pacman >/dev/null 2>&1
-then
-	pacman -Syu tomcat8 maven jdk11-openjdk
-else
-	echo "I require at least apt, yay, or pacman to install openjdk11, tomcat8 and maven.";
-	exit 1;
+if [ "$UNAME" == "linux" ]; then
+    # If available, use LSB to identify distribution
+    if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
+        export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+    # Otherwise, use release info file
+    else
+        export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
+    fi
 fi
+# For everything else (or if above failed), just use generic identifier
+[ "$DISTRO" == "" ] && export DISTRO=$UNAME
+unset UNAME
+#TODO correct writing
+if [ "$DISTRO" != "UBUNTU" ]; then
+    echo "This deployment method works on Ubuntu only. Please change your distribution. Aborting..."
+    exit 1
+fi
+
+apt update && apt install tomcat8 maven openjdk-11-jdk
 
 printf "=================\r\nConfiguring Tomcat\r\n=================\r\n"
 
-/etc/tomcat8/server.xml <-EOCONF
+rm /etc/tomcat8/server.xml
+touch /etc/tomcat8/server.xml
+/etc/tomcat8/server.xml <<-EOCONF
 <?xml version="1.0" encoding="UTF-8"?>
 <Server port="8005" shutdown="SHUTDOWN">
 	  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
@@ -132,6 +127,7 @@ printf "=================\r\nWaiting for Tomcat to autodeploy .war-files...\r\n=
 sleep 5
 
 printf "=================\r\nHealthchecking Services\r\n=================\r\n"
+
 HEALTH_URLS="localhost:8888/actuator/health
 localhost:8761/actuator/health
 localhost:1883/actuator/health
@@ -157,4 +153,7 @@ do
 		exit 1
 	fi
 done < <(printf '%s\n' "$HEALTH_URLS")
+
+printf "=================\r\nAll Healthy.\r\n=================\r\n"
+printf "=================\r\nInstall finished.\r\n=================\r\n"
 
