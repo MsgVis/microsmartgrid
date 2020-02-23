@@ -71,6 +71,10 @@ function init() {
 	// To lazy to add bootstrap classes to all elements in index html. This is the helper function.
 	bootstrapStyleMultipleElements();
 
+	$(document).on('change', 'input:radio[name="flowSelection"]', function (event) {
+		plotTopology();
+	});
+
 }
 
 init();
@@ -134,7 +138,6 @@ function plotTopology() {
 			// prepareForPlotting(preparedData);
 
 
-
 			// Extract the width and height that was computed by CSS.
 			let width = chartTopologyDiv.clientWidth;
 
@@ -166,8 +169,8 @@ function plotTopology() {
 				.attr("transform", `translate(${root.dy / 3}, ${root.dx - x0})`);
 
 
-			let defaulOpacity = 8;
-			let linkListFinal = addCornersToLinks(root, flowData);
+			let defaulOpacity = 10;
+			let linkListFinal = addCornersToLinks(root, flowData, defaulOpacity);
 
 			const link = g.append("g")
 				.attr("fill", "none")
@@ -179,13 +182,7 @@ function plotTopology() {
 				.attr("d", d3.linkVertical()
 					.x(d => d.y)
 					.y(d => d.x))
-				.attr("stroke-width", function (d) {
-						if (d.target.width) {
-							return d.target.width * defaulOpacity;
-						} else {
-							return defaulOpacity;
-						}
-				});
+				.attr("stroke-width", defaulOpacity);
 
 			/// Moving dashes svg for Flow
 			const dashes = g.append("g")
@@ -199,13 +196,34 @@ function plotTopology() {
 					.x(d => d.y)
 					.y(d => d.x))
 				.attr("stroke-width", function (d) {
-					if (d.target.data) {
-						if(d.target.data.width) {
-							return d.target.data.width * defaulOpacity - 5;
+
+					let width = (defaulOpacity / 2);
+					let weight = 0;
+
+					if (d.source.node) {
+						let totalFlow = d.source.totalFlow;
+						if (d.source.flowInNetwork) {
+							weight += (d.source.flowInNetwork / totalFlow);
 						}
-					} else {
-						return defaulOpacity - 5;
+						if (d.source.flowOutNetwork) {
+							weight += (d.source.flowOutNetwork / totalFlow);
+						}
+					} else if (d.target.node) {
+						let totalFlow = d.target.totalFlow;
+						if (d.target.flowInNetwork) {
+							weight += (d.target.flowInNetwork / totalFlow);
+						}
+						if (d.target.flowOutNetwork) {
+							weight += (d.target.flowOutNetwork / totalFlow);
+						}
+					}else{
+						weight = 1;
 					}
+					if(weight < 0.1 & weight!= 0){
+						weight = 0.1;
+					}
+					return width * weight;
+
 				})
 				.attr("class", "flow")
 				.each(recusiveAddingOfDashes);
@@ -222,6 +240,7 @@ function plotTopology() {
 				.attr("data-html", "true")
 				.attr("data-toggle", "tooltip")
 				.attr("data-placement", "right")
+				.attr("class", "node")
 				.attr("title", function (d) {
 					return "<strong>" + typeDictionary[d.data.subtype] + ":</strong>\n" + d.data.databaseId;
 				})
@@ -245,6 +264,40 @@ function plotTopology() {
 				.attr("width", circleRadius * 1.2)
 				.attr("height", circleRadius * 1.2)
 				.style("fill", "#ffffff");
+
+			/// Labels für Flow
+			node.append("text")
+				.attr("dx", function (d){
+					if(d.data.id === 1){ //This is root node
+						return -(circleRadius + 6);
+					}else {
+						return circleRadius + 6;
+					}
+				})
+				.attr("text-anchor", function(d){
+					if(d.data.id === 1){ //This is root node
+						return "end";
+					}else {
+						return "start";
+					}
+				})
+				.attr("dy", ".35em")
+				.attr("class", function(d){
+					if(d.data.id != 0) {
+						return "nodeFlowLabels";
+					}
+				})
+				.style("opacity", 0)
+				.text(function(d){
+					debugger;
+					// Fill with flow data values and arrows
+					//if(d.flowOutNetwork)
+					//
+					if( typeof d.flowInNetwork != "undefined"){
+						return "In: " + d.flowInNetwork + " A";
+					}
+				});
+
 
 			// Add Play Button for Flows
 			drawPlayButton(flowAnimate, dashes, recusiveAddingOfDashes);
@@ -271,9 +324,24 @@ function drawPlayButton(flowAnimate, flow, setFlowDash) {
 		.attr("width", size)
 		.attr("height", size)
 		.style("fill", "#ffffff")
-		.on("mouseover", flowAnimate)
+		.on("mouseover", function(){
+			let svg = d3.select("#liveSVG");
+			svg.selectAll(".nodeFlowLabels")
+				.style("opacity", 0)
+				.transition()
+				.duration(100)
+				.style("opacity", 1);
+			flowAnimate();
+		})
 		.on("mouseout", function () {
 			//cancel all transitions by making a new one
+			let svg = d3.select("#liveSVG");
+			svg.selectAll(".nodeFlowLabels")
+				.style("opacity", 1)
+				.transition()
+				.duration(100)
+				.style("opacity", 0);
+
 			flow.transition();
 			flow
 				.style("opacity", 0)
@@ -296,7 +364,7 @@ function tree(data, width, nodeDistanceX) {
 
 // Redesigns links that are calculated by tree to get corner instead of round edges.
 // This gives a more electrical engineering design.
-function addCornersToLinks(root, flowData = flowData) {
+function addCornersToLinks(root, flowData = flowData, defaultOpacity = defaultOpacity) {
 
 		// Makes <g> elements for links
 		let linkList = root.links();
@@ -305,24 +373,51 @@ function addCornersToLinks(root, flowData = flowData) {
 			let currentLink = linkList[i];
 			if (currentLink.target) {
 
+
+				let liveSelectedValue = $('input[name=flowSelection]:checked').val();
+				/// Get total amount to calculated percentages
+				let totalAmount = 0;
+				flowData.forEach(function (number) {
+					totalAmount += number[liveSelectedValue];
+				});
+				currentLink.source.totalFlow = totalAmount;
+				currentLink.target.totalFlow = totalAmount;
+				currentLink.source.flowValue = liveSelectedValue;
+				currentLink.target.flowValue = liveSelectedValue;
+				////////////////////////
+
+
 				// Add width property to Source and Target
 				let sourceID = currentLink.source.data.id;
 				let targetID = currentLink.target.data.id;
+				///// mark these points as nodes
+				if(sourceID != 0 ){
+					currentLink.source.node = true;
+				}
+				if(targetID != 0){
+					currentLink.target.node = true;
+				}
 
 				if(sourceID != 0) {
 					let sourceLiveData = flowData.filter(function (number) {
 						return number.Device_id === sourceID
 					});
-					let liveWeightValueSource = sourceLiveData[0]["I_avg"];
-					currentLink.source.data.width = liveWeightValueSource;
+					let liveWeightValueSource = sourceLiveData[0][liveSelectedValue];
+					currentLink.source.flowInNetwork = liveWeightValueSource;
+					if(liveWeightValueSource === null){
+						currentLink.source.flowInNetwork = 0;
+					}
 				}
 
 				if(targetID != 0) {
 					let targetLiveData = flowData.filter(function (number) {
 						return number.Device_id === targetID
 					});
-					let liveWeightValueTarget = targetLiveData[0]["I_avg"];
-					currentLink.source.data.width = liveWeightValueTarget;
+					let liveWeightValueTarget = targetLiveData[0][liveSelectedValue];
+					currentLink.target.flowInNetwork = liveWeightValueTarget;
+					if(liveWeightValueTarget === null){
+						currentLink.target.flowInNetwork = 0;
+					}
 				}
 				///////////////////////
 
@@ -331,7 +426,7 @@ function addCornersToLinks(root, flowData = flowData) {
 
 				//Add new Links
 				let distanceY = Math.abs((currentLink.target.y - currentLink.source.y) / 2);
-				let paddingEdge = -4;
+				let paddingEdge = -defaultOpacity/2;
 				// Vorzeichen bei unterschiedlichen Richtungen
 				if (Math.sign(currentLink.target.x - currentLink.source.x) === 1) {
 					paddingEdge = paddingEdge * -1;
@@ -403,11 +498,24 @@ function recusiveAddingOfDashes(d) {
 		.style("opacity", 0)
 		.attr('stroke-dasharray', 7)
 		.attr('stroke-dashoffset', function(d){
-			if(d.target.direction == "in"){
-				return 0;
-			}else{
-				return 100;
-			}
+
+			let direction = 100;
+			 //// 4 cases
+			// if (d.source.flowInNetwork) {
+			// 	 direction = 0;
+			// }
+			// if (d.source.flowOutNetwork) {
+			// 	direction = 100;
+			// }
+			// if (d.target.flowInNetwork) {
+			// 	direction = 0;
+			// }
+			// if (d.target.flowOutNetwork) {
+			// 	direction = 100;
+			// }
+			return direction;
+
+
 		}) //set to minus for reverse
 }
 
@@ -437,6 +545,8 @@ function flowAnimate(nodeData) {
 		.on("end", function() {
 			flowAnimate();
 		});
+
+
 }
 
 
