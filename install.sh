@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 UNAME=$(uname | tr "[:upper:]" "[:lower:]")
 # If Linux, try to determine specific distribution
