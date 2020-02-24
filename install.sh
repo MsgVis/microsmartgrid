@@ -62,35 +62,35 @@ cat <<EOCONF >./server.xml
 	<Service name="eurekaserver">
 		<Connector port="8761" protocol="HTTP/1.1" />
 		<Engine name="eurekaserver8761" defaultHost="localhost">
-			<Host name="localhost" appBase="bar" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="eurekaserver" unpackWARs="true" autoDeploy="true" />
 		</Engine>
 	</Service>
 
 	<Service name="mqttclient">
 		<Connector port="1883" protocol="HTTP/1.1" />
 		<Engine name="mqttclient1883" defaultHost="localhost">
-			<Host name="localhost" appBase="bar" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="mqttclient" unpackWARs="true" autoDeploy="true" />
 		</Engine>
 	</Service>
 
 	<Service name="timescaleDbReader">
 		<Connector port="4720" protocol="HTTP/1.1" />
 		<Engine name="timescaleDbReader4720" defaultHost="localhost">
-			<Host name="localhost" appBase="bar" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="timescaleDbReader" unpackWARs="true" autoDeploy="true" />
 		</Engine>
 	</Service>
 
 	<Service name="timescaleDbWriter">
 		<Connector port="4721" protocol="HTTP/1.1" />
 		<Engine name="timescaleDbWriter4721" defaultHost="localhost">
-			<Host name="localhost" appBase="bar" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="timescaleDbWriter" unpackWARs="true" autoDeploy="true" />
 		</Engine>
 	</Service>
 
 	<Service name="view">
 		<Connector port="8080" protocol="HTTP/1.1" />
 		<Engine name="view8080" defaultHost="localhost">
-			<Host name="localhost" appBase="bar" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="view" unpackWARs="true" autoDeploy="true" />
 		</Engine>
 	</Service>
 </Server>
@@ -120,11 +120,16 @@ view"
 
 CATALINA_BASE=$(ps aux | grep -Eo -m 1 'catalina.base[^ ]*' | grep -Eo '/(.*)')
 
+systemctl stop tomcat8.service
+
 while IFS= read -r line
 do
 	mkdir $CATALINA_BASE/$line
 	cp $line/target/$line.war $CATALINA_BASE/$line/ROOT.war
+	chown -R tomcat8 $CATALINA_BASE/$line
 done < <(printf '%s\n' "$FILE_LIST")
+
+systemctl restart tomcat8.service
 
 printf "=================\r\nWaiting for Tomcat to autodeploy .war-files...\r\n=================\r\n"
 
@@ -154,7 +159,7 @@ do
 	    sleep "$WAIT_TIME"
 	done
 	if [[ ! "$HTTP_BODY" =~ "\{\"status\":\"UP\"\}" ]]; then
-		echo "Service unhealthy. Aborting."
+		echo "Automatic Healthcheck failed. Please manually investigate."
 		exit 1
 	fi
 done < <(printf '%s\n' "$HEALTH_URLS")
