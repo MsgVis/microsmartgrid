@@ -55,7 +55,7 @@ cat <<EOCONF >./server.xml
 	<Service name="configserver">
 		<Connector port="8888" protocol="HTTP/1.1" connectionTimeout="20000"/>
 		<Engine name="configserver8888" defaultHost="localhost">
-			<Host name="localhost" appBase="configserver" unpackWARs="true" autoDeploy="true" />
+			<Host name="localhost" appBase="configserver" unpackWARs="true" autoDeploy="true"/>
 		</Engine>
 	</Service>
 
@@ -117,6 +117,8 @@ mqttclient
 timescaleDbReader
 timescaleDbWriter
 view"
+
+CATALINA_BASE=$(ps aux | grep -Eo -m 1 'catalina.base[^ ]*' | grep -Eo '/(.*)')
 
 while IFS= read -r line
 do
