@@ -133,9 +133,9 @@ function plotTopology() {
 
 		getFlowValues().then(function (flowData) {
 			// // Plot Root in Timeseries as default
-			// let preparedData = {}
-			// preparedData.data = data;
-			// prepareForPlotting(preparedData);
+			let preparedData = {}
+			preparedData.data = data;
+			prepareForPlotting(preparedData,true);
 
 
 			// Extract the width and height that was computed by CSS.
@@ -289,7 +289,6 @@ function plotTopology() {
 				})
 				.style("opacity", 0)
 				.text(function(d){
-					debugger;
 					// Fill with flow data values and arrows
 					//if(d.flowOutNetwork)
 					//
@@ -554,7 +553,7 @@ function flowAnimate(nodeData) {
 
 // ----------------------------------------Time Series Graph-----------------------------------------
 //// Main plotting functions
-function prepareForPlotting(dataBaseIds) {
+function prepareForPlotting(dataBaseIds, initial = false) {
 
 	let deviceName = dataBaseIds.data.databaseId + " (" + typeDictionary[dataBaseIds.data.subtype] + ")" ;
 	$("#headerTimeseries").text(deviceName);
@@ -568,7 +567,7 @@ function prepareForPlotting(dataBaseIds) {
 	if (id != 0) {
 		getMeterData(id).then(function (data) {
 
-			plotTimeSeries(data, Object.keys(data[0]).sort()[0])
+			plotTimeSeries(data, Object.keys(data[0]).sort()[0],initial);
 			drawDropDownMenu(data)
 
 		})
@@ -576,7 +575,7 @@ function prepareForPlotting(dataBaseIds) {
 
 }
 
-function plotTimeSeries(data, plotItem) {
+function plotTimeSeries(data, plotItem, initial = false) {
 
 	// Delete old chart
 	d3.selectAll("#historySVG > *").remove();
@@ -638,16 +637,16 @@ function plotTimeSeries(data, plotItem) {
 			})
 		)
 
-
-	var target = $("#data")
-	if (target.length) {
-		$('html, body').animate({
-			scrollTop: (target.offset().top - 56)
-		}, 1000, "easeInOutExpo");
-		return false;
+	if(initial === false) {
+		var target = $("#data")
+		if (target.length) {
+			$('html, body').animate({
+				scrollTop: (target.offset().top - 56)
+			}, 1000, "easeInOutExpo");
+			return false;
+		}
+		scrollToPage("#data");
 	}
-
-	scrollToPage("#data");
 
 }
 
