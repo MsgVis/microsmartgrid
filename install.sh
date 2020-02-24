@@ -19,7 +19,7 @@ if [ ! "$DISTRO" == "Ubuntu" ]; then
     exit 1
 fi
 
-apt update && apt install tomcat8 maven openjdk-11-jdk -y
+apt update && apt install tomcat8 maven openjdk-11-jdk curl -y
 
 printf "=================\r\nConfiguring Tomcat\r\n=================\r\n"
 
@@ -142,13 +142,14 @@ do
 	HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
 	HTTP_STATUS=$(echo $HTTP_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
 	TRY_COUNTER=0
-	While [ ! $HTTP_STATUS -eq 200 ]
+	# TODO status is always 404 -> investigate
+	while [ ! "$HTTP_STATUS" -eq 200 ]
 	do
-		[ ! $TRY_COUNTER -lt 3 ] && echo "Services not starting. Aborting." && exit 1
-		TRY_COUNTER='expr $TRY_COUNTER + 1'
-		WAIT_TIME='expr $TRY_COUNTER * 5'
+		[ $TRY_COUNTER -gt 2 ] && echo "Services not starting. Aborting." && exit 1
+		TRY_COUNTER="expr $TRY_COUNTER + 1"
+		WAIT_TIME="expr $TRY_COUNTER * 5"
 	    printf "Tomcat still busy. Waiting %ds." "$WAIT_TIME"
-	    sleep $WAIT_TIME
+	    sleep "$WAIT_TIME"
 	done
 	if [[ ! "$HTTP_BODY" =~ "\{\"status\":\"UP\"\}" ]]; then
 		echo "Service unhealthy. Aborting."
