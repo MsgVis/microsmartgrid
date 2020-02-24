@@ -105,7 +105,7 @@ function getDeviceInfo(id) {
 }
 
 function getFlowValues(id) {
-	var url = "http://localhost:4720/latest?cutoff=P5D";
+	var url = "http://localhost:4720/latest?cutoff=P6D";
 	return $.ajax({
 		url: url,
 		type: "GET",
@@ -120,6 +120,7 @@ function getFlowValues(id) {
 // ----------------------------------Graph Plotting--------------------------------------------
 
 // --------------------------------------Topology--------------------------------------------
+
 //// Main plotting function
 function plotTopology() {
 
@@ -265,37 +266,7 @@ function plotTopology() {
 				.attr("height", circleRadius * 1.2)
 				.style("fill", "#ffffff");
 
-			/// Labels für Flow
-			node.append("text")
-				.attr("dx", function (d){
-					if(d.data.id === 1){ //This is root node
-						return -(circleRadius + 6);
-					}else {
-						return circleRadius + 6;
-					}
-				})
-				.attr("text-anchor", function(d){
-					if(d.data.id === 1){ //This is root node
-						return "end";
-					}else {
-						return "start";
-					}
-				})
-				.attr("dy", ".35em")
-				.attr("class", function(d){
-					if(d.data.id != 0) {
-						return "nodeFlowLabels";
-					}
-				})
-				.style("opacity", 0)
-				.text(function(d){
-					// Fill with flow data values and arrows
-					//if(d.flowOutNetwork)
-					//
-					if( typeof d.flowInNetwork != "undefined"){
-						return "In: " + d.flowInNetwork + " A";
-					}
-				});
+			createFlowLabel(node, circleRadius);
 
 
 			// Add Play Button for Flows
@@ -350,6 +321,116 @@ function drawPlayButton(flowAnimate, flow, setFlowDash) {
 		});
 }
 
+function createFlowLabel(node, circleRadius) {
+	/// Labels für Flow
+	let text = node.append("text")
+		.text(null);
+
+	let twoLines = false;
+
+	function labelText(d, direction) {
+		// Fill with flow data values and arrows
+		if (direction === "total") {
+			return "Total: " + d.flowInNetwork + " A";
+		}else if(direction === "in") {
+			return "In: " + d.flowInNetwork + " A";
+		}else{
+			return "Out: " + d.flowOutNetwork + " A";
+		}
+	}
+
+
+	let lineHeight = 1.1
+	let y = ".35em";
+
+	text.append("tspan")
+		.attr("dx", function (d) {
+			if (d.data.id === 1) { //This is root node
+				return -(circleRadius + 6);
+			} else {
+				return circleRadius + 6;
+			}
+		})
+		.attr("text-anchor", function (d) {
+			if (d.data.id === 1) { //This is root node
+				return "end";
+			} else {
+				return "start";
+			}
+		})
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("dy", function (d) {
+			if (typeof d.flowInNetwork != "undefined" && typeof d.flowOutNetwork != "undefined") {
+				if (d.flowInNetwork === d.flowOutNetwork) {
+					return ".35em";
+				} else {
+					return "-.60em";
+				}
+			}
+
+		})
+		.attr("class", function (d) {
+			if (d.data.id != 0) {
+				return "nodeFlowLabels";
+			}
+		})
+		.style("opacity", 0)
+		.text(function (d) {
+			if (typeof d.flowInNetwork != "undefined" && typeof d.flowOutNetwork != "undefined") {
+				if(d.flowInNetwork === d.flowOutNetwork) {
+					d.twoLines = false;
+					if(d.flowInNetwork === 0 && d.flowOutNetwork === 0){
+						return "0 A";
+					}else if (d.data.direction == "PLUS") {
+						return labelText(d, "in");
+					} else if (d.data.direction == "MINUS") {
+						return labelText(d, "out");
+					}
+				}else{
+					d.twoLines = true;
+					return labelText(d, "in");
+				}
+			}
+		});
+
+		text.append("tspan")
+			.attr("y", y)
+			.attr("dx", function (d) {
+				if (d.data.id === 1) { //This is root node
+					return -(circleRadius + 6);
+				} else {
+					return circleRadius + 6;
+				}
+			})
+			.attr("text-anchor", function (d) {
+				if (d.data.id === 1) { //This is root node
+					return "end";
+				} else {
+					return "start";
+				}
+			})
+			.attr("x", 0)
+			.attr("dy", function (d) {
+				return ".60em";
+			})
+			.attr("class", function (d) {
+				if (d.data.id != 0) {
+					return "nodeFlowLabels";
+				}
+			})
+			.style("opacity", 0)
+			.text(function (d) {
+				if(d.twoLines === true){
+					return labelText(d, "out");
+				}
+			});
+
+
+
+
+}
+
 
 //// Help functions
 // This calculates and creates the tree object (with nodes positions) from a json object
@@ -361,7 +442,81 @@ function tree(data, width, nodeDistanceX) {
 	return d3.tree().nodeSize([nodeDistanceX, root.dy])(root);
 }
 
-// Redesigns links that are calculated by tree to get corner instead of round edges.
+// Add Live data to Nodes and get value in dropdown menu
+function getFlowDisplayOption(flowData, currentLink) {
+
+	let liveSelectedValue = $('input[name=flowSelection]:checked').val();
+	currentLink.source.flowValue = liveSelectedValue;
+	currentLink.target.flowValue = liveSelectedValue;
+	return liveSelectedValue;
+}
+
+function setLiveDataValues(currentLink, flowData, liveSelectedValue) {
+
+
+	/// Get total amount to calculated percentages
+	let totalAmount = 0;
+	flowData.forEach(function (number) {
+		totalAmount += number[liveSelectedValue];
+	});
+
+	// Add width property to Source and Target
+	let sourceID = currentLink.source.data.id;
+	let targetID = currentLink.target.data.id;
+
+
+	if (sourceID != 0) {
+
+		currentLink.source.totalFlow = totalAmount;
+		currentLink.source.node = true;
+		let sourceData = flowData.filter(function (number) {
+			return number.Device_id === sourceID
+		});
+		flowDataToObjectVal(liveSelectedValue, sourceData, currentLink.source);
+
+	}
+
+	if (targetID != 0) {
+
+		currentLink.target.totalFlow = totalAmount;
+		currentLink.target.node = true;
+		let targetData = flowData.filter(function (number) {
+			return number.Device_id === targetID
+		});
+		flowDataToObjectVal(liveSelectedValue, targetData, currentLink.target);
+
+	}
+}
+
+function flowDataToObjectVal(liveSelectedValue, data, currentLink) {
+	let selectionIn = "";
+	let selectionOut = "";
+
+	/// We have two cases where we have two different values for direction or not.
+	/// if direction "direction": "BOTH",
+	if (liveSelectedValue === "A" || liveSelectedValue === "R") {
+		selectionIn = liveSelectedValue + "_plus";
+		selectionOut = liveSelectedValue + "_minus";
+	} else {
+		selectionIn = liveSelectedValue;
+		selectionOut = liveSelectedValue
+	}
+
+	let valueIn = data[0][selectionIn];
+	let valueOut = data[0][selectionOut];
+
+	currentLink.flowInNetwork = valueIn;
+	currentLink.flowOutNetwork = valueOut;
+
+	if (valueIn === null) {
+		currentLink.flowInNetwork = 0;
+	}
+
+	if (valueOut === null) {
+		currentLink.flowOutNetwork = 0;
+	}
+}
+
 // This gives a more electrical engineering design.
 function addCornersToLinks(root, flowData = flowData, defaultOpacity = defaultOpacity) {
 
@@ -373,55 +528,8 @@ function addCornersToLinks(root, flowData = flowData, defaultOpacity = defaultOp
 			if (currentLink.target) {
 
 
-				let liveSelectedValue = $('input[name=flowSelection]:checked').val();
-				/// Get total amount to calculated percentages
-				let totalAmount = 0;
-				flowData.forEach(function (number) {
-					totalAmount += number[liveSelectedValue];
-				});
-				currentLink.source.totalFlow = totalAmount;
-				currentLink.target.totalFlow = totalAmount;
-				currentLink.source.flowValue = liveSelectedValue;
-				currentLink.target.flowValue = liveSelectedValue;
-				////////////////////////
-
-
-				// Add width property to Source and Target
-				let sourceID = currentLink.source.data.id;
-				let targetID = currentLink.target.data.id;
-				///// mark these points as nodes
-				if(sourceID != 0 ){
-					currentLink.source.node = true;
-				}
-				if(targetID != 0){
-					currentLink.target.node = true;
-				}
-
-				if(sourceID != 0) {
-					let sourceLiveData = flowData.filter(function (number) {
-						return number.Device_id === sourceID
-					});
-					let liveWeightValueSource = sourceLiveData[0][liveSelectedValue];
-					currentLink.source.flowInNetwork = liveWeightValueSource;
-					if(liveWeightValueSource === null){
-						currentLink.source.flowInNetwork = 0;
-					}
-				}
-
-				if(targetID != 0) {
-					let targetLiveData = flowData.filter(function (number) {
-						return number.Device_id === targetID
-					});
-					let liveWeightValueTarget = targetLiveData[0][liveSelectedValue];
-					currentLink.target.flowInNetwork = liveWeightValueTarget;
-					if(liveWeightValueTarget === null){
-						currentLink.target.flowInNetwork = 0;
-					}
-				}
-				///////////////////////
-
-
-
+				let liveSelectedValue = getFlowDisplayOption(flowData, currentLink);
+				setLiveDataValues(currentLink, flowData, liveSelectedValue);
 
 				//Add new Links
 				let distanceY = Math.abs((currentLink.target.y - currentLink.source.y) / 2);
@@ -497,24 +605,7 @@ function recusiveAddingOfDashes(d) {
 		.style("opacity", 0)
 		.attr('stroke-dasharray', 7)
 		.attr('stroke-dashoffset', function(d){
-
-			let direction = 100;
-			 //// 4 cases
-			// if (d.source.flowInNetwork) {
-			// 	 direction = 0;
-			// }
-			// if (d.source.flowOutNetwork) {
-			// 	direction = 100;
-			// }
-			// if (d.target.flowInNetwork) {
-			// 	direction = 0;
-			// }
-			// if (d.target.flowOutNetwork) {
-			// 	direction = 100;
-			// }
-			return direction;
-
-
+			return 100;
 		}) //set to minus for reverse
 }
 
@@ -524,9 +615,20 @@ function flowAnimate(nodeData) {
 	var links = svg.selectAll(".flow");
 	links
 		.attr("stroke-dashoffset", function(d){
-			if(d.target.direction == "in"){
-				return 0;
-			}else{
+			if(d.target.node) {
+				debugger;
+				if (d.target.data.direction == "PLUS") {
+					return 0;
+				} else {
+					return 100;
+				}
+			}else if (d.source.node){
+				if (d.source.data.direction == "PLUS") {
+					return 0;
+				} else {
+					return 100;
+				}
+			} else {
 				return 100;
 			}
 		})
@@ -534,10 +636,21 @@ function flowAnimate(nodeData) {
 		.transition()
 		.duration(3000)
 		.ease(d3.easeLinear)
-		.attr("stroke-dashoffset", function(d){
-			if(d.target.direction == "in"){
-				return 100;
-			}else{
+		.attr("stroke-dashoffset", function(d) {
+			debugger;
+			if(d.target.node) {
+				if (d.target.data.direction == "PLUS") {
+					return 100;
+				} else {
+					return 0;
+				}
+			}else if (d.source.node){
+				if (d.source.data.direction == "PLUS") {
+					return 100;
+				} else {
+					return 0;
+				}
+			}else {
 				return 0;
 			}
 		})
