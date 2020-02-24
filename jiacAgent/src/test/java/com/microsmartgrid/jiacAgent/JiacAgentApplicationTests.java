@@ -1,4 +1,4 @@
-package com.microsmartgrid.demo;
+package com.microsmartgrid.jiacAgent;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
