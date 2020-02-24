@@ -35,7 +35,7 @@
 	</bean>
 
 
-	<bean name="RESTfulAgentBean" class="examples.rest.RESTfulAgentBean">
+	<bean name="RESTfulAgentBean" class="jiacAgent.controller.RESTfulAgentBean">
 		<property name="logLevel" value="INFO"/>
 	</bean>
 

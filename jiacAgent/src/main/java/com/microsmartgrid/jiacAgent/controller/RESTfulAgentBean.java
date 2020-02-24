@@ -3,21 +3,19 @@ package com.microsmartgrid.jiacAgent.controller;
 import de.dailab.jiactng.agentcore.action.AbstractMethodExposingBean;
 import de.dailab.jiactng.agentcore.action.scope.ActionScope;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.QueryParam;
 
-@RestController
-public class JiacAgentController extends AbstractMethodExposingBean {
+public class RESTfulAgentBean extends AbstractMethodExposingBean {
 
-	@PostMapping("/add")
+	@PostMapping("/reading/**")
 	@Expose(scope = ActionScope.WEBSERVICE)
 	//Will become /api/RESTfulAgent/add
 	public int add(@QueryParam("x") int x, @QueryParam("y") int y) {
 		return x + y;
 	}
 
-	@PostMapping("/test")
+	@PostMapping("/writing")
 	@Expose(scope = ActionScope.WEBSERVICE)
 	public int test() {
 		System.out.println("test");
