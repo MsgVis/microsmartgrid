@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.microsmartgrid</groupId>
+		<artifactId>microsmartgrid</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>jiacAgent</artifactId>
+	<version>${project.version}</version>
+	<name>jiacAgent</name>
+	<description>Integrates the JIAC platform with our microservices.</description>
+
+	<properties>
+		<java.version>1.11</java.version>
+		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+	</properties>
+
+	<dependencies>
+		<!-- JIAC - -->
+		<dependency>
+			<groupId>de.dailab.jiactng</groupId>
+			<artifactId>agentCore</artifactId>
+			<version>5.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>de.dailab.jiactng.basicServices</groupId>
+			<artifactId>RESTfulServices</artifactId>
+			<version>5.2.3</version>
+		</dependency>
+		<!-- Spring - -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>dia-open</id>
+			<name>DAI Open Repository</name>
+			<url>http://repositories.dai-labor.de/extern/content/repositories/dai-open/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

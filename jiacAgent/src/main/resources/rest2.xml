@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- <import resource="classpath:de/dailab/jiactng/basicservices/webserver/conf/webserver.xml" />
+	 <import resource="classpath:de/dailab/jiactng/rsga/conf/rsga.xml" /> -->
+	<import resource="classpath:de/dailab/jiactng/agentcore/conf/Agent.xml"/>
+
+	<!--  <bean name="RESTPlatform" parent="NodeWithJMX">
+		  <property name="agentNodeBeans">
+			  <list merge="true">
+				  <ref bean="WebServer" />
+			  </list>
+		  </property>
+		  <property name="agents" >
+			  <list>
+				<!--  <ref bean="RESTfulProviderAgent" />
+				  <ref bean="RESTfulAgent" />
+			  </list>
+		  </property>
+	  </bean> -->
+
+	<bean name="RESTfulAgent" parent="ReactiveAgent">
+		<property name="agentBeans">
+			<list>
+				<ref bean="RESTfulAgentBean"/>
+			</list>
+		</property>
+	</bean>
+
+
+	<bean name="RESTfulAgentBean" class="examples.rest.RESTfulAgentBean">
+		<property name="logLevel" value="INFO"/>
+	</bean>
+
+</beans>
