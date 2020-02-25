@@ -33,20 +33,17 @@ public abstract class AbstractDevice implements Serializable {
 	@JoinColumn(name = "device_id")
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@JsonIdentityReference(alwaysAsId = true)
-	@JsonProperty("Device_id")
+	@JsonProperty("deviceId")
 	private DeviceInformation deviceInformation;
 
 	@Id
 	@Column(name = "time", nullable = false)
-	@JsonAlias("timestamp")
-	@JsonProperty("Timestamp")
 	private Instant timestamp;
 
 	// Not a typo, saves as json. For jsonb replace 'jsonb' in 'columnDefinition.
 	@Type(type = "jsonb")
 	@Column(name = "meta", columnDefinition = "json")
 	@JsonAnySetter
-	@JsonProperty("Meta_information")
 	private Map<String, Object> metaInformation = new HashMap<>();
 
 }

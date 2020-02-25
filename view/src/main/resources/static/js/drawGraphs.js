@@ -320,9 +320,9 @@ function drawDropDownMenu(data) {
 
 	// Get names of Meter Values
 	var meterValueNames = Object.keys(data[0]).sort();
-	meterValueNames.splice(meterValueNames.indexOf('Device_id'), 1); //remove id
-	meterValueNames.splice(meterValueNames.indexOf('Timestamp'), 1);
-	meterValueNames.splice(meterValueNames.indexOf('Meta_information'), 1);
+	meterValueNames.splice(meterValueNames.indexOf('deviceId'), 1); //remove id
+	meterValueNames.splice(meterValueNames.indexOf('timestamp'), 1);
+	meterValueNames.splice(meterValueNames.indexOf('metaInformation'), 1);
 
 	var dropdown = d3.select(".form-group")
 		.insert("label", ".form-group")
@@ -373,7 +373,7 @@ function plotTimeSeries(data, plotItem) {
 	// Add X axis --> it is a date format
 	let x = d3.scaleTime()
 		.domain(d3.extent(data, function (d) {
-			var time = new Date(d["Timestamp"]);
+			var time = new Date(d["timestamp"]);
 			return (time);
 		}))
 		.range([0, width]);
@@ -400,7 +400,7 @@ function plotTimeSeries(data, plotItem) {
 		.attr("stroke-width", 1.5)
 		.attr("d", d3.line()
 			.x(function (d) {
-				var time = new Date(d["Timestamp"]);
+				var time = new Date(d["timestamp"]);
 				return x((time));
 			})
 			.y(function (d) {
