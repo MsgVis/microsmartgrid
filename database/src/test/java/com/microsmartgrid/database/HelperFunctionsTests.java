@@ -39,7 +39,7 @@ public class HelperFunctionsTests {
 
 	@Test
 	public void testDeserializationPositive() throws JsonProcessingException {
-		AbstractDevice device = HelperFunctions.deserializeJson("{\"Timestamp\": 0, \"unrecognized\": 42}", Device.class);
+		AbstractDevice device = HelperFunctions.deserializeJson("{\"timestamp\": 0, \"unrecognized\": 42}", Device.class);
 		assertThat(device).isNotNull();
 		assertThat(device.getDeviceInformation()).isNull();
 		assertThat(device.getTimestamp()).is(new Condition<>(t -> t == Instant.EPOCH, "epoch"));
