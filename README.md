@@ -3,7 +3,7 @@
 ![WTFPL License](https://img.shields.io/badge/License-WTFPL-green "This work is licensed under the WTFPL")
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjblossey%2Fmicrosmartgrid.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjblossey%2Fmicrosmartgrid?ref=badge_shield)
 
-Version support: 
+Version support:
 
 ![Java Version](https://img.shields.io/badge/Java%20Version-11-blue)
 ![Spring Cloud Version](https://img.shields.io/badge/Spring%20Cloud%20Version-Hoxton.SR1-blue)
@@ -29,7 +29,7 @@ This *alpha-stage* application enables admins of microsmartgrid architectures to
     4. [Building Msg-Vis Documentation](#2-3)
     5. [Building Msg-Vis Packages](#2-4)
     6. [Debugging Msg-Vis](#2-5)
-2. [Testing Distributed Systems](#3)  
+2. [Testing Distributed Systems](#3)
     1. [Unit tests](#3-1)
     2. [Intergration tests](#3-2)
 3. [Platform Notes](#4)
@@ -41,9 +41,56 @@ This *alpha-stage* application enables admins of microsmartgrid architectures to
 
 ## 1 Building, Installing, Using and Uninstalling Msg-Vis
 
-You need a distribution of Java 11 (e.g. OpenJDK11), [Maven](https://maven.apache.org/), Docker (for Windows and Mac you can get your desktop client [here](https://www.docker.com/products/docker-desktop)) and [Docker Compose](https://docs.docker.com/compose/install/). 
+You need a distribution of Java 11 (e.g. OpenJDK11), [Maven](https://maven.apache.org/), Docker (for Windows and Mac you can get your desktop client [here](https://www.docker.com/products/docker-desktop)) and [Docker Compose](https://docs.docker.com/compose/install/).
 
 [Top](#TOC)
+
+## PostgreSQL
+
+We use PostgeSQL as database system.
+
+Our current implementation has been tested with [PostgreSQL 11](https://www.postgresql.org/docs/11/index.html).
+
+## TimescaleDB
+
+We use the PostgreSQL extension [TimescaleDB](https://www.timescale.com/), a scalable time-series database which uses standard SQL.
+
+With Timescale you turn tables into whats called [Hypertables](https://docs.timescale.com/latest/introduction/architecture) with which you interact just as you would with a regular PostgreSQL table. [Create Hypertable](https://docs.timescale.com/latest/api#create_hypertable).
+
+We also make use of Timescale's [Time Bucket](https://docs.timescale.com/latest/api#time_bucket). Time Buckets are aggregates over arbitrary time intervals.
+
+Our current implementation has been tested with TimescaleDB [v1.5](https://docs.timescale.com/v1.5/main) and [v1.6](https://docs.timescale.com/v1.6/main).
+
+## Setup database
+
+To setup the database have a look at the bash script in the timescaledb folder.
+
+## Data structure
+
+There are two tables: devices and readings.
+
+Intuitively devices stores all known devices. The ids should match the ids in the topology JSON file so the view service can query the database correctly.
+
+Readings stores all readings. The device id matches the id in devices.
+
+# Micro services
+
+## timescaleDbReader
+
+timescaleDbReader exposes several database queries as REST GET endpoints. These are:
+
+- /latest
+- /readings/[avg/min/max/std]
+- /readings
+- /deviceList
+- /deviceBy[Id/Name]
+
+## timescaleDbWriter
+
+timescaleDbWriter writes to the database. It exposes following POST endpoints:
+
+- /reading
+- /device
 
 # TODO/ TOWRITE:
 - Which protocols are supported?
