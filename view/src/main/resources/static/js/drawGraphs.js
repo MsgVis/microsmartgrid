@@ -1,4 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
+function calculateDiffDays(val) {
+	const today = new Date(new Date().toLocaleDateString())
+	const newDate = new Date(val);
+	const diffTime = Math.abs(today - newDate);
+	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	return diffDays;
+}
+
 // ----------------------Global Javascript stuff and initilizing of other functions-----------------------
 function init() {
 
@@ -106,13 +114,19 @@ function init() {
 	this.chartTopologyDiv = document.getElementById("liveSVGCard");
 
 
+	debugger;
 	document.addEventListener("DOMContentLoaded", onLoadFunction);
+	$("input[name='date']").val(new Date().toLocaleDateString());
 
 	/// Function to plot images again on window resize
 	function onLoadFunction(e) {
-		plotTopology();
+		plotTopology(1);
 		drawDropDownMenu();
-		window.addEventListener("resize", plotTopology());
+		window.addEventListener("resize", function(){
+			let val = $("input[name='date']").val();
+			const diffDays = calculateDiffDays(val);
+			plotTopology(diffDays)
+		});
 	}
 
 	/// Get Tooltips to wait for data load
@@ -124,6 +138,12 @@ function init() {
 	// To lazy to add bootstrap classes to all elements in index html. This is the helper function.
 	bootstrapStyleMultipleElements();
 
+	$(document).on('change', 'input[name="date"]', function (event) {
+		let val = $(this).val();
+		const diffDays = calculateDiffDays(val);
+		plotTopology(diffDays);
+	});
+
 }
 
 init();
@@ -131,8 +151,8 @@ init();
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // ----------------------Handlers for Loading Data from database--------------------------------
-function getMeterData(id) {
-	var url = "http://localhost:4720/readings?id=" + id;
+function getMeterData(P1D,P0D,id) {
+	var url = "http://localhost:4720/readings?since="+ P1D + "&until="+ P0D+ "&id=" + id;
 	return $.ajax({
 		url: url,
 		type: "GET",
@@ -153,8 +173,9 @@ function getDeviceInfo(id) {
 	});
 }
 
-function getFlowValues(id) {
-	var url = "http://localhost:4720/latest?cutoff=P100D";
+function getFlowValues(diffDays) {
+	diffDays = diffDays + 1;
+	var url = "http://localhost:4720/latest?cutoff=P"+diffDays+"D";
 	return $.ajax({
 		url: url,
 		type: "GET",
@@ -170,7 +191,7 @@ function getFlowValues(id) {
 
 // --------------------------------------Topology--------------------------------------------
 //// Main plotting function
-function plotTopology(newMeterValue) {
+function plotTopology(diffDays) {
 
 	// Delete old chart
 	d3.selectAll("#liveSVG > *").remove();
@@ -182,7 +203,7 @@ function plotTopology(newMeterValue) {
 	d3.json('json/DAI_Smart_Micro_Grid.json').then(function (data) {
 
 
-		getFlowValues().then(function (flowData) {
+		getFlowValues(diffDays).then(function (flowData) {
 			// // Plot Root in Timeseries as default
 			let preparedData = {}
 			preparedData.data = data;
@@ -407,14 +428,14 @@ function createFlowLabel(node, circleRadius) {
 
 	text.append("tspan")
 		.attr("dx", function (d) {
-			if (d.data.id === 1) { //This is root node
+			if (d.data.id === 8) { //This is root node
 				return -(circleRadius + 6);
 			} else {
 				return circleRadius + 6;
 			}
 		})
 		.attr("text-anchor", function (d) {
-			if (d.data.id === 1) { //This is root node
+			if (d.data.id === 8) { //This is root node
 				return "end";
 			} else {
 				return "start";
@@ -459,14 +480,14 @@ function createFlowLabel(node, circleRadius) {
 		text.append("tspan")
 			.attr("y", y)
 			.attr("dx", function (d) {
-				if (d.data.id === 1) { //This is root node
+				if (d.data.id === 8) { //This is root node
 					return -(circleRadius + 6);
 				} else {
 					return circleRadius + 6;
 				}
 			})
 			.attr("text-anchor", function (d) {
-				if (d.data.id === 1) { //This is root node
+				if (d.data.id === 8) { //This is root node
 					return "end";
 				} else {
 					return "start";
@@ -742,7 +763,7 @@ function setLiveDataValues(currentLink, flowData, liveSelectedValue) {
 			let totalAmount = 0;
 			flowData.forEach(function (number) {
 				if (liveSelectedValue === "A" || liveSelectedValue === "R") {
-					if(number.Device_id != "1") {
+					if(number.Device_id != "8") {
 						let val1 = Math.abs(number[liveSelectedValue + "_minus"]);
 						let val2 = Math.abs(number[liveSelectedValue + "_plus"]);
 						if(val1) {
@@ -981,11 +1002,9 @@ function prepareForPlotting(dataBaseIds, initial = false) {
 	d3.selectAll("#historySVGRow > *").remove();
 	d3.selectAll("#form-group-timeseries > *").remove();
 	if (id != 0) {
-		getMeterData(id).then(function (data) {
-
+		getMeterData("PT4H","P0D",id).then(function (data) {
 			plotTimeSeries(data, Object.keys(data[0]).sort()[0],initial);
 			drawDropDownMenuTimeseries(data);
-
 		})
 	}
 
@@ -1107,7 +1126,10 @@ function drawDropDownMenu() {
 	///// Create Options:
 	// Handler for dropdown value change
 	var dropdownChange = function () {
-		plotTopology();
+		debugger;
+		let val = $("input[name='date']").val();
+		const diffDays = calculateDiffDays(val);
+		plotTopology(diffDays);
 	};
 
 	// Get names of Meter Values
