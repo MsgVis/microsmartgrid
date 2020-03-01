@@ -3,27 +3,27 @@
 	"databaseId": "Main_Meter",
   "type": "POWERGRID",
   "subtype": "POWERGRID",
-	"direction": "PLUS",
+	"direction": "MINUS",
   "children": [{
 	  "id": 10,
     "databaseId": "Battery_SMA",
     "type": "CONSUMER",
     "subtype": "BATTERY",
-	  "direction": "MINUS",
+	  "direction": "PLUS",
     "children": []
   },{
 	  "id": 5,
 	  "databaseId": "PV_Meter",
 	  "type": "PRODUCER",
 	  "subtype": "SOLARPANEL",
-	  "direction": "PLUS",
+	  "direction": "MINUS",
 	  "children": []
   },  {
 	  "id": 4,
     "databaseId": "PV_Meter_E",
     "type": "PRODUCER",
     "subtype": "SOLARPANEL",
-	  "direction": "PLUS",
+	  "direction": "MINUS",
     "children": []
   }, {
 	  "id": 0,
