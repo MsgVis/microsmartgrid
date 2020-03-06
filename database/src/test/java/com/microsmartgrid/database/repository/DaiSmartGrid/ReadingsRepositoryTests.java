@@ -4,6 +4,7 @@ import com.microsmartgrid.database.AbstractIntegrationTest;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
+import org.assertj.core.data.Index;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,13 @@ public class ReadingsRepositoryTests extends AbstractIntegrationTest {
 		readings1 = new Readings();
 		readings1.setDeviceInformation(deviceInformation1);
 		readings1.setTimestamp(transactionTime.minus(Duration.ofDays(1)));
+		readings1.setF(59f);
 		readings1 = readingsRepository.save(readings1);
 
 		readings2 = new Readings();
 		readings2.setDeviceInformation(deviceInformation1);
 		readings2.setTimestamp(transactionTime.minus(Duration.ofDays(2)));
+		readings2.setF(60f);
 		readings2 = readingsRepository.save(readings2);
 	}
 
@@ -84,8 +87,33 @@ public class ReadingsRepositoryTests extends AbstractIntegrationTest {
 	}
 
 	@Test
-	@Disabled("Can't test without timescaledb")
-	void testFindReadings() {
-
+	void testFindAllReadingsWithNoneOptional() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadings(0, 0, 0))
+			.containsExactly(readings1, readings2);
 	}
+
+	@Test
+	void testFindReadingsFiltered() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadings(deviceInformation1.getId(),
+			transactionTime.minus(Duration.ofDays(3)).getEpochSecond(),
+			transactionTime.minus(Duration.ofDays(2).minusSeconds(1)).getEpochSecond()))
+			.containsExactly(readings2);
+	}
+
+	@Test
+	void testFindReadingsMax() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadingsMax(deviceInformation1.getId(), 0, 0, "2 days"))
+			.extracting("F", Float.class).contains(60f, Index.atIndex(0));
+	}
+
+	@Test
+	void testFindReadingsMin() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadingsMin(deviceInformation1.getId(), 0, 0, "P2D"))
+			.extracting("F", Float.class).contains(59f, Index.atIndex(0));
+	}
+
 }
