@@ -5,11 +5,11 @@ public abstract class SqlCommands {
 	public static final String QUERY_READINGS = "SELECT *" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
-		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS INTERVAL))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS INTERVAL))" +
 		" GROUP BY time, device_id ORDER BY time DESC";
 	public static final String QUERY_READINGS_AVERAGES = "SELECT device_id," +
-		" time_bucket(CAST(:step AS interval), time) AS time," +
+		" time_bucket(CAST(:step AS INTERVAL), time) AS time," +
 		" avg(a_minus) AS a_minus," +
 		" avg(a_plus) AS a_plus," +
 		" avg(r_minus) AS r_minus," +
@@ -38,11 +38,11 @@ public abstract class SqlCommands {
 		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
-		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS INTERVAL))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS INTERVAL))" +
 		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_STDDEV = "SELECT device_id," +
-		" time_bucket(CAST(:step AS interval), time) AS time," +
+		" time_bucket(CAST(:step AS INTERVAL), time) AS time," +
 		" stddev_pop(a_minus) AS a_minus," +
 		" stddev_pop(a_plus) AS a_plus," +
 		" stddev_pop(r_minus) AS r_minus," +
@@ -71,11 +71,11 @@ public abstract class SqlCommands {
 		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
-		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS INTERVAL))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS INTERVAL))" +
 		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_MIN = "SELECT device_id," +
-		" time_bucket(CAST(:step AS interval), time) AS time," +
+		" time_bucket(CAST(:step AS INTERVAL), time) AS time," +
 		" min(a_minus) AS a_minus," +
 		" min(a_plus) AS a_plus," +
 		" min(r_minus) AS r_minus," +
@@ -104,11 +104,11 @@ public abstract class SqlCommands {
 		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
-		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS INTERVAL))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS INTERVAL))" +
 		" GROUP BY time, device_id ORDER BY time ASC";
 	public static final String QUERY_READINGS_MAX = "SELECT device_id," +
-		" time_bucket(CAST(:step AS interval), time) AS time," +
+		" time_bucket(CAST(:step AS INTERVAL), time) AS time," +
 		" max(a_minus) AS a_minus," +
 		" max(a_plus) AS a_plus," +
 		" max(r_minus) AS r_minus," +
@@ -137,7 +137,7 @@ public abstract class SqlCommands {
 		" '{}' as meta" +
 		" FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= now() - CAST(:since AS interval))" +
-		" AND (:until = '' OR time <= now() - CAST(:until AS interval))" +
+		" AND (:since = '' OR time >= now() - CAST(:since AS INTERVAL))" +
+		" AND (:until = '' OR time <= now() - CAST(:until AS INTERVAL))" +
 		" GROUP BY time, device_id ORDER BY time ASC";
 }
