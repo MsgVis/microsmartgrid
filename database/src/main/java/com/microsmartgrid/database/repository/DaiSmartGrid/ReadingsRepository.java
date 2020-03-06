@@ -18,18 +18,18 @@ public interface ReadingsRepository extends JpaRepository<Readings, DeviceInform
 
 	Optional<Readings> findFirstByDeviceInformationAndTimestampAfterOrderByTimestampDesc(DeviceInformation id, Instant cutoff);
 
-	@Query(value = QUERY_READINGS_AVERAGES + OPTIONAL_BY_OFFSET, nativeQuery = true)
-	List<Readings> findReadingsAvg(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_AVERAGES + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	List<Readings> findReadingsAvg(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_STDDEV + OPTIONAL_BY_OFFSET, nativeQuery = true)
-	List<Readings> findReadingsStd(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_STDDEV + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	List<Readings> findReadingsStd(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_MIN + OPTIONAL_BY_OFFSET, nativeQuery = true)
-	List<Readings> findReadingsMin(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_MIN + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	List<Readings> findReadingsMin(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_MAX + OPTIONAL_BY_OFFSET, nativeQuery = true)
-	List<Readings> findReadingsMax(@Param("id") int id, @Param("since") String since, @Param("until") String until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_MAX + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	List<Readings> findReadingsMax(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS + OPTIONAL_BY_OFFSET, nativeQuery = true)
-	List<Readings> findReadings(@Param("id") int id, @Param("since") String since, @Param("until") String until);
+	@Query(value = QUERY_READINGS + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	List<Readings> findReadings(@Param("id") int id, @Param("since") long since, @Param("until") long until);
 }

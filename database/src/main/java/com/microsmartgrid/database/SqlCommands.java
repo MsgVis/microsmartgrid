@@ -1,10 +1,10 @@
 package com.microsmartgrid.database;
 
 public abstract class SqlCommands {
-	public static final String OPTIONAL_BY_OFFSET = " FROM readings" +
+	public static final String READINGS_BY_TIMESTAMP = " FROM readings" +
 		" WHERE (:id = 0 OR device_id = :id)" +
-		" AND (:since = '' OR time >= timezone('utc', now()) - CAST(:since AS INTERVAL))" +
-		" AND (:until = '' OR time <= timezone('utc', now()) - CAST(:until AS INTERVAL))" +
+		" AND (:since = 0 OR time >= to_timestamp(:since))" +
+		" AND (:until = 0 OR time <= to_timestamp(:until))" +
 		" GROUP BY time, device_id" +
 		" ORDER BY time DESC";
 

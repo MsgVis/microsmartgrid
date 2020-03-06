@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,66 +37,76 @@ public class ReadingsService {
 		return readings;
 	}
 
-	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
+	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "avg");
 		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findReadingsAvg(id.orElse(0),
-			since.map(Duration::toString).orElse(""),
-			until.map(Duration::toString).orElse(""),
+			since.map(this::determineTimestamp).orElse(0L),
+			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
+	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "std");
 		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findReadingsStd(id.orElse(0),
-			since.map(Duration::toString).orElse(""),
-			until.map(Duration::toString).orElse(""),
+			since.map(this::determineTimestamp).orElse(0L),
+			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
+	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "min");
 		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findReadingsMin(id.orElse(0),
-			since.map(Duration::toString).orElse(""),
-			until.map(Duration::toString).orElse(""),
+			since.map(this::determineTimestamp).orElse(0L),
+			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until, Duration step) {
+	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
 		HashMap<String, Object> queryInfo = new HashMap<>();
 		queryInfo.put("aggregate", "max");
 		queryInfo.put("interval", step.toString());
 
 		List<Readings> readings = repository.findReadingsMax(id.orElse(0),
-			since.map(Duration::toString).orElse(""),
-			until.map(Duration::toString).orElse(""),
+			since.map(this::determineTimestamp).orElse(0L),
+			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
 		readings.forEach(r -> r.setMetaInformation(queryInfo));
 		return readings;
 	}
 
-	public List<Readings> getReadings(Optional<Integer> id, Optional<Duration> since, Optional<Duration> until) {
+	public List<Readings> getReadings(Optional<Integer> id, Optional<String> since, Optional<String> until) {
 		return repository.findReadings(id.orElse(0),
-			since.map(Duration::toString).orElse(""),
-			until.map(Duration::toString).orElse(""));
+			since.map(this::determineTimestamp).orElse(0L),
+			until.map(this::determineTimestamp).orElse(0L));
+	}
+
+	private long determineTimestamp(String s) {
+		Instant time;
+		try {
+			time = Instant.parse(s);
+		} catch (DateTimeParseException e) {
+			time = Instant.now().minus(Duration.parse(s));
+		}
+		return time.getEpochSecond();
 	}
 
 }
