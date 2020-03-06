@@ -1,11 +1,13 @@
 package com.microsmartgrid.database.repository.DaiSmartGrid;
 
+import com.microsmartgrid.database.AbstractIntegrationTest;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -14,9 +16,10 @@ import java.time.Period;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest(properties = {"hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect"})
-@Disabled("Doesn't work with h2 and custom type definitions")
-public class ReadingsRepositoryTests {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@Transactional
+public class ReadingsRepositoryTests extends AbstractIntegrationTest {
 
 	static Readings readings1 = new Readings();
 	static Readings readings2 = new Readings();
