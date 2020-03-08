@@ -41,17 +41,15 @@ This *alpha-stage* application enables admins of microsmartgrid architectures to
 
 ## 1 Building, Installing, Using and Uninstalling Msg-Vis
 
-You need a distribution of Java 11 (e.g. OpenJDK11), [Maven](https://maven.apache.org/), Docker (for Windows and Mac you can get your desktop client [here](https://www.docker.com/products/docker-desktop)) and [Docker Compose](https://docs.docker.com/compose/install/).
+You need a distribution of Java 11 (e.g. OpenJDK11), [Maven](https://maven.apache.org/), Docker (for Windows and Mac you can get your desktop client [here](https://www.docker.com/products/docker-desktop)), [Docker Compose](https://docs.docker.com/compose/install/), PostgreSQL and TimescaleDB.
 
-[Top](#TOC)
-
-## PostgreSQL
+### PostgreSQL
 
 We use PostgeSQL as database system.
 
 Our current implementation has been tested with [PostgreSQL 11](https://www.postgresql.org/docs/11/index.html).
 
-## TimescaleDB
+### TimescaleDB
 
 We use the PostgreSQL extension [TimescaleDB](https://www.timescale.com/), a scalable time-series database which uses standard SQL.
 
@@ -61,11 +59,11 @@ We also make use of Timescale's [Time Bucket](https://docs.timescale.com/latest/
 
 Our current implementation has been tested with TimescaleDB [v1.5](https://docs.timescale.com/v1.5/main) and [v1.6](https://docs.timescale.com/v1.6/main).
 
-## Setup database
+### Setup database
 
 To setup the database have a look at the bash script in the timescaledb folder.
 
-## Data structure
+### Data structure
 
 There are two tables: devices and readings.
 
@@ -73,9 +71,11 @@ Intuitively devices stores all known devices. The ids should match the ids in th
 
 Readings stores all readings. The device id matches the id in devices.
 
-# Micro services
+[Top](#TOC)
 
-## timescaleDbReader
+## Micro services
+
+### timescaleDbReader
 
 timescaleDbReader exposes several database queries as REST GET endpoints. These are:
 
@@ -85,12 +85,16 @@ timescaleDbReader exposes several database queries as REST GET endpoints. These 
 - /deviceList
 - /deviceBy[Id/Name]
 
-## timescaleDbWriter
+For further information please refer to the documentation.
+
+### timescaleDbWriter
 
 timescaleDbWriter writes to the database. It exposes following POST endpoints:
 
 - /reading
 - /device
+
+For further information please refer to the documentation.
 
 # TODO/ TOWRITE:
 - Which protocols are supported?
