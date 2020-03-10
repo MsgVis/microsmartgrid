@@ -4,8 +4,9 @@ jdk: openjdk11
 branches:
   only:
       - /.*/
+script: "mvn cobertura:cobertura"
 after_success:
-- bash <(curl -s https://codecov.io/bash) -t uuid-repo-token
+  - bash <(curl -s https://codecov.io/bash)
 notifications:
   slack: aot-praktikumgroup:RqmsKcUeLx2sdCH8TdehwcBs
 before_deploy:
