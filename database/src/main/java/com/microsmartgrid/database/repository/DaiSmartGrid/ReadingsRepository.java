@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.microsmartgrid.database.SqlCommands.*;
@@ -18,18 +19,18 @@ public interface ReadingsRepository extends JpaRepository<Readings, DeviceInform
 
 	Optional<Readings> findFirstByDeviceInformationAndTimestampAfterOrderByTimestampDesc(DeviceInformation id, Instant cutoff);
 
-	@Query(value = QUERY_READINGS_AVERAGES + READINGS_BY_TIMESTAMP, nativeQuery = true)
-	List<Readings> findReadingsAvg(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_AVERAGES + FROM_READINGS_AGG, nativeQuery = true)
+	List<Map<String, Object>> findReadingsAvg(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_STDDEV + READINGS_BY_TIMESTAMP, nativeQuery = true)
-	List<Readings> findReadingsStd(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_STDDEV + FROM_READINGS_AGG, nativeQuery = true)
+	List<Map<String, Object>> findReadingsStd(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_MIN + READINGS_BY_TIMESTAMP, nativeQuery = true)
-	List<Readings> findReadingsMin(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_MIN + FROM_READINGS_AGG, nativeQuery = true)
+	List<Map<String, Object>> findReadingsMin(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS_MAX + READINGS_BY_TIMESTAMP, nativeQuery = true)
-	List<Readings> findReadingsMax(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
+	@Query(value = QUERY_READINGS_MAX + FROM_READINGS_AGG, nativeQuery = true)
+	List<Map<String, Object>> findReadingsMax(@Param("id") int id, @Param("since") long since, @Param("until") long until, @Param("step") String step);
 
-	@Query(value = QUERY_READINGS + READINGS_BY_TIMESTAMP, nativeQuery = true)
+	@Query(value = QUERY_READINGS, nativeQuery = true)
 	List<Readings> findReadings(@Param("id") int id, @Param("since") long since, @Param("until") long until);
 }

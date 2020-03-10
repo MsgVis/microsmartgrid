@@ -1,5 +1,7 @@
 package com.microsmartgrid.database.service.DaiSmartGrid;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsmartgrid.database.ObjectMapperManager;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DaiSmartGrid.ReadingsRepository;
@@ -11,10 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -38,65 +37,68 @@ public class ReadingsService {
 	}
 
 	public List<Readings> getAverageAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
-		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "avg");
-		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findReadingsAvg(id.orElse(0),
+		List<Map<String, Object>> readings = repository.findReadingsAvg(id.orElse(0),
 			since.map(this::determineTimestamp).orElse(0L),
 			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
-		readings.forEach(r -> r.setMetaInformation(queryInfo));
-		return readings;
+		return attachQueryInfo(readings, "max", step);
 	}
 
 	public List<Readings> getStandardDeviationAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
-		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "std");
-		queryInfo.put("interval", step.toString());
-
-		List<Readings> readings = repository.findReadingsStd(id.orElse(0),
+		List<Map<String, Object>> readings = repository.findReadingsStd(id.orElse(0),
 			since.map(this::determineTimestamp).orElse(0L),
 			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
-		readings.forEach(r -> r.setMetaInformation(queryInfo));
-		return readings;
+		return attachQueryInfo(readings, "max", step);
 	}
 
 	public List<Readings> getMinAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
-		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "min");
-		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findReadingsMin(id.orElse(0),
+		List<Map<String, Object>> readings = repository.findReadingsMin(id.orElse(0),
 			since.map(this::determineTimestamp).orElse(0L),
 			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
-		readings.forEach(r -> r.setMetaInformation(queryInfo));
-		return readings;
+		return attachQueryInfo(readings, "max", step);
 	}
 
 	public List<Readings> getMaxAggregate(Optional<Integer> id, Optional<String> since, Optional<String> until, Duration step) {
-		HashMap<String, Object> queryInfo = new HashMap<>();
-		queryInfo.put("aggregate", "max");
-		queryInfo.put("interval", step.toString());
 
-		List<Readings> readings = repository.findReadingsMax(id.orElse(0),
+		List<Map<String, Object>> readings = repository.findReadingsMax(id.orElse(0),
 			since.map(this::determineTimestamp).orElse(0L),
 			until.map(this::determineTimestamp).orElse(0L),
 			step.toString());
 
-		readings.forEach(r -> r.setMetaInformation(queryInfo));
-		return readings;
+		return attachQueryInfo(readings, "max", step);
 	}
 
 	public List<Readings> getReadings(Optional<Integer> id, Optional<String> since, Optional<String> until) {
 		return repository.findReadings(id.orElse(0),
 			since.map(this::determineTimestamp).orElse(0L),
 			until.map(this::determineTimestamp).orElse(0L));
+	}
+
+	private List<Readings> attachQueryInfo(List<Map<String, Object>> readings, String agg, Duration step) {
+		HashMap<String, Object> queryInfo = new HashMap<>();
+		queryInfo.put("aggregate", agg);
+		queryInfo.put("interval", step.toString());
+
+		List<Readings> convertedReadings = new ArrayList<>();
+
+		ObjectMapper objM = ObjectMapperManager.getMapper();
+		// TODO: improve performance on this fix
+		readings.forEach(r -> {
+			Map<String, Object> map = new HashMap<>();
+			r.forEach((key, value) -> map.put(key.replaceFirst("agg_", ""), value));
+			map.put("meta", queryInfo);
+
+			convertedReadings.add(objM.convertValue(map, Readings.class));
+		});
+
+		return convertedReadings;
 	}
 
 	private long determineTimestamp(String s) {

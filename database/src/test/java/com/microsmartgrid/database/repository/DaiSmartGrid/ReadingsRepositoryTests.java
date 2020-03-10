@@ -4,7 +4,7 @@ import com.microsmartgrid.database.AbstractIntegrationTest;
 import com.microsmartgrid.database.model.DaiSmartGrid.Readings;
 import com.microsmartgrid.database.model.DeviceInformation;
 import com.microsmartgrid.database.repository.DeviceInformationRepository;
-import org.assertj.core.data.Index;
+import com.microsmartgrid.database.service.DaiSmartGrid.ReadingsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,6 +31,8 @@ public class ReadingsRepositoryTests extends AbstractIntegrationTest {
 
 	@Autowired
 	ReadingsRepository readingsRepository;
+	@Autowired
+	ReadingsService readingsService;
 	@Autowired
 	DeviceInformationRepository deviceInformationRepository;
 
@@ -106,14 +109,48 @@ public class ReadingsRepositoryTests extends AbstractIntegrationTest {
 	void testFindReadingsMax() {
 		saveBasicDevices();
 		assertThat(readingsRepository.findReadingsMax(deviceInformation1.getId(), 0, 0, "2 days"))
-			.extracting("F", Float.class).contains(60f, Index.atIndex(0));
+			.hasSize(1)
+			.first().returns(60f, stringObjectMap -> Float.parseFloat(stringObjectMap.get("agg_f").toString()));
+		assertThat(readingsService.getMaxAggregate(Optional.of(deviceInformation1.getId()),
+			Optional.empty(), Optional.empty(), Duration.parse("P2D")))
+			.hasSize(1)
+			.first().hasFieldOrPropertyWithValue("f", 60f);
 	}
 
 	@Test
 	void testFindReadingsMin() {
 		saveBasicDevices();
 		assertThat(readingsRepository.findReadingsMin(deviceInformation1.getId(), 0, 0, "P2D"))
-			.extracting("F", Float.class).contains(59f, Index.atIndex(0));
+			.hasSize(1)
+			.first().returns(59f, stringObjectMap -> Float.parseFloat(stringObjectMap.get("agg_f").toString()));
+		assertThat(readingsService.getMinAggregate(Optional.of(deviceInformation1.getId()),
+			Optional.of("P31D"), Optional.of(transactionTime.toString()), Duration.parse("P2D")))
+			.hasSize(1)
+			.first().hasFieldOrPropertyWithValue("f", 59f);
+	}
+
+	@Test
+	void testFindReadingsAvg() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadingsAvg(deviceInformation1.getId(), 0, 0, "P2D"))
+			.hasSize(1)
+			.first().returns(59.5f, stringObjectMap -> Float.parseFloat(stringObjectMap.get("agg_f").toString()));
+		assertThat(readingsService.getAverageAggregate(Optional.of(deviceInformation1.getId()),
+			Optional.empty(), Optional.empty(), Duration.parse("P2D")))
+			.hasSize(1)
+			.first().hasFieldOrPropertyWithValue("f", 59.5f);
+	}
+
+	@Test
+	void testFindReadingsStdDev() {
+		saveBasicDevices();
+		assertThat(readingsRepository.findReadingsStd(deviceInformation1.getId(), 0, 0, "P2D"))
+			.hasSize(1)
+			.first().returns(0.5f, reading -> Float.parseFloat(reading.get("agg_f").toString()));
+		assertThat(readingsService.getStandardDeviationAggregate(Optional.of(deviceInformation1.getId()),
+			Optional.empty(), Optional.empty(), Duration.parse("P2D")))
+			.hasSize(1)
+			.first().hasFieldOrPropertyWithValue("f", 0.5f);
 	}
 
 }
