@@ -1,31 +1,94 @@
 {
-  "databaseId": "Main_Meter",
+  "id": 8,
+	"databaseId": "Main_Meter",
   "type": "POWERGRID",
   "subtype": "POWERGRID",
   "children": [{
+	  "id": 11,
     "databaseId": "Battery_SMA",
     "type": "CONSUMER",
     "subtype": "BATTERY",
     "children": []
-  }, {
-    "databaseId": "PV_Meter",
+  },{
+	  "id": 1,
+	  "databaseId": "Weather_forecast",
+	  "type": "PRODUCER",
+	  "subtype": "SOLARPANEL",
+	  "children": []
+  },{
+	  "id": 10,
+	  "databaseId": "PV_Meter",
+	  "type": "PRODUCER",
+	  "subtype": "SOLARPANEL",
+	  "children": []
+  },  {
+	  "id": 9,
+    "databaseId": "PV_Meter_E",
     "type": "PRODUCER",
     "subtype": "SOLARPANEL",
     "children": []
   }, {
+	  "id": 0,
     "databaseId": "ladestation-ebg-parkplatz-1",
-    "type": "CONSUMER",
+    "type": "",
     "subtype": "CHARGINGSTATION",
-    "children": []
+    "children": [
+		{
+			"id": 3,
+			"databaseId": "CP-left",
+			"type": "CONSUMER",
+			"subtype": "CP",
+			"children": []
+		},
+		{
+			"id": 4,
+			"databaseId": "CP-right",
+			"type": "CONSUMER",
+			"subtype": "CP",
+			"children": []
+		}
+	]
   }, {
+	  "id": 0,
     "databaseId": "ladestation-ebg-parkplatz-2",
-    "type": "CONSUMER",
+    "type": "",
     "subtype": "CHARGINGSTATION",
-    "children": []
+	  "children": [
+		  {
+			  "id": 5,
+			  "databaseId": "CP-left",
+			  "type": "CONSUMER",
+			  "subtype": "CP",
+			  "children": []
+		  },
+		  {
+			  "id": 6,
+			  "databaseId": "CP-right",
+			  "type": "CONSUMER",
+			  "subtype": "CP",
+			  "children": []
+		  }
+	  ]
   }, {
+	  "id": 0,
     "databaseId": "ladestation-ebg-parkplatz-3",
-    "type": "CONSUMER",
+    "type": "",
     "subtype": "CHARGINGSTATION",
-    "children": []
+	  "children": [
+		  {
+			  "id": 2,
+			  "databaseId": "CP-left",
+			  "type": "CONSUMER",
+			  "subtype": "CP",
+			  "children": []
+		  },
+		  {
+			  "id": 7,
+			  "databaseId": "CP-right",
+			  "type": "CONSUMER",
+			  "subtype": "CP",
+			  "children": []
+		  }
+	  ]
   }]
 }

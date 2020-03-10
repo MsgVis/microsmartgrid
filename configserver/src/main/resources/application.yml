@@ -15,8 +15,9 @@ server:
 
 logging:
     level:
-        com.netflix.discovery: 'OFF'
+        com.netflix.discovery: 'INFO'
         org.springframework.cloud: 'DEBUG'
+        org.springframework.security: 'INFO'
 
 eureka:
     instance:

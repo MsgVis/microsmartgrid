@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public final class ObjectMapperManager {
 
-	private static ObjectMapper objMapper = configureMapper(new ObjectMapper());
-	private static ObjectMapper ymlMapper = new YAMLMapper();
+	private final static ObjectMapper objMapper = configureMapper(new ObjectMapper());
+	private final static ObjectMapper ymlMapper = new YAMLMapper();
 
 	public static ObjectMapper getMapper() {
 		return objMapper;
