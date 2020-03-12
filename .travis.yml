@@ -8,11 +8,3 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 notifications:
   slack: aot-praktikumgroup:RqmsKcUeLx2sdCH8TdehwcBs
-before_deploy:
-- openssl aes-256-cbc -K $encrypted_77aee78414ce_key -iv $encrypted_77aee78414ce_iv
-  -in gcs_travis_key_file.json.enc -out gcs_travis_key_file.json -d
-deploy:
-  provider: gcs
-  key_file: gcs_travis_key_file.json
-  bucket: microsmartgrid-gate.appspot.com
-  edge: true

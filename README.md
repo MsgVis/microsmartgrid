@@ -90,19 +90,24 @@ Reads and aggregates data from the database.
 
 **Relies on**: Eureka Server, Timescale DB
 
-**Endpoints:**  
-Method | Path | Variables | Description |
-------------- | ------------------------- | ------- | ------------- |
-GET| /latest | DTF* Cutoff| Queries the database for the last reading within \<cutoff\> days from each device.
-GET| /readings |int id, DTF since, DTF until| Queries the database for all readings from one device within an interval.
-GET| /readings/avg | int id, DTF since, DTF until, int step| Queries the database for all readings from one device within an interval and the average is returned.
-GET| /readings/min | see above| Queries the database for all readings from one device within an interval and the minimum is returned.
-GET| /readings/max | see above | Queries the database for all readings from one device within an interval and the maximum is returned.
-GET| /readings/std | see above | Queries the database for all readings from one device within an interval. Readings will be aggregated over 'step' and the standard deviation is returned.
+**Endpoints:**
+
+| Method | Path | Variables | Description |
+-------- | ---- | --------- | ----------- |
+GET| /latest | DTF* Cutoff | Queries the database for the last reading within \<cutoff\> days from each device.
+GET| /readings | int id, DTF*/Duration** since, DTF*/Duration** until | Queries the database for all readings within an interval.
+GET| /readings/avg | int id, DTF*/Duration** since, DTF*/Duration** until, Duration step | Queries the database for all readings or only readings with 'id'. The interval is defined using 'since' and 'until' with either a timestamp (UTC) or a duration (last seven days and one hour "P7DT1H"). Readings will be aggregated over 'step' and the average is returned.
+GET| /readings/min | see above | (see above) returns the minimum from readings over 'step'.
+GET| /readings/max | see above | (see above) returns the maximum from readings over 'step'.
+GET| /readings/std | see above | (see above) returns the standard deviation from readings over 'step'.
 GET| /deviceList |-| Queries a list of all registered devices.
-GET| /deviceById |int id| Query devices table by id.
+GET| /deviceById | int id | Query devices table by id.
 GET| /deviceByName | String name | Queries devices table by name.
-*DTF refers to datetime-format
+
+*DTF refers to [datetime-format](https://www.w3.org/TR/NOTE-datetime)
+
+**Duration uses DTFs [Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations), however only the time portion.
+"P1D" is supported but will resolve to "PT24H".
 
 #### Timescale DB Writer
 
@@ -112,12 +117,14 @@ Writes data to the database.
 
 **Relies on**: Eureka Server, Timescale DB
 
-**Endpoints:**  
-Method | Path | Variables | Description |
+**Endpoints:**
+
+| Method | Path | Variables | Description |
 ------------- | ------------------------- | ------- | ------------- |
-PUT| /device | Deviceinformation** deviceInfo| Save or update DeviceInformation to a Device.
+PUT| /device | Deviceinformation*** deviceInfo| Save or update DeviceInformation to a Device.
 POST| /reading |String name, String json| Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.
-** see [database model](https://github.com/MsgVis/microsmartgrid/blob/master/database/src/main/java/com/microsmartgrid/database/model/DeviceInformation.java)
+
+*** see [database model](https://github.com/MsgVis/microsmartgrid/blob/master/database/src/main/java/com/microsmartgrid/database/model/DeviceInformation.java)
 
 #### View
 

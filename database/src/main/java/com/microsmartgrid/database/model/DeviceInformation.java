@@ -17,7 +17,7 @@ import java.io.Serializable;
 	@TypeDef(name = "int-array", typeClass = IntArrayType.class)
 })
 @Entity
-@Table(name = "devices", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+@Table(name = "devices")
 @Data
 @NoArgsConstructor
 public class DeviceInformation implements Serializable {
@@ -29,6 +29,7 @@ public class DeviceInformation implements Serializable {
 	/**
 	 * In the case of MQTT, this should be the topic
 	 */
+	@Column(unique = true)
 	private String name;
 	private String description;
 	@org.hibernate.annotations.Type(type = "int-array")
