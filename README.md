@@ -162,7 +162,7 @@ To deploy Msg-Vis via docker to **docker swarm** or **kubernetes** just follow t
 
 To deploy **single Msg-Vis services** to **single tomcat instances**, change `<packaging>jar</packaging>` to `<packaging>war</packagin>` in every pom.xml file which applies. Additionally, navigate into the `<ServiceName>Application.java` usually located at `<servicename>/src/main/java/com/microsmartgrid/<servicename>` and extend the main class with `extends SpringBootServletInitializer`. Then clean-build the project and drop the resulting .war-file into your tomcat's webapps folder.
 
-To deploy **all Msg-Vis services** to **one single tomcat instance**, refer to this [dedicated branch](https://github.com/MsgVis/microsmartgrid/tree/_single_tomcat_deployment) and execute the `install.sh` as `root`. It will clean-build the project and auto-configure your tomcat instance. Be sure to have an appropriate instance of timescaleDb already running. The build depends on it.
+To deploy **all Msg-Vis services** to **one single tomcat instance**, refer to this [dedicated branch](https://github.com/MsgVis/microsmartgrid/tree/_single_tomcat_deployment) and execute the `install.sh` as `root`. It will clean-build the project and auto-configure your tomcat instance. Be sure to have an appropriate instance of timescaleDb already running. The build depends on it.  
 Note however, this does only work on an Ubuntu distribution.
 
 [Top](#TOC)
