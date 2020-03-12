@@ -1,0 +1,21 @@
+codecov:
+  require_ci_to_pass: yes
+  token: c64e31da-3fe2-4eaf-a9f3-7508c47f76f1
+
+coverage:
+  precision: 2
+  round: down
+  range: "50...100"
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: no
