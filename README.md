@@ -59,7 +59,7 @@ To **run individual services with docker**, first navigate into the service's di
 
 ### Services and Endpoints
 
-All services which other services depend on are exposing spring actuator endpoints (e.g. actuator/health) by default (see [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints)).
+All services which other services depend on are exposing spring actuator endpoints (e.g. actuator/health) by default (see [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints)).  
 Listed dependencies are transitive.
 
 #### Config Server
