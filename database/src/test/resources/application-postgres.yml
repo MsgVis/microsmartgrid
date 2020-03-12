@@ -1,0 +1,17 @@
+spring:
+    datasource:
+        url: "jdbc:postgresql://${container.host}:${container.port}/postgres?TC_INITSCRIPT=init_timescale.sql"
+        username: "postgres"
+        password: "postgres"
+
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQL95Dialect
+                ddl-auto: create-drop
+        generate-ddl: true
+        show-sql: true
+
+container:
+    host: localhost
+    port: 6543

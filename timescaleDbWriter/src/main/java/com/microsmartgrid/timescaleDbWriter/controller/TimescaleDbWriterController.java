@@ -7,8 +7,12 @@ import com.microsmartgrid.database.repository.DeviceInformationRepository;
 import com.microsmartgrid.database.service.AbstractDeviceService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.io.IOException;
 
 
@@ -29,8 +33,12 @@ public class TimescaleDbWriterController {
 	 * @return saved Object
 	 */
 	@PutMapping("/device")
-	public DeviceInformation saveDeviceInfo(DeviceInformation deviceInfo) {
-		return deviceInfoRepository.save(deviceInfo);
+	public DeviceInformation saveDeviceInfo(@RequestBody @Valid DeviceInformation deviceInfo) {
+		try {
+			return deviceInfoRepository.save(deviceInfo);
+		} catch (ConstraintViolationException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The 'name' parameter must be unique.", e);
+		}
 	}
 
 

@@ -1,6 +1,6 @@
 package com.microsmartgrid.database.model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.*;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -31,6 +31,9 @@ public abstract class AbstractDevice implements Serializable {
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "device_id")
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+	@JsonIdentityReference(alwaysAsId = true)
+	@JsonProperty("deviceId")
 	private DeviceInformation deviceInformation;
 
 	@Id

@@ -259,8 +259,11 @@ ij_xml_keep_indents_on_empty_lines = false
 # ij_xml_use_custom_settings = false
 
 [{*.yml, *.yaml}]
- indent_style = space
- indent_size = 4
+indent_style = space
+indent_size = 4
 ij_continuation_indent_size = 4
 ij_yaml_keep_indents_on_empty_lines = false
 ij_yaml_keep_line_breaks = true
+
+[*.md]
+trim_trailing_whitespace = false
