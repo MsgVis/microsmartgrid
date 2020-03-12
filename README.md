@@ -46,11 +46,11 @@ Once you installed all necessary tools and cloned this repository, navigate to t
 <div id="1-2">
 
 ### Using
-There are different ways to use Msg-Vis. You can run all services together with docker or you can execute each service individually, either with docker or via maven.  
+There are different ways to use Msg-Vis. You can run all services together with docker or you can execute each service individually, either with docker or via maven.
 
-To **run all services with docker**, simply build the project and execute `docker-compose up --build` in the base directory. All the work will be done for you.  
+To **run all services with docker**, simply build the project and execute `docker-compose up --build` in the base directory. All the work will be done for you.
 
-To **run individual services with maven**, navigate to the service's directory and execute `mvn spring-boot:run`.  
+To **run individual services with maven**, navigate to the service's directory and execute `mvn spring-boot:run`.
 
 To **run individual services with docker**, first navigate into the service's directory, build the image with `docker build -t <serviceTag> .` and then run it with `docker run -p <ext-port>:<int-port> <serviceTag>`.
 
@@ -59,12 +59,12 @@ To **run individual services with docker**, first navigate into the service's di
 
 ### Services and Endpoints
 
-All services which other services depend on are exposing spring actuator endpoints (e.g. actuator/health) by default (see [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints)).  
+All services which other services depend on are exposing spring actuator endpoints (e.g. actuator/health) by default (see [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints)).
 Listed dependencies are transitive.
 
 #### Config Server
 
-Provides all necessary configuration for each service. Has to **always** start as first service and gets called by each service on startup.  
+Provides all necessary configuration for each service. Has to **always** start as first service and gets called by each service on startup.
 
 **Port**: 8888
 
@@ -90,20 +90,24 @@ Reads and aggregates data from the database.
 
 **Relies on**: Eureka Server, Timescale DB
 
-**Endpoints:**  
-| Method | Path | Variables | Description |
-------------- | ------------------------- | ------- | ------------- |
-GET| /latest | DTF* Cutoff| Queries the database for the last reading within \<cutoff\> days from each device.
-GET| /readings |int id, DTF since, DTF until| Queries the database for all readings from one device within an interval.
-GET| /readings/avg | int id, DTF since, DTF until, int step| Queries the database for all readings from one device within an interval and the average is returned.
-GET| /readings/min | see above| Queries the database for all readings from one device within an interval and the minimum is returned.
-GET| /readings/max | see above | Queries the database for all readings from one device within an interval and the maximum is returned.
-GET| /readings/std | see above | Queries the database for all readings from one device within an interval. Readings will be aggregated over 'step' and the standard deviation is returned.
-GET| /deviceList |-| Queries a list of all registered devices.
-GET| /deviceById |int id| Query devices table by id.
-GET| /deviceByName | String name | Queries devices table by name.  
+**Endpoints:**
 
-*DTF refers to datetime-format
+| Method | Path | Variables | Description |
+-------- | ---- | --------- | ----------- |
+GET| /latest | DTF* Cutoff | Queries the database for the last reading within \<cutoff\> days from each device.
+GET| /readings | int id, DTF*/Duration** since, DTF*/Duration** until | Queries the database for all readings within an interval.
+GET| /readings/avg | int id, DTF*/Duration** since, DTF*/Duration** until, Duration step | Queries the database for all readings or only readings with 'id'. The interval is defined using 'since' and 'until' with either a timestamp (UTC) or a duration (last seven days and one hour "P7DT1H"). Readings will be aggregated over 'step' and the average is returned.
+GET| /readings/min | see above | (see above) returns the minimum from readings over 'step'.
+GET| /readings/max | see above | (see above) returns the maximum from readings over 'step'.
+GET| /readings/std | see above | (see above) returns the standard deviation from readings over 'step'.
+GET| /deviceList |-| Queries a list of all registered devices.
+GET| /deviceById | int id | Query devices table by id.
+GET| /deviceByName | String name | Queries devices table by name.
+
+*DTF refers to [datetime-format](https://www.w3.org/TR/NOTE-datetime)
+
+**Duration uses DTFs [Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations), however only the time portion.
+"P1D" is supported but will resolve to "PT24H".
 
 #### Timescale DB Writer
 
@@ -113,13 +117,14 @@ Writes data to the database.
 
 **Relies on**: Eureka Server, Timescale DB
 
-**Endpoints:**  
+**Endpoints:**
+
 | Method | Path | Variables | Description |
 ------------- | ------------------------- | ------- | ------------- |
-PUT| /device | Deviceinformation** deviceInfo| Save or update DeviceInformation to a Device.
-POST| /reading |String name, String json| Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.  
+PUT| /device | Deviceinformation*** deviceInfo| Save or update DeviceInformation to a Device.
+POST| /reading |String name, String json| Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.
 
-** see [database model](https://github.com/MsgVis/microsmartgrid/blob/master/database/src/main/java/com/microsmartgrid/database/model/DeviceInformation.java)
+*** see [database model](https://github.com/MsgVis/microsmartgrid/blob/master/database/src/main/java/com/microsmartgrid/database/model/DeviceInformation.java)
 
 #### View
 
@@ -153,11 +158,11 @@ To uninstall Msg-Vis and all its dependencies you should delete the whole base d
 
 ### Deployment
 
-To deploy Msg-Vis via docker to **docker swarm** or **kubernetes** just follow the usual steps for deploying a spring cloud application with Eureka. Remember to change the host of all services from localhost to dynamic, auto-detectable docker-compose network-addresses (see [docs](https://docs.docker.com/compose/networking/)) and to set the ports to 0 to allow dynamic port allocation.  
+To deploy Msg-Vis via docker to **docker swarm** or **kubernetes** just follow the usual steps for deploying a spring cloud application with Eureka. Remember to change the host of all services from localhost to dynamic, auto-detectable docker-compose network-addresses (see [docs](https://docs.docker.com/compose/networking/)) and to set the ports to 0 to allow dynamic port allocation.
 
 To deploy **single Msg-Vis services** to **single tomcat instances**, change `<packaging>jar</packaging>` to `<packaging>war</packagin>` in every pom.xml file which applies. Additionally, navigate into the `<ServiceName>Application.java` usually located at `<servicename>/src/main/java/com/microsmartgrid/<servicename>` and extend the main class with `extends SpringBootServletInitializer`. Then clean-build the project and drop the resulting .war-file into your tomcat's webapps folder.
 
-To deploy **all Msg-Vis services** to **one single tomcat instance**, refer to this [dedicated branch](https://github.com/MsgVis/microsmartgrid/tree/_single_tomcat_deployment) and execute the `install.sh` as `root`. It will clean-build the project and auto-configure your tomcat instance. Be sure to have an appropriate instance of timescaleDb already running. The build depends on it.  
+To deploy **all Msg-Vis services** to **one single tomcat instance**, refer to this [dedicated branch](https://github.com/MsgVis/microsmartgrid/tree/_single_tomcat_deployment) and execute the `install.sh` as `root`. It will clean-build the project and auto-configure your tomcat instance. Be sure to have an appropriate instance of timescaleDb already running. The build depends on it.
 Note however, this does only work on an Ubuntu distribution.
 
 [Top](#TOC)
