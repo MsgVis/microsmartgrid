@@ -46,11 +46,11 @@ Once you installed all necessary tools and cloned this repository, navigate to t
 <div id="1-2">
 
 ### Using
-There are different ways to use Msg-Vis. You can run all services together with docker or you can execute each service individually, either with docker or via maven.
+There are different ways to use Msg-Vis. You can run all services together with docker or you can execute each service individually, either with docker or via maven.  
 
-To **run all services with docker**, simply build the project and execute `docker-compose up --build` in the base directory. All the work will be done for you.
+To **run all services with docker**, simply build the project and execute `docker-compose up --build` in the base directory. All the work will be done for you.  
 
-To **run individual services with maven**, navigate to the service's directory and execute `mvn spring-boot:run`.
+To **run individual services with maven**, navigate to the service's directory and execute `mvn spring-boot:run`.  
 
 To **run individual services with docker**, first navigate into the service's directory, build the image with `docker build -t <serviceTag> .` and then run it with `docker run -p <ext-port>:<int-port> <serviceTag>`.
 
@@ -64,7 +64,7 @@ Listed dependencies are transitive.
 
 #### Config Server
 
-Provides all necessary configuration for each service. Has to **always** start as first service and gets called by each service on startup.
+Provides all necessary configuration for each service. Has to **always** start as first service and gets called by each service on startup.  
 
 **Port**: 8888
 
@@ -158,7 +158,7 @@ To uninstall Msg-Vis and all its dependencies you should delete the whole base d
 
 ### Deployment
 
-To deploy Msg-Vis via docker to **docker swarm** or **kubernetes** just follow the usual steps for deploying a spring cloud application with Eureka. Remember to change the host of all services from localhost to dynamic, auto-detectable docker-compose network-addresses (see [docs](https://docs.docker.com/compose/networking/)) and to set the ports to 0 to allow dynamic port allocation.
+To deploy Msg-Vis via docker to **docker swarm** or **kubernetes** just follow the usual steps for deploying a spring cloud application with Eureka. Remember to change the host of all services from localhost to dynamic, auto-detectable docker-compose network-addresses (see [docs](https://docs.docker.com/compose/networking/)) and to set the ports to 0 to allow dynamic port allocation.  
 
 To deploy **single Msg-Vis services** to **single tomcat instances**, change `<packaging>jar</packaging>` to `<packaging>war</packagin>` in every pom.xml file which applies. Additionally, navigate into the `<ServiceName>Application.java` usually located at `<servicename>/src/main/java/com/microsmartgrid/<servicename>` and extend the main class with `extends SpringBootServletInitializer`. Then clean-build the project and drop the resulting .war-file into your tomcat's webapps folder.
 
