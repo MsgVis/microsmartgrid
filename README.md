@@ -91,7 +91,7 @@ Reads and aggregates data from the database.
 **Relies on**: Eureka Server, Timescale DB
 
 **Endpoints:**  
-Method | Path | Variables | Description |
+| Method | Path | Variables | Description |
 ------------- | ------------------------- | ------- | ------------- |
 GET| /latest | DTF* Cutoff| Queries the database for the last reading within \<cutoff\> days from each device.
 GET| /readings |int id, DTF since, DTF until| Queries the database for all readings from one device within an interval.
@@ -101,7 +101,8 @@ GET| /readings/max | see above | Queries the database for all readings from one 
 GET| /readings/std | see above | Queries the database for all readings from one device within an interval. Readings will be aggregated over 'step' and the standard deviation is returned.
 GET| /deviceList |-| Queries a list of all registered devices.
 GET| /deviceById |int id| Query devices table by id.
-GET| /deviceByName | String name | Queries devices table by name.
+GET| /deviceByName | String name | Queries devices table by name.  
+
 *DTF refers to datetime-format
 
 #### Timescale DB Writer
@@ -113,10 +114,11 @@ Writes data to the database.
 **Relies on**: Eureka Server, Timescale DB
 
 **Endpoints:**  
-Method | Path | Variables | Description |
+| Method | Path | Variables | Description |
 ------------- | ------------------------- | ------- | ------------- |
 PUT| /device | Deviceinformation** deviceInfo| Save or update DeviceInformation to a Device.
-POST| /reading |String name, String json| Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.
+POST| /reading |String name, String json| Deserialize the json to a java object and assign it to a DeviceInformation object. Save the created object to the database.  
+
 ** see [database model](https://github.com/MsgVis/microsmartgrid/blob/master/database/src/main/java/com/microsmartgrid/database/model/DeviceInformation.java)
 
 #### View
