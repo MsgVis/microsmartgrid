@@ -55,6 +55,7 @@
 		<module>timescaleDbReader</module>
 		<module>timescaleDbWriter</module>
 		<module>mqttclient</module>
+		<module>jiacAgent</module>
 	</modules>
 
 	<build>
