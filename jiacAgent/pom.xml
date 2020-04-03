@@ -34,6 +34,12 @@
 			<groupId>de.dailab.jiactng.basicServices</groupId>
 			<artifactId>webServer</artifactId>
 			<version>5.2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+					<artifactId>com.sun.el</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
