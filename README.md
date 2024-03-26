@@ -14,6 +14,8 @@ Version support:
 
 # Micro Smart Grid Visualisation Tool
 
+https://user-images.githubusercontent.com/34949930/125978997-c3c029d6-703d-45bb-9ac4-107b78021b60.mp4
+
 __See how Energy flows and calculate Insights.__
 
 This *alpha-stage* application enables admins of microsmartgrid architectures to easily deploy a distributed supervision tool. Currently supported protocol: MQTT
